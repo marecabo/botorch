@@ -3,7 +3,7 @@
 
 # ## Fitting models in BoTorch with a torch.optim.Optimizer
 # 
-# BoTorch provides a convenient `botorch.fit.fit_gpytorch_model` function with sensible defaults that work on most basic models, including those that BoTorch ships with. Internally, this function uses L-BFGS-B to fit the parameters. However, in more advanced uses cases you may need or want to implement your own model fitting logic.
+# BoTorch provides a convenient `botorch.fit.fit_gpytorch_model` function with sensible defaults that work on most basic models, including those that botorch ships with. Internally, this function uses L-BFGS-B to fit the parameters. However, in more advanced use cases you may need or want to implement your own model fitting logic.
 # 
 # This tutorial allows you to customize model fitting to your needs using the familiar PyTorch-style model fitting loop.
 # 
@@ -30,8 +30,10 @@ dtype = torch.float
 # In[2]:
 
 
-# use regular spaced points on the interval [0, 1] (training data needs an explicit dimension)
-train_X = torch.linspace(0, 1, 15, dtype=dtype, device=device).unsqueeze(1)
+# use regular spaced points on the interval [0, 1]
+train_X = torch.linspace(0, 1, 15, dtype=dtype, device=device)
+# training data needs to be explicitly multi-dimensional
+train_X = train_X.unsqueeze(1)
 
 # sample observed values and add some synthetic noise
 train_Y = torch.sin(train_X * (2 * math.pi)) + 0.15 * torch.randn_like(train_X)
@@ -43,7 +45,10 @@ train_Y = train_Y.view(-1)
 # #### Initialize the model
 # We will model the function using a `SingleTaskGP`, which by default uses a `GaussianLikelihood` and infers the unknown noise level.
 # 
-# The `SingleTaskGP` is typically fit using L-BFGS-B with explicit bounds on the noise parameter. This means that internally the model does not use a transform to ensure the noise level remains positive. Since the `torch` optimizers don't handle explicit constraints very well, we need to manually register a constraint on the noise level that enforces a lower bound using a softplus transformation (note that the constraint defined in the constructor of `SingleTask` has `transform=None`, which means that no transform is enforced). See the [GPyTorch constraints module](https://github.com/cornellius-gp/gpytorch/blob/master/gpytorch/constraints/constraints.py) for additional information.
+# The default optimizer for the `SingleTaskGP` is L-BFGS-B, which takes as input explicit bounds on the noise parameter. However, the `torch` optimizers don't support parameter bounds as input. To use the `torch` optimizers, then, we'll need to manually register a constraint on the noise level. When registering a constraint, the `softplus` transform is applied by default, enabling us to enforce a lower bound on the noise.
+# 
+# **Note**: Without manual registration, the model itself does not apply any constraints, due to the interaction between constraints and transforms. Although the `SingleTaskGP` constructor does in fact define a constraint, the constructor sets `transform=None`, which means that the constraint is not enforced. See the [GPyTorch constraints module](https://github.com/cornellius-gp/gpytorch/blob/master/gpytorch/constraints/constraints.py) for additional information.
+# 
 
 # In[3]:
 
@@ -57,7 +62,7 @@ model.likelihood.noise_covar.register_constraint("raw_noise", GreaterThan(1e-5))
 
 
 # #### Define marginal log likelihood 
-# We will optimizing the the kernel hyperparameters and the likelihood's noise parameter jointly by minimizing the negative `gpytorch.mlls.ExactMarginalLogLikelihood` (our loss function).
+# We will jointly optimize the kernel hyperparameters and the likelihood's noise parameter, by minimizing the negative `gpytorch.mlls.ExactMarginalLogLikelihood` (our loss function).
 
 # In[4]:
 
@@ -70,7 +75,7 @@ mll = mll.to(train_X)
 
 
 # #### Define optimizer and specify parameters to optimize
-# We will use stochastic gradient descent (`torch.optim.SGD`) to optimize the kernel hyperparameters and the noise level. In this example, we will use a simple fixed learning rate of 0.1, but in practice the learning may need to adjusted. You can use any of 
+# We will use stochastic gradient descent (`torch.optim.SGD`) to optimize the kernel hyperparameters and the noise level. In this example, we will use a simple fixed learning rate of 0.1, but in practice the learning rate may need to be adjusted.
 # 
 # Notes:
 # - As the `GaussianLikelihood` module is a of child (submodule) of the `SingleTaskGP` moduel, `model.parameters()` will also include the noise level of the `GaussianLikelihood`. 
@@ -85,7 +90,7 @@ optimizer = SGD([{'params': model.parameters()}], lr=0.1)
 
 
 # #### Fit model hyperparameters and noise level
-# Now we are ready to write our optimization loop. We will perform 100 epochs of stochastic gradient descent using our entire training set.
+# Now we are ready to write our optimization loop. We will perform 150 epochs of stochastic gradient descent using our entire training set.
 
 # In[6]:
 
@@ -151,7 +156,7 @@ plt.tight_layout()
 
 # ### Interfacing with Ax
 # 
-# It is simple to package up a custom optimizer loop like the one above and use it within Ax. As described in the [Using BoTorch with Ax tutorial](../custom_botorch_model_in_ax), this requires defining a custom `model_constructor` callable that then can ben passed to the `get_botorch` factory function.
+# It is simple to package up a custom optimizer loop like the one above and use it within Ax. As described in the [Using BoTorch with Ax tutorial](../custom_botorch_model_in_ax), this requires defining a custom `model_constructor` callable that can then be passed to the `get_botorch` factory function.
 
 # In[9]:
 

@@ -156,7 +156,7 @@
 
 <span class="sd">    Example:</span>
 <span class="sd">        &gt;&gt;&gt; # generate `q=2` candidates jointly using 20 random restarts and</span>
-<span class="sd">        &gt;&gt;&gt; 500 raw samples</span>
+<span class="sd">        &gt;&gt;&gt; # 500 raw samples</span>
 <span class="sd">        &gt;&gt;&gt; qEI = qExpectedImprovement(model, best_f=0.2)</span>
 <span class="sd">        &gt;&gt;&gt; bounds = torch.tensor([[0.], [1.]])</span>
 <span class="sd">        &gt;&gt;&gt; candidates = joint_optimize(qEI, bounds, 2, 20, 500)</span>

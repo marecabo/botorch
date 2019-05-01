@@ -365,7 +365,7 @@ included to match _sequential_optimize.</p></li>
 </dl>
 <p class="rubric">Example</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># generate `q=2` candidates jointly using 20 random restarts and</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="mi">500</span> <span class="n">raw</span> <span class="n">samples</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># 500 raw samples</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">qEI</span> <span class="o">=</span> <span class="n">qExpectedImprovement</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">best_f</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">bounds</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([[</span><span class="mf">0.</span><span class="p">],</span> <span class="p">[</span><span class="mf">1.</span><span class="p">]])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">candidates</span> <span class="o">=</span> <span class="n">joint_optimize</span><span class="p">(</span><span class="n">qEI</span><span class="p">,</span> <span class="n">bounds</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">500</span><span class="p">)</span>

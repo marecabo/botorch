@@ -102,7 +102,7 @@
 <div class="viewcode-block" id="t_batch_mode_transform"><a class="viewcode-back" href="../../../utils.html#botorch.utils.transforms.t_batch_mode_transform">[docs]</a><span class="k">def</span> <span class="nf">t_batch_mode_transform</span><span class="p">(</span>
     <span class="n">expected_q</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Callable</span><span class="p">[[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Tensor</span><span class="p">],</span> <span class="n">Any</span><span class="p">]],</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Tensor</span><span class="p">],</span> <span class="n">Any</span><span class="p">]]:</span>
-    <span class="sa">r</span><span class="sd">"""Factory for decorators that make instance methods receive a t-batched `X` tensor.</span>
+    <span class="sa">r</span><span class="sd">"""Factory for decorators taking a t-batched `X` tensor.</span>
 
 <span class="sd">    This method creates decorators for instance methods to transform an input tensor</span>
 <span class="sd">    `X` to t-batch mode (i.e. with at least 3 dimensions). This assumes the tensor</span>

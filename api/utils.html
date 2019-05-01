@@ -417,7 +417,7 @@ columns.</p></li>
 <dl class="function">
 <dt id="botorch.utils.transforms.t_batch_mode_transform">
 <code class="descclassname">botorch.utils.transforms.</code><code class="descname">t_batch_mode_transform</code><span class="sig-paren">(</span><em>expected_q=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/utils/transforms.html#t_batch_mode_transform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.utils.transforms.t_batch_mode_transform" title="Permalink to this definition">¶</a></dt>
-<dd><p>Factory for decorators that make instance methods receive a t-batched <cite>X</cite> tensor.</p>
+<dd><p>Factory for decorators taking a t-batched <cite>X</cite> tensor.</p>
 <p>This method creates decorators for instance methods to transform an input tensor
 <cite>X</cite> to t-batch mode (i.e. with at least 3 dimensions). This assumes the tensor
 has a q-batch dimension. The decorator also checks the q-batch size if <cite>expected_q</cite>
