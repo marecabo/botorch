@@ -16,7 +16,7 @@
 # 
 # over $x \in [0,1]^6$ (parameter values can be found in `botorch/test_functions/hartmann6.py`).
 # 
-# In real BO applications, the design $x$ can influence multiple metrics in unknown ways, and the decision-maker often wants to optimize one metric without sacrificing another. To illustrate this, we add a synthetic constarint fo the form $\|x\|_1 - 3 \le 0$. Both the objective and the constraint are observed with noise. 
+# In real BO applications, the design $x$ can influence multiple metrics in unknown ways, and the decision-maker often wants to optimize one metric without sacrificing another. To illustrate this, we add a synthetic constraint fo the form $\|x\|_1 - 3 \le 0$. Both the objective and the constraint are observed with noise. 
 # 
 # Since botorch assumes a maximization problem, we will attempt to maximize $-f(x)$ to achieve $\max_{x} -f(x) = 3.32237$.
 
@@ -87,7 +87,8 @@ def initialize_model(train_x, train_obj, train_con, state_dict=None):
     return mll, model
 
 
-# We will also need to define mappings that take the outputs of the GP and return the objective and the constraint. In general, these can be any `Callable`, but here we simply need to index the correct output.
+# #### Define a construct to extract the objective and constraint from the GP
+# The methods below take the outputs of the GP and return the objective and the constraint. In general, these can be any `Callable`, but here we simply need to index the correct output.
 
 # In[4]:
 
@@ -155,7 +156,7 @@ def update_random_observations(best_random):
 # 3. update the surrogate model. 
 # 
 # 
-# Just for illustration purposes, we run three trials of `N_BATCH=20` iterations. The acquisition function is approximated using `MC_SAMPLES=500` samples.
+# Just for illustration purposes, we run three trials each of which do `N_BATCH=20` rounds of optimization. The acquisition function is approximated using `MC_SAMPLES=500` samples.
 # 
 # *Note*: Running this may take a little while.
 
@@ -276,6 +277,7 @@ for trial in range(1, N_TRIALS + 1):
 
 
 # #### Plot the results
+# The plot below shows the best objective value observed at each step of the optimization for each of the algorithms. The confidence intervals represent the variance at that step in the optimization across the trial runs.
 
 # In[7]:
 

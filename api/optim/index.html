@@ -305,7 +305,7 @@ returned by module_to_array.</p></li>
 function optimization.</p></li>
 <li><p><strong>raw_samples</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – The number of raw samples to consider in the initialization
 heuristic.</p></li>
-<li><p><strong>options</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]]]) – Options for initial condition generation. For valid options see
+<li><p><strong>options</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]]]) – Options for initial condition generation. For valid options see
 <cite>initialize_q_batch</cite> and <cite>initialize_q_batch_nonneg</cite>. If <cite>options</cite>
 contains a <cite>nonnegative=True</cite> entry, then <cite>acq_function</cite> is
 assumed to be non-negative (useful when using custom acquisition
@@ -341,7 +341,7 @@ functions).</p></li>
 <li><p><strong>num_restarts</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Number of starting points for multistart acquisition
 function optimization.</p></li>
 <li><p><strong>raw_samples</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Number of samples for initialization.</p></li>
-<li><p><strong>options</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]]]) – Options for candidate generation.</p></li>
+<li><p><strong>options</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]]]) – Options for candidate generation.</p></li>
 <li><p><strong>constraints</strong> (<em>equality</em>) – A list of tuples (indices, coefficients, rhs),
 with each tuple encoding an inequality constraint of the form
 <cite>sum_i (X[indices[i]] * coefficients[i]) &gt;= rhs</cite></p></li>
@@ -364,7 +364,8 @@ included to match _sequential_optimize.</p></li>
 </dd>
 </dl>
 <p class="rubric">Example</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># generate `q=2` candidates jointly using 20 random restarts and 500 raw samples</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># generate `q=2` candidates jointly using 20 random restarts and</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="mi">500</span> <span class="n">raw</span> <span class="n">samples</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">qEI</span> <span class="o">=</span> <span class="n">qExpectedImprovement</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">best_f</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">bounds</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([[</span><span class="mf">0.</span><span class="p">],</span> <span class="p">[</span><span class="mf">1.</span><span class="p">]])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">candidates</span> <span class="o">=</span> <span class="n">joint_optimize</span><span class="p">(</span><span class="n">qEI</span><span class="p">,</span> <span class="n">bounds</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">500</span><span class="p">)</span>
@@ -384,7 +385,7 @@ included to match _sequential_optimize.</p></li>
 <li><p><strong>num_restarts</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Number of starting points for multistart acquisition
 function optimization.</p></li>
 <li><p><strong>raw_samples</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Number of samples for initialization</p></li>
-<li><p><strong>options</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]]]) – Options for candidate generation.</p></li>
+<li><p><strong>options</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]]]) – Options for candidate generation.</p></li>
 <li><p><strong>constraints</strong> (<em>equality</em>) – A list of tuples (indices, coefficients, rhs),
 with each tuple encoding an inequality constraint of the form
 <cite>sum_i (X[indices[i]] * coefficients[i]) &gt;= rhs</cite></p></li>
@@ -405,12 +406,14 @@ transformations).</p></li>
 <dd class="field-odd"><p>The set of generated candidates.</p>
 </dd>
 </dl>
-<p>Example
-&gt;&gt;&gt; # generate <cite>q=2</cite> candidates sequentially using 20 random restarts and
-&gt;&gt;&gt; # 500 raw samples
+<dl class="simple">
+<dt>Example</dt><dd><p># generate <cite>q=2</cite> candidates sequentially using 20 random restarts
+# and 500 raw samples
 &gt;&gt;&gt; qEI = qExpectedImprovement(model, best_f=0.2)
 &gt;&gt;&gt; bounds = torch.tensor([[0.], [1.]])
 &gt;&gt;&gt; candidates = sequential_optimize(qEI, bounds, 2, 20, 500)</p>
+</dd>
+</dl>
 </dd></dl>
 </div>
 <div class="section" id="module-botorch.optim.parameter_constraints">

@@ -73,12 +73,13 @@
 
 <span class="sd">    Returns:</span>
 <span class="sd">        The set of generated candidates.</span>
+
 <span class="sd">    Example</span>
-<span class="sd">    &gt;&gt;&gt; # generate `q=2` candidates sequentially using 20 random restarts and</span>
-<span class="sd">    &gt;&gt;&gt; # 500 raw samples</span>
-<span class="sd">    &gt;&gt;&gt; qEI = qExpectedImprovement(model, best_f=0.2)</span>
-<span class="sd">    &gt;&gt;&gt; bounds = torch.tensor([[0.], [1.]])</span>
-<span class="sd">    &gt;&gt;&gt; candidates = sequential_optimize(qEI, bounds, 2, 20, 500)</span>
+<span class="sd">        # generate `q=2` candidates sequentially using 20 random restarts</span>
+<span class="sd">        # and 500 raw samples</span>
+<span class="sd">        &gt;&gt;&gt; qEI = qExpectedImprovement(model, best_f=0.2)</span>
+<span class="sd">        &gt;&gt;&gt; bounds = torch.tensor([[0.], [1.]])</span>
+<span class="sd">        &gt;&gt;&gt; candidates = sequential_optimize(qEI, bounds, 2, 20, 500)</span>
 <span class="sd">    """</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">acq_function</span><span class="p">,</span> <span class="s2">"X_baseline"</span><span class="p">):</span>
         <span class="k">raise</span> <span class="n">UnsupportedError</span><span class="p">(</span>  <span class="c1"># pyre-ignore: [16]</span>
@@ -154,7 +155,8 @@
 <span class="sd">         A `q x d` tensor of generated candidates.</span>
 
 <span class="sd">    Example:</span>
-<span class="sd">        &gt;&gt;&gt; # generate `q=2` candidates jointly using 20 random restarts and 500 raw samples</span>
+<span class="sd">        &gt;&gt;&gt; # generate `q=2` candidates jointly using 20 random restarts and</span>
+<span class="sd">        &gt;&gt;&gt; 500 raw samples</span>
 <span class="sd">        &gt;&gt;&gt; qEI = qExpectedImprovement(model, best_f=0.2)</span>
 <span class="sd">        &gt;&gt;&gt; bounds = torch.tensor([[0.], [1.]])</span>
 <span class="sd">        &gt;&gt;&gt; candidates = joint_optimize(qEI, bounds, 2, 20, 500)</span>
