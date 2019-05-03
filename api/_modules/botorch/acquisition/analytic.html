@@ -490,7 +490,11 @@
             <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="n">batch_X_observed</span><span class="o">=</span><span class="n">batch_X_observed</span><span class="p">,</span> <span class="n">Y_fantasized</span><span class="o">=</span><span class="n">Y_fantasized</span>
         <span class="p">)</span>
 
-        <span class="n">best_f</span> <span class="o">=</span> <span class="n">Y_fantasized</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">maximize</span><span class="p">:</span>
+            <span class="n">best_f</span> <span class="o">=</span> <span class="n">Y_fantasized</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">best_f</span> <span class="o">=</span> <span class="n">Y_fantasized</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">fantasy_model</span><span class="p">,</span> <span class="n">best_f</span><span class="o">=</span><span class="n">best_f</span><span class="p">,</span> <span class="n">maximize</span><span class="o">=</span><span class="n">maximize</span><span class="p">)</span>
 
 <div class="viewcode-block" id="NoisyExpectedImprovement.forward"><a class="viewcode-back" href="../../../acquisition.html#botorch.acquisition.analytic.NoisyExpectedImprovement.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>

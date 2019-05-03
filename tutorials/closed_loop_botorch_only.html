@@ -62,7 +62,7 @@
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="Closed-loop-batch,-constrained-BO-in-BoTorch-with-qEI-and-qNEI">Closed-loop batch, constrained BO in BoTorch with qEI and qNEI<a class="anchor-link" href="#Closed-loop-batch,-constrained-BO-in-BoTorch-with-qEI-and-qNEI">¶</a></h2><p>In this tutorial, we illustrate how to implement a simple Bayesian Optimization (BO) closed loop in BoTorch.</p>
-<p>In general, we recommend for a relatively simple setup (like this one) to use Ax, since this will simplify your setup (including the amount of code you need to write) considerably. See the <a href="../using_botorch_with_ax">Using BoTorch with Ax</a> tutorial.</p>
+<p>In general, we recommend for a relatively simple setup (like this one) to use Ax, since this will simplify your setup (including the amount of code you need to write) considerably. See the <a href="./custom_botorch_model_in_ax">Using BoTorch with Ax</a> tutorial.</p>
 <p>However, you may want to do things that are not easily supported in Ax at this time (like running high-dimensional BO using a VAE+GP model that you jointly train on high-dimensional input data). If you find yourself in such a situation, you will need to write your own optimization loop, as we do in this tutorial.</p>
 <p>We use the batch Expected Improvement (qEI) and batch Noisy Expected Improvement (qNEI) acquisition functions to optimize a constrained version of the synthetic Hartmann6 test function. The standard problem is</p>
 $$f(x) = -\sum_{i=1}^4 \alpha_i \exp \left( -\sum_{j=1}^6 A_{ij} (x_j - P_{ij})^2  \right)$$<p>over $x \in [0,1]^6$ (parameter values can be found in <code>botorch/test_functions/hartmann6.py</code>).</p>
