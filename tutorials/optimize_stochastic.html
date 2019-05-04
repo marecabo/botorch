@@ -63,7 +63,7 @@
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="Optimize-acquisition-functions-using-torch.optim">Optimize acquisition functions using torch.optim<a class="anchor-link" href="#Optimize-acquisition-functions-using-torch.optim">¶</a></h2><p>In this tutorial, we show how to use PyTorch's <code>optim</code> module for optimizing BoTorch MC acquisition functions. This is useful if the acquisition function is stochastic in nature (caused by re-sampling the base samples when using the reparameterization trick, or if the model posterior itself is stochastic).</p>
 <p><em>Note:</em> A pre-packaged, more user-friendly version of the optimization loop we will develop below is contained in the <code>gen_candidates_torch</code> function in the <code>botorch.gen</code> module. This tutorial should be quite useful if you would like to implement custom optimizers beyond what is contained in <code>gen_candidates_torch</code>.</p>
-<p>As discussed in the <a href="./optimize_with_cmaes.ipynb">CMA-ES tutorial</a>, for deterministic acquisition functions BoTorch uses quasi-second order methods (such as L-BFGS-B or SLSQP) by default, which provide superior convergence speed in this situation.</p>
+<p>As discussed in the <a href="./optimize_with_cmaes">CMA-ES tutorial</a>, for deterministic acquisition functions BoTorch uses quasi-second order methods (such as L-BFGS-B or SLSQP) by default, which provide superior convergence speed in this situation.</p>
 </div>
 </div>
 </div>

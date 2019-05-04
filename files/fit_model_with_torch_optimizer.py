@@ -156,7 +156,7 @@ plt.tight_layout()
 
 # ### Interfacing with Ax
 # 
-# It is simple to package up a custom optimizer loop like the one above and use it within Ax. As described in the [Using BoTorch with Ax tutorial](../custom_botorch_model_in_ax), this requires defining a custom `model_constructor` callable that can then be passed to the `get_botorch` factory function.
+# It is simple to package up a custom optimizer loop like the one above and use it within Ax. As described in the [Using BoTorch with Ax tutorial](./custom_botorch_model_in_ax), this requires defining a custom `model_constructor` callable that can then be passed to the `get_botorch` factory function.
 
 # In[9]:
 

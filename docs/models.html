@@ -68,7 +68,7 @@ functions in the
 module, <strong>BoTorch makes no assumption on the model being a GP</strong>, or on the
 posterior being a multivariate normal. The only requirement for using
 BoTorch's Monte-Carlo based acquisition functions is that the model returns a
-<a href="../api/api/posteriors.html#posterior"><code>Posterior</code></a> object that implements an
+<a href="../api/posteriors.html#posterior"><code>Posterior</code></a> object that implements an
 <code>rsample()</code> method for sampling from the posterior of the model. If you wish to
 use gradient-based optimization algorithms, the model should allow
 back-propagating gradients through the samples to the model input.</p>
