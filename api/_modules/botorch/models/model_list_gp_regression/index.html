@@ -12,7 +12,7 @@
             {"zIndex":100}
           )
         });
-        </script><link rel="stylesheet" href="/css/main.css"/><script src="/js/codetabs.js"></script></head><body><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/"><img class="logo" src="/img/botorch_logo_lockup_white.png" alt="BoTorch"/><h2 class="headerTitleWithLogo">BoTorch</h2></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class=""><a href="/docs/introduction" target="_self">Docs</a></li><li class=""><a href="/tutorials/" target="_self">Tutorials</a></li><li class=""><a href="/api/" target="_self">API Reference</a></li><li class=""><a href="https://github.com/pytorch/botorch" target="_self">GitHub</a></li><li class="navSearchWrapper reactNavSearchWrapper"><input type="text" id="search_input_react" placeholder="Search" title="Search"/></li></ul></nav></div></header></div></div><div class="navPusher"><div>
+        </script><script src="/js/scrollSpy.js"></script><link rel="stylesheet" href="/css/main.css"/><script src="/js/codetabs.js"></script></head><body><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/"><img class="logo" src="/img/botorch_logo_lockup_white.png" alt="BoTorch"/><h2 class="headerTitleWithLogo">BoTorch</h2></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class=""><a href="/docs/introduction" target="_self">Docs</a></li><li class=""><a href="/tutorials/" target="_self">Tutorials</a></li><li class=""><a href="/api/" target="_self">API Reference</a></li><li class=""><a href="https://github.com/pytorch/botorch" target="_self">GitHub</a></li><li class="navSearchWrapper reactNavSearchWrapper"><input type="text" id="search_input_react" placeholder="Search" title="Search"/></li></ul></nav></div></header></div></div><div class="navPusher"><div>
 <script type="text/javascript" id="documentation_options" data-url_root="./" src="/js/documentation_options.js"></script>
 <script type="text/javascript" src="/js/jquery.js"></script>
 <script type="text/javascript" src="/js/underscore.js"></script>
@@ -32,7 +32,7 @@
 <span class="sd">Model List GP Regression models.</span>
 <span class="sd">"""</span>
 
-<span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">List</span>
+<span class="kn">import</span> <span class="nn">typing</span>  <span class="c1"># noqa F401</span>
 
 <span class="kn">from</span> <span class="nn">gpytorch.models</span> <span class="k">import</span> <span class="n">IndependentModelList</span>
 
@@ -53,16 +53,16 @@
 <span class="sd">    structure, you should consider using a batched GP model instead).</span>
 <span class="sd">    """</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gp_models</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">GPyTorchModel</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">gp_models</span><span class="p">:</span> <span class="n">GPyTorchModel</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sa">r</span><span class="sd">"""A multi-output GP model with independent GPs for the outputs.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            gp_models: A list of single-output BoTorch models.</span>
+<span class="sd">            *gp_models: An variable number of single-output BoTorch models.</span>
 
 <span class="sd">        Example:</span>
 <span class="sd">            &gt;&gt;&gt; model1 = SingleTaskGP(train_X1, train_Y1)</span>
 <span class="sd">            &gt;&gt;&gt; model2 = SingleTaskGP(train_X2, train_Y2)</span>
-<span class="sd">            &gt;&gt;&gt; model = ModelListGP([model1, model2])</span>
+<span class="sd">            &gt;&gt;&gt; model = ModelListGP(model1, model2)</span>
 <span class="sd">        """</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">gp_models</span><span class="p">)</span></div>
 </pre></div>

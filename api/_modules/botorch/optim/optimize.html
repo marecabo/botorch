@@ -12,7 +12,7 @@
             {"zIndex":100}
           )
         });
-        </script><link rel="stylesheet" href="/css/main.css"/><script src="/js/codetabs.js"></script></head><body><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/"><img class="logo" src="/img/botorch_logo_lockup_white.png" alt="BoTorch"/><h2 class="headerTitleWithLogo">BoTorch</h2></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class=""><a href="/docs/introduction" target="_self">Docs</a></li><li class=""><a href="/tutorials/" target="_self">Tutorials</a></li><li class=""><a href="/api/" target="_self">API Reference</a></li><li class=""><a href="https://github.com/pytorch/botorch" target="_self">GitHub</a></li><li class="navSearchWrapper reactNavSearchWrapper"><input type="text" id="search_input_react" placeholder="Search" title="Search"/></li></ul></nav></div></header></div></div><div class="navPusher"><div>
+        </script><script src="/js/scrollSpy.js"></script><link rel="stylesheet" href="/css/main.css"/><script src="/js/codetabs.js"></script></head><body><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/"><img class="logo" src="/img/botorch_logo_lockup_white.png" alt="BoTorch"/><h2 class="headerTitleWithLogo">BoTorch</h2></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class=""><a href="/docs/introduction" target="_self">Docs</a></li><li class=""><a href="/tutorials/" target="_self">Tutorials</a></li><li class=""><a href="/api/" target="_self">API Reference</a></li><li class=""><a href="https://github.com/pytorch/botorch" target="_self">GitHub</a></li><li class="navSearchWrapper reactNavSearchWrapper"><input type="text" id="search_input_react" placeholder="Search" title="Search"/></li></ul></nav></div></header></div></div><div class="navPusher"><div>
 <script type="text/javascript" id="documentation_options" data-url_root="./" src="/js/documentation_options.js"></script>
 <script type="text/javascript" src="/js/jquery.js"></script>
 <script type="text/javascript" src="/js/underscore.js"></script>
@@ -172,25 +172,42 @@
 <span class="sd">        &gt;&gt;&gt; candidates = joint_optimize(qEI, bounds, 2, 20, 500)</span>
 <span class="sd">    """</span>
     <span class="c1"># TODO: Generating initial candidates should use parameter constraints.</span>
+
+    <span class="n">options</span> <span class="o">=</span> <span class="n">options</span> <span class="ow">or</span> <span class="p">{}</span>
     <span class="n">batch_initial_conditions</span> <span class="o">=</span> <span class="n">gen_batch_initial_conditions</span><span class="p">(</span>
         <span class="n">acq_function</span><span class="o">=</span><span class="n">acq_function</span><span class="p">,</span>
         <span class="n">bounds</span><span class="o">=</span><span class="n">bounds</span><span class="p">,</span>
         <span class="n">q</span><span class="o">=</span><span class="kc">None</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">acq_function</span><span class="p">,</span> <span class="n">AnalyticAcquisitionFunction</span><span class="p">)</span> <span class="k">else</span> <span class="n">q</span><span class="p">,</span>
         <span class="n">num_restarts</span><span class="o">=</span><span class="n">num_restarts</span><span class="p">,</span>
         <span class="n">raw_samples</span><span class="o">=</span><span class="n">raw_samples</span><span class="p">,</span>
-        <span class="n">options</span><span class="o">=</span><span class="n">options</span> <span class="ow">or</span> <span class="p">{},</span>
+        <span class="n">options</span><span class="o">=</span><span class="n">options</span><span class="p">,</span>
     <span class="p">)</span>
-    <span class="c1"># optimize using random restart optimization</span>
-    <span class="n">batch_candidates</span><span class="p">,</span> <span class="n">batch_acq_values</span> <span class="o">=</span> <span class="n">gen_candidates_scipy</span><span class="p">(</span>
-        <span class="n">initial_conditions</span><span class="o">=</span><span class="n">batch_initial_conditions</span><span class="p">,</span>
-        <span class="n">acquisition_function</span><span class="o">=</span><span class="n">acq_function</span><span class="p">,</span>
-        <span class="n">lower_bounds</span><span class="o">=</span><span class="n">bounds</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
-        <span class="n">upper_bounds</span><span class="o">=</span><span class="n">bounds</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
-        <span class="n">options</span><span class="o">=</span><span class="n">options</span> <span class="ow">or</span> <span class="p">{},</span>
-        <span class="n">inequality_constraints</span><span class="o">=</span><span class="n">inequality_constraints</span><span class="p">,</span>
-        <span class="n">equality_constraints</span><span class="o">=</span><span class="n">equality_constraints</span><span class="p">,</span>
-        <span class="n">fixed_features</span><span class="o">=</span><span class="n">fixed_features</span><span class="p">,</span>
-    <span class="p">)</span>
+    <span class="n">batch_limit</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"batch_limit"</span><span class="p">,</span> <span class="n">num_restarts</span><span class="p">)</span>
+    <span class="n">batch_candidates_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">batch_acq_values_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">start_idx</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">while</span> <span class="n">start_idx</span> <span class="o">&lt;</span> <span class="n">num_restarts</span><span class="p">:</span>
+        <span class="n">end_idx</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">start_idx</span> <span class="o">+</span> <span class="n">batch_limit</span><span class="p">,</span> <span class="n">num_restarts</span><span class="p">)</span>
+        <span class="c1"># optimize using random restart optimization</span>
+        <span class="n">batch_candidates_curr</span><span class="p">,</span> <span class="n">batch_acq_values_curr</span> <span class="o">=</span> <span class="n">gen_candidates_scipy</span><span class="p">(</span>
+            <span class="n">initial_conditions</span><span class="o">=</span><span class="n">batch_initial_conditions</span><span class="p">[</span><span class="n">start_idx</span><span class="p">:</span><span class="n">end_idx</span><span class="p">],</span>
+            <span class="n">acquisition_function</span><span class="o">=</span><span class="n">acq_function</span><span class="p">,</span>
+            <span class="n">lower_bounds</span><span class="o">=</span><span class="n">bounds</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+            <span class="n">upper_bounds</span><span class="o">=</span><span class="n">bounds</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+            <span class="n">options</span><span class="o">=</span><span class="p">{</span>
+                <span class="n">k</span><span class="p">:</span> <span class="n">v</span>
+                <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">options</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"batch_limit"</span><span class="p">,</span> <span class="s2">"nonnegative"</span><span class="p">)</span>
+            <span class="p">},</span>
+            <span class="n">inequality_constraints</span><span class="o">=</span><span class="n">inequality_constraints</span><span class="p">,</span>
+            <span class="n">equality_constraints</span><span class="o">=</span><span class="n">equality_constraints</span><span class="p">,</span>
+            <span class="n">fixed_features</span><span class="o">=</span><span class="n">fixed_features</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">batch_candidates_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">batch_candidates_curr</span><span class="p">)</span>
+        <span class="n">batch_acq_values_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">batch_acq_values_curr</span><span class="p">)</span>
+        <span class="n">start_idx</span> <span class="o">+=</span> <span class="n">batch_limit</span>
+    <span class="n">batch_candidates</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span><span class="n">batch_candidates_list</span><span class="p">)</span>
+    <span class="n">batch_acq_values</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span><span class="n">batch_acq_values_list</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">get_best_candidates</span><span class="p">(</span>
         <span class="n">batch_candidates</span><span class="o">=</span><span class="n">batch_candidates</span><span class="p">,</span> <span class="n">batch_values</span><span class="o">=</span><span class="n">batch_acq_values</span>
     <span class="p">)</span></div>
@@ -232,6 +249,7 @@
 <span class="sd">    """</span>
     <span class="n">options</span> <span class="o">=</span> <span class="n">options</span> <span class="ow">or</span> <span class="p">{}</span>
     <span class="n">seed</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"seed"</span><span class="p">)</span>  <span class="c1"># pyre-ignore</span>
+    <span class="n">batch_limit</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"batch_limit"</span><span class="p">)</span>  <span class="c1"># pyre-ignore</span>
     <span class="n">batch_initial_arms</span><span class="p">:</span> <span class="n">Tensor</span>
     <span class="n">factor</span><span class="p">,</span> <span class="n">max_factor</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5</span>
     <span class="n">init_kwargs</span> <span class="o">=</span> <span class="p">{}</span>
@@ -253,7 +271,16 @@
                 <span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">,</span>
             <span class="p">)</span>
             <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
-                <span class="n">Y_rnd</span> <span class="o">=</span> <span class="n">acq_function</span><span class="p">(</span><span class="n">X_rnd</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">batch_limit</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">batch_limit</span> <span class="o">=</span> <span class="n">X_rnd</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">Y_rnd_list</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="n">start_idx</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="k">while</span> <span class="n">start_idx</span> <span class="o">&lt;</span> <span class="n">X_rnd</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+                    <span class="n">end_idx</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">start_idx</span> <span class="o">+</span> <span class="n">batch_limit</span><span class="p">,</span> <span class="n">X_rnd</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                    <span class="n">Y_rnd_curr</span> <span class="o">=</span> <span class="n">acq_function</span><span class="p">(</span><span class="n">X_rnd</span><span class="p">[</span><span class="n">start_idx</span><span class="p">:</span><span class="n">end_idx</span><span class="p">])</span>
+                    <span class="n">Y_rnd_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Y_rnd_curr</span><span class="p">)</span>
+                    <span class="n">start_idx</span> <span class="o">+=</span> <span class="n">batch_limit</span>
+                <span class="n">Y_rnd</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span><span class="n">Y_rnd_list</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">X_rnd</span><span class="p">)</span>
             <span class="n">batch_initial_conditions</span> <span class="o">=</span> <span class="n">init_func</span><span class="p">(</span>
                 <span class="n">X</span><span class="o">=</span><span class="n">X_rnd</span><span class="p">,</span> <span class="n">Y</span><span class="o">=</span><span class="n">Y_rnd</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">num_restarts</span><span class="p">,</span> <span class="o">**</span><span class="n">init_kwargs</span>
             <span class="p">)</span>

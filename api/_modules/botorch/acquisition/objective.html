@@ -12,7 +12,7 @@
             {"zIndex":100}
           )
         });
-        </script><link rel="stylesheet" href="/css/main.css"/><script src="/js/codetabs.js"></script></head><body><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/"><img class="logo" src="/img/botorch_logo_lockup_white.png" alt="BoTorch"/><h2 class="headerTitleWithLogo">BoTorch</h2></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class=""><a href="/docs/introduction" target="_self">Docs</a></li><li class=""><a href="/tutorials/" target="_self">Tutorials</a></li><li class=""><a href="/api/" target="_self">API Reference</a></li><li class=""><a href="https://github.com/pytorch/botorch" target="_self">GitHub</a></li><li class="navSearchWrapper reactNavSearchWrapper"><input type="text" id="search_input_react" placeholder="Search" title="Search"/></li></ul></nav></div></header></div></div><div class="navPusher"><div>
+        </script><script src="/js/scrollSpy.js"></script><link rel="stylesheet" href="/css/main.css"/><script src="/js/codetabs.js"></script></head><body><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/"><img class="logo" src="/img/botorch_logo_lockup_white.png" alt="BoTorch"/><h2 class="headerTitleWithLogo">BoTorch</h2></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class=""><a href="/docs/introduction" target="_self">Docs</a></li><li class=""><a href="/tutorials/" target="_self">Tutorials</a></li><li class=""><a href="/api/" target="_self">API Reference</a></li><li class=""><a href="https://github.com/pytorch/botorch" target="_self">GitHub</a></li><li class="navSearchWrapper reactNavSearchWrapper"><input type="text" id="search_input_react" placeholder="Search" title="Search"/></li></ul></nav></div></header></div></div><div class="navPusher"><div>
 <script type="text/javascript" id="documentation_options" data-url_root="./" src="/js/documentation_options.js"></script>
 <script type="text/javascript" src="/js/jquery.js"></script>
 <script type="text/javascript" src="/js/underscore.js"></script>
@@ -42,14 +42,7 @@
 
 
 <div class="viewcode-block" id="MCAcquisitionObjective"><a class="viewcode-back" href="../../../acquisition.html#botorch.acquisition.objective.MCAcquisitionObjective">[docs]</a><span class="k">class</span> <span class="nc">MCAcquisitionObjective</span><span class="p">(</span><span class="n">Module</span><span class="p">,</span> <span class="n">ABC</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">"""Abstract base class for MC-based objectives.</span>
-
-<span class="sd">    Example:</span>
-<span class="sd">        &gt;&gt;&gt; # This method is usually not called directly, but via the objective's</span>
-<span class="sd">        &gt;&gt;&gt; # `__call__` method:</span>
-<span class="sd">        &gt;&gt;&gt; samples = sampler(posterior)</span>
-<span class="sd">        &gt;&gt;&gt; outcome = mc_obj(samples)</span>
-<span class="sd">    """</span>
+    <span class="sa">r</span><span class="sd">"""Abstract base class for MC-based objectives."""</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
@@ -65,6 +58,13 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            Tensor: A `sample_shape x batch_shape x q`-dim Tensor of objective</span>
 <span class="sd">            values (assuming maximization).</span>
+
+<span class="sd">        This method is usually not called directly, but via the objectives</span>
+
+<span class="sd">        Example:</span>
+<span class="sd">            &gt;&gt;&gt; # `__call__` method:</span>
+<span class="sd">            &gt;&gt;&gt; samples = sampler(posterior)</span>
+<span class="sd">            &gt;&gt;&gt; outcome = mc_obj(samples)</span>
 <span class="sd">        """</span>
         <span class="k">pass</span>  <span class="c1"># pragma: no cover</span></div></div>
 
@@ -89,7 +89,8 @@
 <span class="sd">    `mc_obj(samples) = sum_{i} weights[i] * samples[..., i]`</span>
 
 <span class="sd">    Example:</span>
-<span class="sd">        &gt;&gt;&gt; # example for a two outcomes</span>
+<span class="sd">        Example for a model with two outcomes:</span>
+
 <span class="sd">        &gt;&gt;&gt; weights = torch.tensor([0.75, 0.25])</span>
 <span class="sd">        &gt;&gt;&gt; linear_objective = LinearMCObjective(weights)</span>
 <span class="sd">        &gt;&gt;&gt; samples = sampler(posterior)</span>
@@ -120,7 +121,7 @@
 <span class="sd">        """</span>
         <span class="k">if</span> <span class="n">samples</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">"Output shape of samples not equal to that of weights"</span><span class="p">)</span>
-        <span class="k">return</span> <span class="p">(</span><span class="n">samples</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">"...o, o"</span><span class="p">,</span> <span class="p">[</span><span class="n">samples</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">])</span></div></div>
 
 
 <div class="viewcode-block" id="GenericMCObjective"><a class="viewcode-back" href="../../../acquisition.html#botorch.acquisition.objective.GenericMCObjective">[docs]</a><span class="k">class</span> <span class="nc">GenericMCObjective</span><span class="p">(</span><span class="n">MCAcquisitionObjective</span><span class="p">):</span>

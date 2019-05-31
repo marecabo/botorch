@@ -12,7 +12,7 @@
             {"zIndex":100}
           )
         });
-        </script><link rel="stylesheet" href="/css/main.css"/><script src="/js/codetabs.js"></script></head><body><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/"><img class="logo" src="/img/botorch_logo_lockup_white.png" alt="BoTorch"/><h2 class="headerTitleWithLogo">BoTorch</h2></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class=""><a href="/docs/introduction" target="_self">Docs</a></li><li class=""><a href="/tutorials/" target="_self">Tutorials</a></li><li class=""><a href="/api/" target="_self">API Reference</a></li><li class=""><a href="https://github.com/pytorch/botorch" target="_self">GitHub</a></li><li class="navSearchWrapper reactNavSearchWrapper"><input type="text" id="search_input_react" placeholder="Search" title="Search"/></li></ul></nav></div></header></div></div><div class="navPusher"><div>
+        </script><script src="/js/scrollSpy.js"></script><link rel="stylesheet" href="/css/main.css"/><script src="/js/codetabs.js"></script></head><body><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/"><img class="logo" src="/img/botorch_logo_lockup_white.png" alt="BoTorch"/><h2 class="headerTitleWithLogo">BoTorch</h2></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class=""><a href="/docs/introduction" target="_self">Docs</a></li><li class=""><a href="/tutorials/" target="_self">Tutorials</a></li><li class=""><a href="/api/" target="_self">API Reference</a></li><li class=""><a href="https://github.com/pytorch/botorch" target="_self">GitHub</a></li><li class="navSearchWrapper reactNavSearchWrapper"><input type="text" id="search_input_react" placeholder="Search" title="Search"/></li></ul></nav></div></header></div></div><div class="navPusher"><div>
 <script type="text/javascript" id="documentation_options" data-url_root="./" src="/js/documentation_options.js"></script>
 <script type="text/javascript" src="/js/jquery.js"></script>
 <script type="text/javascript" src="/js/underscore.js"></script>
@@ -106,6 +106,36 @@ distributions over <cite>q</cite> points. Includes observation noise if
 <dd><p>Base class for batched multi-output GPyTorch models with independent outputs.</p>
 <p>This model should be used when the same training data is used for all outputs.
 Outputs are modeled independently by using a different batch for each output.</p>
+<dl class="method">
+<dt id="botorch.models.gpytorch.BatchedMultiOutputGPyTorchModel.get_fantasy_model">
+<code class="descname">get_fantasy_model</code><span class="sig-paren">(</span><em>inputs</em>, <em>targets</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/models/gpytorch.html#BatchedMultiOutputGPyTorchModel.get_fantasy_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.models.gpytorch.BatchedMultiOutputGPyTorchModel.get_fantasy_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrapper method around <cite>gpytorch.models.exact_gp.ExactGP.get_fantasy_model</cite>.</p>
+<p>This method adapts <cite>get_fantasy_model</cite> to support batched multi-output GPs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>inputs</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>) – A <cite>batch_shape x m x d</cite> or
+<cite>f_batch_shape x batch_shape x m x d</cite>-dim Tensor of inputs for the
+fantasy observations, where <cite>f_batch_shape</cite> are fantasy batch
+dimensions. Note: when using the same inputs for all fantasies,
+inputs should be <cite>batch_shape x m x d</cite> to avoid recomputing the
+repeated blocks of the covariance matrix. Additionally, if provided,
+the “noise” keyword argument should map to a <cite>batch_shape x m</cite>-dim
+Tensor of observed measurement noise for fastest performance.</p></li>
+<li><p><strong>targets</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>) – <cite>batch_shape x m</cite> or <cite>f_batch_shape x batch_shape x m</cite>-dim Tensor
+of fantasy observations.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="#botorch.models.gpytorch.BatchedMultiOutputGPyTorchModel" title="botorch.models.gpytorch.BatchedMultiOutputGPyTorchModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">BatchedMultiOutputGPyTorchModel</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A <cite>BatchedMultiOutputGPyTorchModel</cite> with <cite>n + m</cite> training examples,
+where the <cite>m</cite> fantasy examples have been added and all test-time
+caches have been updated.</p>
+</dd>
+</dl>
+</dd></dl>
 <dl class="method">
 <dt id="botorch.models.gpytorch.BatchedMultiOutputGPyTorchModel.posterior">
 <code class="descname">posterior</code><span class="sig-paren">(</span><em>X</em>, <em>output_indices=None</em>, <em>observation_noise=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/models/gpytorch.html#BatchedMultiOutputGPyTorchModel.posterior"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.models.gpytorch.BatchedMultiOutputGPyTorchModel.posterior" title="Permalink to this definition">¶</a></dt>
@@ -295,7 +325,7 @@ standardized (zero mean, unit variance).</p>
 features.</p></li>
 <li><p><strong>train_Y</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>) – A <cite>n x (o)</cite> or <cite>batch_shape x n x (o)</cite> (batch mode) tensor of
 training observations.</p></li>
-<li><p><strong>train_Yvar</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>) – A <cite>batch_shape x n x (t)</cite> or <cite>batch_shape x n x (t)</cite>
+<li><p><strong>train_Yvar</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>) – A <cite>batch_shape x n x (o)</cite> or <cite>batch_shape x n x (o)</cite>
 (batch mode) tensor of observed measurement noise.</p></li>
 </ul>
 </dd>
@@ -345,7 +375,7 @@ features.</p></li>
 <li><p><strong>train_Y</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>) – A <cite>n x (o)</cite> or <cite>batch_shape x n x (o)</cite> (batch mode) tensor of
 training observations.</p></li>
 <li><p><strong>train_Yvar</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>) – A <cite>batch_shape x n x (o)</cite> or <cite>batch_shape x n x (o)</cite>
-(batch mode) tensor of observed measurement noise..</p></li>
+(batch mode) tensor of observed measurement noise.</p></li>
 </ul>
 </dd>
 </dl>
@@ -363,7 +393,7 @@ training observations.</p></li>
 <h3><span class="hidden-section">ModelListGP</span><a class="headerlink" href="#modellistgp" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
 <dt id="botorch.models.model_list_gp_regression.ModelListGP">
-<em class="property">class </em><code class="descclassname">botorch.models.model_list_gp_regression.</code><code class="descname">ModelListGP</code><span class="sig-paren">(</span><em>gp_models</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/models/model_list_gp_regression.html#ModelListGP"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.models.model_list_gp_regression.ModelListGP" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">botorch.models.model_list_gp_regression.</code><code class="descname">ModelListGP</code><span class="sig-paren">(</span><em>*gp_models</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/models/model_list_gp_regression.html#ModelListGP"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.models.model_list_gp_regression.ModelListGP" title="Permalink to this definition">¶</a></dt>
 <dd><p>A multi-output GP model with independent GPs for the outputs.</p>
 <p>This model supports different-shaped training inputs for each of its
 sub-models. It can be used with any BoTorch models.</p>
@@ -376,13 +406,13 @@ structure, you should consider using a batched GP model instead).</p>
 <p>A multi-output GP model with independent GPs for the outputs.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>gp_models</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="#botorch.models.gpytorch.GPyTorchModel" title="botorch.models.gpytorch.GPyTorchModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">GPyTorchModel</span></code></a>]) – A list of single-output BoTorch models.</p>
+<dd class="field-odd"><p><strong>*gp_models</strong> – An variable number of single-output BoTorch models.</p>
 </dd>
 </dl>
 <p class="rubric">Example</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">model1</span> <span class="o">=</span> <span class="n">SingleTaskGP</span><span class="p">(</span><span class="n">train_X1</span><span class="p">,</span> <span class="n">train_Y1</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">model2</span> <span class="o">=</span> <span class="n">SingleTaskGP</span><span class="p">(</span><span class="n">train_X2</span><span class="p">,</span> <span class="n">train_Y2</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">ModelListGP</span><span class="p">([</span><span class="n">model1</span><span class="p">,</span> <span class="n">model2</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">ModelListGP</span><span class="p">(</span><span class="n">model1</span><span class="p">,</span> <span class="n">model2</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>

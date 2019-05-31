@@ -12,7 +12,7 @@
             {"zIndex":100}
           )
         });
-        </script><link rel="stylesheet" href="/css/main.css"/><script src="/js/codetabs.js"></script></head><body><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/"><img class="logo" src="/img/botorch_logo_lockup_white.png" alt="BoTorch"/><h2 class="headerTitleWithLogo">BoTorch</h2></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class=""><a href="/docs/introduction" target="_self">Docs</a></li><li class=""><a href="/tutorials/" target="_self">Tutorials</a></li><li class=""><a href="/api/" target="_self">API Reference</a></li><li class=""><a href="https://github.com/pytorch/botorch" target="_self">GitHub</a></li><li class="navSearchWrapper reactNavSearchWrapper"><input type="text" id="search_input_react" placeholder="Search" title="Search"/></li></ul></nav></div></header></div></div><div class="navPusher"><div>
+        </script><script src="/js/scrollSpy.js"></script><link rel="stylesheet" href="/css/main.css"/><script src="/js/codetabs.js"></script></head><body><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/"><img class="logo" src="/img/botorch_logo_lockup_white.png" alt="BoTorch"/><h2 class="headerTitleWithLogo">BoTorch</h2></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class=""><a href="/docs/introduction" target="_self">Docs</a></li><li class=""><a href="/tutorials/" target="_self">Tutorials</a></li><li class=""><a href="/api/" target="_self">API Reference</a></li><li class=""><a href="https://github.com/pytorch/botorch" target="_self">GitHub</a></li><li class="navSearchWrapper reactNavSearchWrapper"><input type="text" id="search_input_react" placeholder="Search" title="Search"/></li></ul></nav></div></header></div></div><div class="navPusher"><div>
 <script type="text/javascript" id="documentation_options" data-url_root="./" src="/js/documentation_options.js"></script>
 <script type="text/javascript" src="/js/jquery.js"></script>
 <script type="text/javascript" src="/js/underscore.js"></script>
@@ -704,13 +704,6 @@ design points <cite>X</cite>.</p>
 <dt id="botorch.acquisition.objective.MCAcquisitionObjective">
 <em class="property">class </em><code class="descclassname">botorch.acquisition.objective.</code><code class="descname">MCAcquisitionObjective</code><a class="reference internal" href="_modules/botorch/acquisition/objective.html#MCAcquisitionObjective"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.acquisition.objective.MCAcquisitionObjective" title="Permalink to this definition">¶</a></dt>
 <dd><p>Abstract base class for MC-based objectives.</p>
-<p class="rubric">Example</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># This method is usually not called directly, but via the objective's</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="c1"># `__call__` method:</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">samples</span> <span class="o">=</span> <span class="n">sampler</span><span class="p">(</span><span class="n">posterior</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">outcome</span> <span class="o">=</span> <span class="n">mc_obj</span><span class="p">(</span><span class="n">samples</span><span class="p">)</span>
-</pre></div>
-</div>
 <dl class="method">
 <dt id="botorch.acquisition.objective.MCAcquisitionObjective.forward">
 <code class="descname">forward</code><span class="sig-paren">(</span><em>samples</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/acquisition/objective.html#MCAcquisitionObjective.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.acquisition.objective.MCAcquisitionObjective.forward" title="Permalink to this definition">¶</a></dt>
@@ -728,6 +721,13 @@ values (assuming maximization).</p>
 <dd class="field-odd"><p>Tensor</p>
 </dd>
 </dl>
+<p>This method is usually not called directly, but via the objectives</p>
+<p class="rubric">Example</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># `__call__` method:</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">samples</span> <span class="o">=</span> <span class="n">sampler</span><span class="p">(</span><span class="n">posterior</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">outcome</span> <span class="o">=</span> <span class="n">mc_obj</span><span class="p">(</span><span class="n">samples</span><span class="p">)</span>
+</pre></div>
+</div>
 </dd></dl>
 </dd></dl>
 </div>
@@ -760,6 +760,13 @@ values (assuming maximization).</p>
 <dd class="field-odd"><p>Tensor</p>
 </dd>
 </dl>
+<p>This method is usually not called directly, but via the objectives</p>
+<p class="rubric">Example</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># `__call__` method:</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">samples</span> <span class="o">=</span> <span class="n">sampler</span><span class="p">(</span><span class="n">posterior</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">outcome</span> <span class="o">=</span> <span class="n">mc_obj</span><span class="p">(</span><span class="n">samples</span><span class="p">)</span>
+</pre></div>
+</div>
 </dd></dl>
 </dd></dl>
 </div>
@@ -772,8 +779,8 @@ values (assuming maximization).</p>
 <p>For input <cite>samples</cite> and <cite>mc_obj = LinearMCObjective(weights)</cite>, this produces
 <cite>mc_obj(samples) = sum_{i} weights[i] * samples[…, i]</cite></p>
 <p class="rubric">Example</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># example for a two outcomes</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">weights</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mf">0.75</span><span class="p">,</span> <span class="mf">0.25</span><span class="p">])</span>
+<p>Example for a model with two outcomes:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">weights</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mf">0.75</span><span class="p">,</span> <span class="mf">0.25</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">linear_objective</span> <span class="o">=</span> <span class="n">LinearMCObjective</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">samples</span> <span class="o">=</span> <span class="n">sampler</span><span class="p">(</span><span class="n">posterior</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">objective</span> <span class="o">=</span> <span class="n">linear_objective</span><span class="p">(</span><span class="n">samples</span><span class="p">)</span>
