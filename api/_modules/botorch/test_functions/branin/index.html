@@ -43,13 +43,15 @@
 
 <span class="sd">    Two-dimensional function (usually evaluated on `[-5, 10] x [0, 15]`):</span>
 
-<span class="sd">        `B(x) = (x2 - b x_1^2 + c x_1 - r)^2 + 10 (1-t) cos(x_1) + 10`</span>
+<span class="sd">        `B(x) = (x_2 - b x_1^2 + c x_1 - r)^2 + 10 (1-t) cos(x_1) + 10`</span>
 
+<span class="sd">    Here `b`, `c`, `r` and `t` are constants where `b = 5.1 / (4 * math.pi ** 2)`</span>
+<span class="sd">    `c = 5 / math.pi`, `r = 6`, `t = 1 / (8 * math.pi)`</span>
 <span class="sd">    B has 3 minimizers for its global minimum at</span>
 
 <span class="sd">        `z_1 = (-pi, 12.275), z_2 = (pi, 2.275), z_3 = (9.42478, 2.475)`</span>
 
-<span class="sd">    with `B(z_i) = -0.397887`</span>
+<span class="sd">    with `B(z_i) = 0.397887`</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        X: A Tensor of size `2` or `k x 2` (`k` batch evaluations).</span>
@@ -80,7 +82,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../optim.html">botorch.optim</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../fit.html">botorch.fit</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../gen.html">botorch.gen</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../qmc.html">botorch.qmc</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../sampling.html">botorch.sampling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../test_functions.html">botorch.test_functions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../exceptions.html">botorch.exceptions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../utils.html">botorch.utils</a></li>
@@ -95,10 +97,10 @@
 </ul>
 </div>
 <div id="searchbox" role="search" style="display: none">
-<h3>Quick search</h3>
+<h3 id="searchlabel">Quick search</h3>
 <div class="searchformwrapper">
 <form action="../../../search.html" class="search" method="get">
-<input name="q" type="text"/>
+<input aria-labelledby="searchlabel" name="q" type="text"/>
 <input type="submit" value="Go"/>
 </form>
 </div>

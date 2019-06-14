@@ -165,7 +165,7 @@ def update_random_observations(best_random):
 
 from botorch import fit_gpytorch_model
 from botorch.acquisition.monte_carlo import qExpectedImprovement, qNoisyExpectedImprovement
-from botorch.acquisition.sampler import SobolQMCNormalSampler
+from botorch.sampling.samplers import SobolQMCNormalSampler
 from botorch.exceptions import BadInitialCandidatesWarning
 import time
 

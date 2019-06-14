@@ -28,17 +28,19 @@
 <p>Synthetic test functions for testing and benchmarking purposes.</p>
 <span class="target" id="module-botorch.test_functions"></span><dl class="function">
 <dt id="botorch.test_functions.neg_branin">
-<code class="descclassname">botorch.test_functions.</code><code class="descname">neg_branin</code><span class="sig-paren">(</span><em>X</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/test_functions/branin.html#neg_branin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.test_functions.neg_branin" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">botorch.test_functions.</code><code class="sig-name descname">neg_branin</code><span class="sig-paren">(</span><em class="sig-param">X</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/test_functions/branin.html#neg_branin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.test_functions.neg_branin" title="Permalink to this definition">¶</a></dt>
 <dd><p>Negative Branin test function.</p>
 <p>Two-dimensional function (usually evaluated on <cite>[-5, 10] x [0, 15]</cite>):</p>
 <blockquote>
-<div><p><cite>B(x) = (x2 - b x_1^2 + c x_1 - r)^2 + 10 (1-t) cos(x_1) + 10</cite></p>
+<div><p><cite>B(x) = (x_2 - b x_1^2 + c x_1 - r)^2 + 10 (1-t) cos(x_1) + 10</cite></p>
 </div></blockquote>
-<p>B has 3 minimizers for its global minimum at</p>
+<p>Here <cite>b</cite>, <cite>c</cite>, <cite>r</cite> and <cite>t</cite> are constants where <cite>b = 5.1 / (4 * math.pi ** 2)</cite>
+<cite>c = 5 / math.pi</cite>, <cite>r = 6</cite>, <cite>t = 1 / (8 * math.pi)</cite>
+B has 3 minimizers for its global minimum at</p>
 <blockquote>
 <div><p><cite>z_1 = (-pi, 12.275), z_2 = (pi, 2.275), z_3 = (9.42478, 2.475)</cite></p>
 </div></blockquote>
-<p>with <cite>B(z_i) = -0.397887</cite></p>
+<p>with <cite>B(z_i) = 0.397887</cite></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>) – A Tensor of size <cite>2</cite> or <cite>k x 2</cite> (<cite>k</cite> batch evaluations).</p>
@@ -53,7 +55,7 @@
 </dd></dl>
 <dl class="function">
 <dt id="botorch.test_functions.neg_eggholder">
-<code class="descclassname">botorch.test_functions.</code><code class="descname">neg_eggholder</code><span class="sig-paren">(</span><em>X</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/test_functions/eggholder.html#neg_eggholder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.test_functions.neg_eggholder" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">botorch.test_functions.</code><code class="sig-name descname">neg_eggholder</code><span class="sig-paren">(</span><em class="sig-param">X</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/test_functions/eggholder.html#neg_eggholder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.test_functions.neg_eggholder" title="Permalink to this definition">¶</a></dt>
 <dd><p>Negative Eggholder test function.</p>
 <p>Two-dimensional function (usually evaluated on <cite>[-512, 512]^2</cite>):</p>
 <blockquote>
@@ -75,7 +77,7 @@
 </dd></dl>
 <dl class="function">
 <dt id="botorch.test_functions.neg_hartmann6">
-<code class="descclassname">botorch.test_functions.</code><code class="descname">neg_hartmann6</code><span class="sig-paren">(</span><em>X</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/test_functions/hartmann6.html#neg_hartmann6"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.test_functions.neg_hartmann6" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">botorch.test_functions.</code><code class="sig-name descname">neg_hartmann6</code><span class="sig-paren">(</span><em class="sig-param">X</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/test_functions/hartmann6.html#neg_hartmann6"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.test_functions.neg_hartmann6" title="Permalink to this definition">¶</a></dt>
 <dd><p>Negative Hartmann6 test function.</p>
 <p>Six-dimensional function (typically evaluated on <cite>[0, 1]^6</cite>)</p>
 <blockquote>
@@ -100,7 +102,7 @@
 </dd></dl>
 <dl class="function">
 <dt id="botorch.test_functions.neg_holder_table">
-<code class="descclassname">botorch.test_functions.</code><code class="descname">neg_holder_table</code><span class="sig-paren">(</span><em>X</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/test_functions/holder_table.html#neg_holder_table"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.test_functions.neg_holder_table" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">botorch.test_functions.</code><code class="sig-name descname">neg_holder_table</code><span class="sig-paren">(</span><em class="sig-param">X</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/test_functions/holder_table.html#neg_holder_table"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.test_functions.neg_holder_table" title="Permalink to this definition">¶</a></dt>
 <dd><p>Negative Holder Table synthetic test function.</p>
 <p>Two-dimensional function (typically evaluated on <cite>[0, 10] x [0, 10]</cite>):</p>
 <blockquote>
@@ -127,7 +129,7 @@
 </dd></dl>
 <dl class="function">
 <dt id="botorch.test_functions.neg_michalewicz">
-<code class="descclassname">botorch.test_functions.</code><code class="descname">neg_michalewicz</code><span class="sig-paren">(</span><em>X</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/test_functions/michalewicz.html#neg_michalewicz"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.test_functions.neg_michalewicz" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">botorch.test_functions.</code><code class="sig-name descname">neg_michalewicz</code><span class="sig-paren">(</span><em class="sig-param">X</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/test_functions/michalewicz.html#neg_michalewicz"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.test_functions.neg_michalewicz" title="Permalink to this definition">¶</a></dt>
 <dd><p>Negative 10-dim Michalewicz test function.</p>
 <p>10-dim function (usually evaluated on hypercube [0, pi]^10):</p>
 <blockquote>
@@ -147,7 +149,7 @@
 </dd></dl>
 <dl class="function">
 <dt id="botorch.test_functions.neg_styblinski_tang">
-<code class="descclassname">botorch.test_functions.</code><code class="descname">neg_styblinski_tang</code><span class="sig-paren">(</span><em>X</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/test_functions/styblinski_tang.html#neg_styblinski_tang"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.test_functions.neg_styblinski_tang" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">botorch.test_functions.</code><code class="sig-name descname">neg_styblinski_tang</code><span class="sig-paren">(</span><em class="sig-param">X</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/test_functions/styblinski_tang.html#neg_styblinski_tang"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.test_functions.neg_styblinski_tang" title="Permalink to this definition">¶</a></dt>
 <dd><p>Negative Styblinski-Tang test function.</p>
 <p>d-dimensional function (usually evaluated on the hypercube <cite>[-5, 5]^d</cite>):</p>
 <blockquote>
@@ -163,6 +165,80 @@
 </dd>
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p><cite>-H(X)</cite>, the negative value of the standard Styblinski-Tang function.</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="function">
+<dt id="botorch.test_functions.neg_aug_branin">
+<code class="sig-prename descclassname">botorch.test_functions.</code><code class="sig-name descname">neg_aug_branin</code><span class="sig-paren">(</span><em class="sig-param">X</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/test_functions/aug_branin.html#neg_aug_branin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.test_functions.neg_aug_branin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Negative augmented-Branin test function.</p>
+<p>The last dimension of X is the fidelity.
+3-dimensional function with domain <cite>[-5, 10] x [0, 15] * [0,1]</cite>:</p>
+<blockquote>
+<div><dl class="simple">
+<dt>B(x) = (x_2 - (b - 0.1 * (1 - x_3))x_1^2 + c x_1 - r)^2 +</dt><dd><p>10 (1-t) cos(x_1) + 10</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>Here <cite>b</cite>, <cite>c</cite>, <cite>r</cite> and <cite>t</cite> are constants where <cite>b = 5.1 / (4 * math.pi ** 2)</cite>
+<cite>c = 5 / math.pi</cite>, <cite>r = 6</cite>, <cite>t = 1 / (8 * math.pi)</cite>.
+B has infinitely many minimizers with <cite>x_1 = -pi, pi, 3pi</cite></p>
+<p>and <cite>B_min = 0.397887</cite></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>) – A Tensor of size <cite>3</cite> or <cite>k x 3</cite> (<cite>k</cite> batch evaluations).</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><cite>-B(X)</cite>, the negative value of the augmented-Branin function.</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="function">
+<dt id="botorch.test_functions.neg_aug_hartmann6">
+<code class="sig-prename descclassname">botorch.test_functions.</code><code class="sig-name descname">neg_aug_hartmann6</code><span class="sig-paren">(</span><em class="sig-param">X</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/test_functions/aug_hartmann6.html#neg_aug_hartmann6"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.test_functions.neg_aug_hartmann6" title="Permalink to this definition">¶</a></dt>
+<dd><p>Negative augmented Hartmann6 test function.</p>
+<p>The last dimension of X is the fidelity parameter.
+7-dimensional function (typically evaluated on <cite>[0, 1]^7</cite>):</p>
+<blockquote>
+<div><dl class="simple">
+<dt>H(x) = -(ALPHA_1 - 0.1 * (1-x_7)) * exp(- sum_{j=1}^6 A_1j (x_j - P_1j) ** 2) -</dt><dd><p>sum_{i=2}^4 ALPHA_i exp( - sum_{j=1}^6 A_ij (x_j - P_ij) ** 2)</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>H has unique global minimizer
+x = [0.20169, 0.150011, 0.476874, 0.275332, 0.311652, 0.6573, 1]</p>
+<p>with <cite>H_min = -3.32237</cite></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>) – A Tensor of size <cite>7</cite> or <cite>k x 7</cite> (k batch evaluations).</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><cite>-H(X)</cite>, the negative value of the augmented Hartmann6 function.</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="function">
+<dt id="botorch.test_functions.neg_aug_rosenbrock">
+<code class="sig-prename descclassname">botorch.test_functions.</code><code class="sig-name descname">neg_aug_rosenbrock</code><span class="sig-paren">(</span><em class="sig-param">X</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/test_functions/aug_rosenbrock.html#neg_aug_rosenbrock"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.test_functions.neg_aug_rosenbrock" title="Permalink to this definition">¶</a></dt>
+<dd><p>Augmented Rosenbrock test function.</p>
+<p>4-dimensional function, the last two dimensions are for fidelity parameters,
+X is usually in [-5,10]^2 * [0,1]^2:</p>
+<blockquote>
+<div><p>f(x) = 100 (x_2 - x_1^2 + 0.1 * (1 - x_3))^2 + (x_1 - 1 + 0.1 * (1 - x_4)^2)^2</p>
+</div></blockquote>
+<p>f has infinitely many minimizers, with <cite>f_min = 0.0</cite></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>) – A Tensor of size <cite>4</cite> or <cite>k x 4</cite> (<cite>k</cite> batch evaluations).</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><cite>-f(X)</cite>, the negative value of the augmented Rosenbrock function.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -182,7 +258,7 @@
 <li class="toctree-l1"><a class="reference internal" href="optim.html">botorch.optim</a></li>
 <li class="toctree-l1"><a class="reference internal" href="fit.html">botorch.fit</a></li>
 <li class="toctree-l1"><a class="reference internal" href="gen.html">botorch.gen</a></li>
-<li class="toctree-l1"><a class="reference internal" href="qmc.html">botorch.qmc</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sampling.html">botorch.sampling</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">botorch.test_functions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="exceptions.html">botorch.exceptions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="utils.html">botorch.utils</a></li>
@@ -191,16 +267,16 @@
 <h3>Related Topics</h3>
 <ul>
 <li><a href="index.html">Documentation overview</a><ul>
-<li>Previous: <a href="qmc.html" title="previous chapter">botorch.qmc</a></li>
+<li>Previous: <a href="sampling.html" title="previous chapter">botorch.sampling</a></li>
 <li>Next: <a href="exceptions.html" title="next chapter">botorch.exceptions</a></li>
 </ul></li>
 </ul>
 </div>
 <div id="searchbox" role="search" style="display: none">
-<h3>Quick search</h3>
+<h3 id="searchlabel">Quick search</h3>
 <div class="searchformwrapper">
 <form action="search.html" class="search" method="get">
-<input name="q" type="text"/>
+<input aria-labelledby="searchlabel" name="q" type="text"/>
 <input type="submit" value="Go"/>
 </form>
 </div>

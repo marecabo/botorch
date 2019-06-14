@@ -45,7 +45,8 @@ fit_gpytorch_model(mll);
 # In[3]:
 
 
-from botorch.acquisition import qExpectedImprovement, IIDNormalSampler
+from botorch.acquisition import qExpectedImprovement
+from botorch.sampling import IIDNormalSampler
 
 sampler = IIDNormalSampler(num_samples=100, resample=True)
 qEI = qExpectedImprovement(model, best_f=train_Y.max(), sampler=sampler)

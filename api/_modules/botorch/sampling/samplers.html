@@ -23,7 +23,7 @@
 <div class="documentwrapper">
 <div class="bodywrapper">
 <div class="body" role="main">
-<h1>Source code for botorch.acquisition.sampler</h1><div class="highlight"><pre>
+<h1>Source code for botorch.sampling.samplers</h1><div class="highlight"><pre>
 <span></span><span class="ch">#!/usr/bin/env python3</span>
 
 <span class="c1"># Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved</span>
@@ -46,7 +46,7 @@
 <span class="kn">from</span> <span class="nn">..utils.sampling</span> <span class="k">import</span> <span class="n">draw_sobol_normal_samples</span><span class="p">,</span> <span class="n">manual_seed</span>
 
 
-<div class="viewcode-block" id="MCSampler"><a class="viewcode-back" href="../../../acquisition.html#botorch.acquisition.sampler.MCSampler">[docs]</a><span class="k">class</span> <span class="nc">MCSampler</span><span class="p">(</span><span class="n">Module</span><span class="p">,</span> <span class="n">ABC</span><span class="p">):</span>
+<div class="viewcode-block" id="MCSampler"><a class="viewcode-back" href="../../../sampling.html#botorch.sampling.samplers.MCSampler">[docs]</a><span class="k">class</span> <span class="nc">MCSampler</span><span class="p">(</span><span class="n">Module</span><span class="p">,</span> <span class="n">ABC</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">"""Abstract base class for Samplers.</span>
 
 <span class="sd">    Subclasses must implement the `_construct_base_samples` method.</span>
@@ -67,7 +67,7 @@
 <span class="sd">        &gt;&gt;&gt; samples = sampler(posterior)</span>
 <span class="sd">    """</span>
 
-<div class="viewcode-block" id="MCSampler.forward"><a class="viewcode-back" href="../../../acquisition.html#botorch.acquisition.sampler.MCSampler.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">posterior</span><span class="p">:</span> <span class="n">Posterior</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
+<div class="viewcode-block" id="MCSampler.forward"><a class="viewcode-back" href="../../../sampling.html#botorch.sampling.samplers.MCSampler.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">posterior</span><span class="p">:</span> <span class="n">Posterior</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
         <span class="sa">r</span><span class="sd">"""Draws MC samples from the posterior.</span>
 
 <span class="sd">        Args:</span>
@@ -125,7 +125,7 @@
         <span class="k">pass</span>  <span class="c1"># pragma: no cover</span></div>
 
 
-<div class="viewcode-block" id="IIDNormalSampler"><a class="viewcode-back" href="../../../acquisition.html#botorch.acquisition.sampler.IIDNormalSampler">[docs]</a><span class="k">class</span> <span class="nc">IIDNormalSampler</span><span class="p">(</span><span class="n">MCSampler</span><span class="p">):</span>
+<div class="viewcode-block" id="IIDNormalSampler"><a class="viewcode-back" href="../../../sampling.html#botorch.sampling.samplers.IIDNormalSampler">[docs]</a><span class="k">class</span> <span class="nc">IIDNormalSampler</span><span class="p">(</span><span class="n">MCSampler</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">"""Sampler for MC base samples using iid N(0,1) samples.</span>
 
 <span class="sd">    Example:</span>
@@ -189,7 +189,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">register_buffer</span><span class="p">(</span><span class="s2">"base_samples"</span><span class="p">,</span> <span class="n">base_samples</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="SobolQMCNormalSampler"><a class="viewcode-back" href="../../../acquisition.html#botorch.acquisition.sampler.SobolQMCNormalSampler">[docs]</a><span class="k">class</span> <span class="nc">SobolQMCNormalSampler</span><span class="p">(</span><span class="n">MCSampler</span><span class="p">):</span>
+<div class="viewcode-block" id="SobolQMCNormalSampler"><a class="viewcode-back" href="../../../sampling.html#botorch.sampling.samplers.SobolQMCNormalSampler">[docs]</a><span class="k">class</span> <span class="nc">SobolQMCNormalSampler</span><span class="p">(</span><span class="n">MCSampler</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">"""Sampler for quasi-MC base samples using Sobol sequences.</span>
 
 <span class="sd">    Example:</span>
@@ -277,7 +277,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../optim.html">botorch.optim</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../fit.html">botorch.fit</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../gen.html">botorch.gen</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../qmc.html">botorch.qmc</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../sampling.html">botorch.sampling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../test_functions.html">botorch.test_functions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../exceptions.html">botorch.exceptions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../utils.html">botorch.utils</a></li>
@@ -292,10 +292,10 @@
 </ul>
 </div>
 <div id="searchbox" role="search" style="display: none">
-<h3>Quick search</h3>
+<h3 id="searchlabel">Quick search</h3>
 <div class="searchformwrapper">
 <form action="../../../search.html" class="search" method="get">
-<input name="q" type="text"/>
+<input aria-labelledby="searchlabel" name="q" type="text"/>
 <input type="submit" value="Go"/>
 </form>
 </div>

@@ -22,9 +22,10 @@ import math
 from torch import Tensor
 from typing import Optional
 
-from botorch.acquisition import MCSampler, MCAcquisitionObjective
+from botorch.acquisition import MCAcquisitionObjective
 from botorch.acquisition.monte_carlo import MCAcquisitionFunction
 from botorch.models.model import Model
+from botorch.sampling.samplers import MCSampler
 from botorch.utils import t_batch_mode_transform
 
 

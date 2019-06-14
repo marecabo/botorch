@@ -23,7 +23,7 @@
 <div class="documentwrapper">
 <div class="bodywrapper">
 <div class="body" role="main">
-<h1>Source code for botorch.qmc.normal</h1><div class="highlight"><pre>
+<h1>Source code for botorch.sampling.qmc</h1><div class="highlight"><pre>
 <span></span><span class="ch">#!/usr/bin/env python3</span>
 
 <span class="c1"># Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved</span>
@@ -46,7 +46,7 @@
 <span class="kn">from</span> <span class="nn">torch.quasirandom</span> <span class="k">import</span> <span class="n">SobolEngine</span>
 
 
-<div class="viewcode-block" id="NormalQMCEngine"><a class="viewcode-back" href="../../../qmc.html#botorch.qmc.normal.NormalQMCEngine">[docs]</a><span class="k">class</span> <span class="nc">NormalQMCEngine</span><span class="p">:</span>
+<div class="viewcode-block" id="NormalQMCEngine"><a class="viewcode-back" href="../../../sampling.html#botorch.sampling.qmc.NormalQMCEngine">[docs]</a><span class="k">class</span> <span class="nc">NormalQMCEngine</span><span class="p">:</span>
     <span class="sa">r</span><span class="sd">"""Engine for qMC sampling from a Multivariate Normal `N(0, I_d)`.</span>
 
 <span class="sd">    By default, this implementation uses Box-Muller transformed Sobol samples</span>
@@ -79,7 +79,7 @@
             <span class="n">sobol_dim</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">d</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_sobol_engine</span> <span class="o">=</span> <span class="n">SobolEngine</span><span class="p">(</span><span class="n">dimension</span><span class="o">=</span><span class="n">sobol_dim</span><span class="p">,</span> <span class="n">scramble</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">)</span>
 
-<div class="viewcode-block" id="NormalQMCEngine.draw"><a class="viewcode-back" href="../../../qmc.html#botorch.qmc.normal.NormalQMCEngine.draw">[docs]</a>    <span class="k">def</span> <span class="nf">draw</span><span class="p">(</span>
+<div class="viewcode-block" id="NormalQMCEngine.draw"><a class="viewcode-back" href="../../../sampling.html#botorch.sampling.qmc.NormalQMCEngine.draw">[docs]</a>    <span class="k">def</span> <span class="nf">draw</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">dtype</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">dtype</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">float</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tensor</span><span class="p">]:</span>
         <span class="sa">r</span><span class="sd">"""Draw `n` qMC samples from the standard Normal.</span>
@@ -115,7 +115,7 @@
             <span class="n">out</span><span class="o">.</span><span class="n">copy_</span><span class="p">(</span><span class="n">samples_tf</span><span class="p">)</span></div></div>
 
 
-<div class="viewcode-block" id="MultivariateNormalQMCEngine"><a class="viewcode-back" href="../../../qmc.html#botorch.qmc.normal.MultivariateNormalQMCEngine">[docs]</a><span class="k">class</span> <span class="nc">MultivariateNormalQMCEngine</span><span class="p">:</span>
+<div class="viewcode-block" id="MultivariateNormalQMCEngine"><a class="viewcode-back" href="../../../sampling.html#botorch.sampling.qmc.MultivariateNormalQMCEngine">[docs]</a><span class="k">class</span> <span class="nc">MultivariateNormalQMCEngine</span><span class="p">:</span>
     <span class="sa">r</span><span class="sd">"""Engine for qMC sampling from a multivariate Normal `N(\mu, \Sigma)`.</span>
 
 <span class="sd">    By default, this implementation uses Box-Muller transformed Sobol samples</span>
@@ -166,7 +166,7 @@
             <span class="n">eigval_root</span> <span class="o">=</span> <span class="n">eigval</span><span class="o">.</span><span class="n">clamp_min</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span><span class="o">.</span><span class="n">sqrt</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_corr_matrix</span> <span class="o">=</span> <span class="p">(</span><span class="n">eigvec</span> <span class="o">*</span> <span class="n">eigval_root</span><span class="p">)</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">)</span>
 
-<div class="viewcode-block" id="MultivariateNormalQMCEngine.draw"><a class="viewcode-back" href="../../../qmc.html#botorch.qmc.normal.MultivariateNormalQMCEngine.draw">[docs]</a>    <span class="k">def</span> <span class="nf">draw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tensor</span><span class="p">]:</span>
+<div class="viewcode-block" id="MultivariateNormalQMCEngine.draw"><a class="viewcode-back" href="../../../sampling.html#botorch.sampling.qmc.MultivariateNormalQMCEngine.draw">[docs]</a>    <span class="k">def</span> <span class="nf">draw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tensor</span><span class="p">]:</span>
         <span class="sa">r</span><span class="sd">"""Draw `n` qMC samples from the multivariate Normal.</span>
 
 <span class="sd">        Args:</span>
@@ -203,7 +203,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../optim.html">botorch.optim</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../fit.html">botorch.fit</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../gen.html">botorch.gen</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../qmc.html">botorch.qmc</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../sampling.html">botorch.sampling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../test_functions.html">botorch.test_functions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../exceptions.html">botorch.exceptions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../utils.html">botorch.utils</a></li>
@@ -218,10 +218,10 @@
 </ul>
 </div>
 <div id="searchbox" role="search" style="display: none">
-<h3>Quick search</h3>
+<h3 id="searchlabel">Quick search</h3>
 <div class="searchformwrapper">
 <form action="../../../search.html" class="search" method="get">
-<input name="q" type="text"/>
+<input aria-labelledby="searchlabel" name="q" type="text"/>
 <input type="submit" value="Go"/>
 </form>
 </div>

@@ -42,7 +42,7 @@
 
 <span class="kn">from</span> <span class="nn">..exceptions.warnings</span> <span class="k">import</span> <span class="n">SamplingWarning</span>
 <span class="kn">from</span> <span class="nn">..posteriors.posterior</span> <span class="k">import</span> <span class="n">Posterior</span>
-<span class="kn">from</span> <span class="nn">..qmc.normal</span> <span class="k">import</span> <span class="n">NormalQMCEngine</span>
+<span class="kn">from</span> <span class="nn">..sampling.qmc</span> <span class="k">import</span> <span class="n">NormalQMCEngine</span>
 
 
 <div class="viewcode-block" id="construct_base_samples"><a class="viewcode-back" href="../../../utils.html#botorch.utils.sampling.construct_base_samples">[docs]</a><span class="k">def</span> <span class="nf">construct_base_samples</span><span class="p">(</span>
@@ -242,7 +242,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../optim.html">botorch.optim</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../fit.html">botorch.fit</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../gen.html">botorch.gen</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../qmc.html">botorch.qmc</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../sampling.html">botorch.sampling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../test_functions.html">botorch.test_functions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../exceptions.html">botorch.exceptions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../utils.html">botorch.utils</a></li>
@@ -257,10 +257,10 @@
 </ul>
 </div>
 <div id="searchbox" role="search" style="display: none">
-<h3>Quick search</h3>
+<h3 id="searchlabel">Quick search</h3>
 <div class="searchformwrapper">
 <form action="../../../search.html" class="search" method="get">
-<input name="q" type="text"/>
+<input aria-labelledby="searchlabel" name="q" type="text"/>
 <input type="submit" value="Go"/>
 </form>
 </div>

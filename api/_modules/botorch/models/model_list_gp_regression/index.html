@@ -35,6 +35,7 @@
 <span class="kn">import</span> <span class="nn">typing</span>  <span class="c1"># noqa F401</span>
 
 <span class="kn">from</span> <span class="nn">gpytorch.models</span> <span class="k">import</span> <span class="n">IndependentModelList</span>
+<span class="kn">from</span> <span class="nn">torch</span> <span class="k">import</span> <span class="n">Tensor</span>
 
 <span class="kn">from</span> <span class="nn">.gpytorch</span> <span class="k">import</span> <span class="n">GPyTorchModel</span><span class="p">,</span> <span class="n">ModelListGPyTorchModel</span>
 
@@ -64,7 +65,58 @@
 <span class="sd">            &gt;&gt;&gt; model2 = SingleTaskGP(train_X2, train_Y2)</span>
 <span class="sd">            &gt;&gt;&gt; model = ModelListGP(model1, model2)</span>
 <span class="sd">        """</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">gp_models</span><span class="p">)</span></div>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">gp_models</span><span class="p">)</span>
+
+<div class="viewcode-block" id="ModelListGP.get_fantasy_model"><a class="viewcode-back" href="../../../models.html#botorch.models.model_list_gp_regression.ModelListGP.get_fantasy_model">[docs]</a>    <span class="k">def</span> <span class="nf">get_fantasy_model</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">targets</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"ModelListGP"</span><span class="p">:</span>
+        <span class="sa">r</span><span class="sd">"""Construct a fantasy model.</span>
+
+<span class="sd">        This method wraps gpytorch's `IndependentModelList.get_fantasy_model`</span>
+<span class="sd">        method to provide an API consistent with that of BoTorch's batched</span>
+<span class="sd">        multi-output GP models.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            inputs: A `batch_shape x m x d` or</span>
+<span class="sd">                `f_batch_shape x batch_shape x m x d`-dim Tensor of inputs for the</span>
+<span class="sd">                fantasy observations, where `f_batch_shape` are fantasy batch</span>
+<span class="sd">                dimensions. Note: when using the same inputs for all fantasies,</span>
+<span class="sd">                inputs should be `batch_shape x m x d` to avoid recomputing the</span>
+<span class="sd">                repeated blocks of the covariance matrix. Additionally, if provided,</span>
+<span class="sd">                the "noise" keyword argument should map to a `batch_shape x m`-dim</span>
+<span class="sd">                Tensor of observed measurement noise for fastest performance.</span>
+<span class="sd">            targets: `batch_shape x m x o` or</span>
+<span class="sd">                `f_batch_shape x batch_shape x m x o`-dim Tensor of fantasy</span>
+<span class="sd">                observations.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A `ModelListGP`, where the `i`-th model has `n_i + m` training examples,</span>
+<span class="sd">            where the `m` fantasy examples have been added and all test-time caches</span>
+<span class="sd">            have been updated.</span>
+<span class="sd">        """</span>
+        <span class="n">inputs_</span> <span class="o">=</span> <span class="p">[</span><span class="n">inputs</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_outputs</span>
+        <span class="k">if</span> <span class="n">targets</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_outputs</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">"Incorrect number of outputs for fantasy observations. "</span>
+                <span class="n">f</span><span class="s2">"Received </span><span class="si">{targets.shape[-1]}</span><span class="s2"> observation outputs, but "</span>
+                <span class="n">f</span><span class="s2">"model has </span><span class="si">{self.num_outputs}</span><span class="s2"> outputs."</span>
+            <span class="p">)</span>
+        <span class="n">targets_</span> <span class="o">=</span> <span class="p">[</span><span class="n">targets</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">targets</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])]</span>
+        <span class="k">if</span> <span class="s2">"noise"</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="n">noise</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"noise"</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">noise</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_outputs</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">"Incorrect number of outputs for fantasy noise. "</span>
+                    <span class="n">f</span><span class="s2">"Received </span><span class="si">{noise.shape[-1]}</span><span class="s2"> observation outputs, but "</span>
+                    <span class="n">f</span><span class="s2">"model has </span><span class="si">{self.num_outputs}</span><span class="s2"> outputs."</span>
+                <span class="p">)</span>
+            <span class="n">kwargs_</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+                <span class="s2">"noise"</span><span class="p">:</span> <span class="p">[</span><span class="n">noise</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">targets</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])],</span>
+            <span class="p">}</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">kwargs_</span> <span class="o">=</span> <span class="n">kwargs</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">get_fantasy_model</span><span class="p">(</span><span class="n">inputs_</span><span class="p">,</span> <span class="n">targets_</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs_</span><span class="p">)</span></div></div>
 </pre></div>
 </div>
 </div>
@@ -81,7 +133,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../optim.html">botorch.optim</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../fit.html">botorch.fit</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../gen.html">botorch.gen</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../qmc.html">botorch.qmc</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../sampling.html">botorch.sampling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../test_functions.html">botorch.test_functions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../exceptions.html">botorch.exceptions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../utils.html">botorch.utils</a></li>
@@ -96,10 +148,10 @@
 </ul>
 </div>
 <div id="searchbox" role="search" style="display: none">
-<h3>Quick search</h3>
+<h3 id="searchlabel">Quick search</h3>
 <div class="searchformwrapper">
 <form action="../../../search.html" class="search" method="get">
-<input name="q" type="text"/>
+<input aria-labelledby="searchlabel" name="q" type="text"/>
 <input type="submit" value="Go"/>
 </form>
 </div>

@@ -28,7 +28,7 @@
 <p>Candidate generation utilities.</p>
 <dl class="function">
 <dt id="botorch.gen.gen_candidates_scipy">
-<code class="descclassname">botorch.gen.</code><code class="descname">gen_candidates_scipy</code><span class="sig-paren">(</span><em>initial_conditions</em>, <em>acquisition_function</em>, <em>lower_bounds=None</em>, <em>upper_bounds=None</em>, <em>inequality_constraints=None</em>, <em>equality_constraints=None</em>, <em>options=None</em>, <em>fixed_features=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/gen.html#gen_candidates_scipy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.gen.gen_candidates_scipy" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">botorch.gen.</code><code class="sig-name descname">gen_candidates_scipy</code><span class="sig-paren">(</span><em class="sig-param">initial_conditions</em>, <em class="sig-param">acquisition_function</em>, <em class="sig-param">lower_bounds=None</em>, <em class="sig-param">upper_bounds=None</em>, <em class="sig-param">inequality_constraints=None</em>, <em class="sig-param">equality_constraints=None</em>, <em class="sig-param">options=None</em>, <em class="sig-param">fixed_features=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/gen.html#gen_candidates_scipy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.gen.gen_candidates_scipy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate a set of candidates using <cite>scipy.optimize.minimize</cite>.</p>
 <p>Optimizes an acquisition function starting from a set of initial candidates
 using <cite>scipy.optimize.minimize</cite> via a numpy converter.</p>
@@ -83,7 +83,7 @@ compatible with lower_bounds and upper_bounds!</p></li>
 </dd></dl>
 <dl class="function">
 <dt id="botorch.gen.gen_candidates_torch">
-<code class="descclassname">botorch.gen.</code><code class="descname">gen_candidates_torch</code><span class="sig-paren">(</span><em>initial_conditions</em>, <em>acquisition_function</em>, <em>lower_bounds=None</em>, <em>upper_bounds=None</em>, <em>optimizer=&lt;class 'torch.optim.adam.Adam'&gt;</em>, <em>options=None</em>, <em>verbose=True</em>, <em>fixed_features=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/gen.html#gen_candidates_torch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.gen.gen_candidates_torch" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">botorch.gen.</code><code class="sig-name descname">gen_candidates_torch</code><span class="sig-paren">(</span><em class="sig-param">initial_conditions</em>, <em class="sig-param">acquisition_function</em>, <em class="sig-param">lower_bounds=None</em>, <em class="sig-param">upper_bounds=None</em>, <em class="sig-param">optimizer=&lt;class 'torch.optim.adam.Adam'&gt;</em>, <em class="sig-param">options=None</em>, <em class="sig-param">verbose=True</em>, <em class="sig-param">fixed_features=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/gen.html#gen_candidates_torch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.gen.gen_candidates_torch" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate a set of candidates using a <cite>torch.optim</cite> optimizer.</p>
 <p>Optimizes an acquisition function starting from a set of initial candidates
 using an optimizer from <cite>torch.optim</cite>.</p>
@@ -135,7 +135,7 @@ compatible with lower_bounds and upper_bounds!</p></li>
 </dd></dl>
 <dl class="function">
 <dt id="botorch.gen.get_best_candidates">
-<code class="descclassname">botorch.gen.</code><code class="descname">get_best_candidates</code><span class="sig-paren">(</span><em>batch_candidates</em>, <em>batch_values</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/gen.html#get_best_candidates"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.gen.get_best_candidates" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">botorch.gen.</code><code class="sig-name descname">get_best_candidates</code><span class="sig-paren">(</span><em class="sig-param">batch_candidates</em>, <em class="sig-param">batch_values</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/gen.html#get_best_candidates"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.gen.get_best_candidates" title="Permalink to this definition">¶</a></dt>
 <dd><p>Extract best (q-batch) candidate from batch of candidates</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -186,7 +186,7 @@ with the highest associated value.</p>
 <li class="toctree-l1"><a class="reference internal" href="optim.html">botorch.optim</a></li>
 <li class="toctree-l1"><a class="reference internal" href="fit.html">botorch.fit</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">botorch.gen</a></li>
-<li class="toctree-l1"><a class="reference internal" href="qmc.html">botorch.qmc</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sampling.html">botorch.sampling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="test_functions.html">botorch.test_functions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="exceptions.html">botorch.exceptions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="utils.html">botorch.utils</a></li>
@@ -196,15 +196,15 @@ with the highest associated value.</p>
 <ul>
 <li><a href="index.html">Documentation overview</a><ul>
 <li>Previous: <a href="fit.html" title="previous chapter">botorch.fit</a></li>
-<li>Next: <a href="qmc.html" title="next chapter">botorch.qmc</a></li>
+<li>Next: <a href="sampling.html" title="next chapter">botorch.sampling</a></li>
 </ul></li>
 </ul>
 </div>
 <div id="searchbox" role="search" style="display: none">
-<h3>Quick search</h3>
+<h3 id="searchlabel">Quick search</h3>
 <div class="searchformwrapper">
 <form action="search.html" class="search" method="get">
-<input name="q" type="text"/>
+<input aria-labelledby="searchlabel" name="q" type="text"/>
 <input type="submit" value="Go"/>
 </form>
 </div>

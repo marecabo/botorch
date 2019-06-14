@@ -30,7 +30,7 @@
 <p>Helpers for handling outcome constraints.</p>
 <dl class="function">
 <dt id="botorch.utils.constraints.get_outcome_constraint_transforms">
-<code class="descclassname">botorch.utils.constraints.</code><code class="descname">get_outcome_constraint_transforms</code><span class="sig-paren">(</span><em>outcome_constraints</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/utils/constraints.html#get_outcome_constraint_transforms"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.utils.constraints.get_outcome_constraint_transforms" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">botorch.utils.constraints.</code><code class="sig-name descname">get_outcome_constraint_transforms</code><span class="sig-paren">(</span><em class="sig-param">outcome_constraints</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/utils/constraints.html#get_outcome_constraint_transforms"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.utils.constraints.get_outcome_constraint_transforms" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create outcome constraint callables from outcome constraint tensors.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -62,7 +62,7 @@ Negative values imply feasibility. The callables support broadcasting
 <p>Helpers for handling objectives.</p>
 <dl class="function">
 <dt id="botorch.utils.objective.apply_constraints">
-<code class="descclassname">botorch.utils.objective.</code><code class="descname">apply_constraints</code><span class="sig-paren">(</span><em>obj</em>, <em>constraints</em>, <em>samples</em>, <em>infeasible_cost</em>, <em>eta=0.001</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/utils/objective.html#apply_constraints"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.utils.objective.apply_constraints" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">botorch.utils.objective.</code><code class="sig-name descname">apply_constraints</code><span class="sig-paren">(</span><em class="sig-param">obj</em>, <em class="sig-param">constraints</em>, <em class="sig-param">samples</em>, <em class="sig-param">infeasible_cost</em>, <em class="sig-param">eta=0.001</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/utils/objective.html#apply_constraints"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.utils.objective.apply_constraints" title="Permalink to this definition">¶</a></dt>
 <dd><p>Apply constraints using an infeasible_cost <cite>M</cite> for negative objectives.</p>
 <p>This allows feasibility-weighting an objective for the case where the
 objective can be negative by usingthe following strategy:
@@ -92,7 +92,7 @@ output models (<cite>o</cite> &gt; 1).</p></li>
 </dd></dl>
 <dl class="function">
 <dt id="botorch.utils.objective.apply_constraints_nonnegative_soft">
-<code class="descclassname">botorch.utils.objective.</code><code class="descname">apply_constraints_nonnegative_soft</code><span class="sig-paren">(</span><em>obj</em>, <em>constraints</em>, <em>samples</em>, <em>eta</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/utils/objective.html#apply_constraints_nonnegative_soft"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.utils.objective.apply_constraints_nonnegative_soft" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">botorch.utils.objective.</code><code class="sig-name descname">apply_constraints_nonnegative_soft</code><span class="sig-paren">(</span><em class="sig-param">obj</em>, <em class="sig-param">constraints</em>, <em class="sig-param">samples</em>, <em class="sig-param">eta</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/utils/objective.html#apply_constraints_nonnegative_soft"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.utils.objective.apply_constraints_nonnegative_soft" title="Permalink to this definition">¶</a></dt>
 <dd><p>Applies constraints to a non-negative objective.</p>
 <p>This function uses a sigmoid approximation to an indicator function for
 each constraint.</p>
@@ -118,7 +118,7 @@ output models (<cite>o</cite> &gt; 1).</p></li>
 </dd></dl>
 <dl class="function">
 <dt id="botorch.utils.objective.get_objective_weights_transform">
-<code class="descclassname">botorch.utils.objective.</code><code class="descname">get_objective_weights_transform</code><span class="sig-paren">(</span><em>weights</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/utils/objective.html#get_objective_weights_transform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.utils.objective.get_objective_weights_transform" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">botorch.utils.objective.</code><code class="sig-name descname">get_objective_weights_transform</code><span class="sig-paren">(</span><em class="sig-param">weights</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/utils/objective.html#get_objective_weights_transform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.utils.objective.get_objective_weights_transform" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a linear objective callable from a set of weights.</p>
 <p>Create a callable mapping a Tensor of size <cite>b x q x o</cite> to a Tensor of size
 <cite>b x q</cite>, where <cite>o</cite> is the number of outputs of the model using scalarization
@@ -145,7 +145,7 @@ If not provided, the identity mapping is used.</p>
 </dd></dl>
 <dl class="function">
 <dt id="botorch.utils.objective.soft_eval_constraint">
-<code class="descclassname">botorch.utils.objective.</code><code class="descname">soft_eval_constraint</code><span class="sig-paren">(</span><em>lhs</em>, <em>eta=0.001</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/utils/objective.html#soft_eval_constraint"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.utils.objective.soft_eval_constraint" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">botorch.utils.objective.</code><code class="sig-name descname">soft_eval_constraint</code><span class="sig-paren">(</span><em class="sig-param">lhs</em>, <em class="sig-param">eta=0.001</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/utils/objective.html#soft_eval_constraint"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.utils.objective.soft_eval_constraint" title="Permalink to this definition">¶</a></dt>
 <dd><p>Element-wise evaluation of a constraint in a ‘soft’ fashion</p>
 <p><cite>value(x) = 1 / (1 + exp(x / eta))</cite></p>
 <dl class="field-list simple">
@@ -172,7 +172,7 @@ For each element <cite>x</cite>, <cite>value(x) -&gt; 0</cite> as <cite>x</cite>
 <p>Utilities for MC and qMC sampling.</p>
 <dl class="function">
 <dt id="botorch.utils.sampling.construct_base_samples">
-<code class="descclassname">botorch.utils.sampling.</code><code class="descname">construct_base_samples</code><span class="sig-paren">(</span><em>batch_shape</em>, <em>output_shape</em>, <em>sample_shape</em>, <em>qmc=True</em>, <em>seed=None</em>, <em>device=None</em>, <em>dtype=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/utils/sampling.html#construct_base_samples"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.utils.sampling.construct_base_samples" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">botorch.utils.sampling.</code><code class="sig-name descname">construct_base_samples</code><span class="sig-paren">(</span><em class="sig-param">batch_shape</em>, <em class="sig-param">output_shape</em>, <em class="sig-param">sample_shape</em>, <em class="sig-param">qmc=True</em>, <em class="sig-param">seed=None</em>, <em class="sig-param">device=None</em>, <em class="sig-param">dtype=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/utils/sampling.html#construct_base_samples"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.utils.sampling.construct_base_samples" title="Permalink to this definition">¶</a></dt>
 <dd><p>Construct base samples from a multi-variate standard normal N(0, I_qo).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -205,7 +205,7 @@ Here <cite>output_shape = q x o</cite>.</p>
 </dd></dl>
 <dl class="function">
 <dt id="botorch.utils.sampling.construct_base_samples_from_posterior">
-<code class="descclassname">botorch.utils.sampling.</code><code class="descname">construct_base_samples_from_posterior</code><span class="sig-paren">(</span><em>posterior</em>, <em>sample_shape</em>, <em>qmc=True</em>, <em>collapse_batch_dims=True</em>, <em>seed=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/utils/sampling.html#construct_base_samples_from_posterior"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.utils.sampling.construct_base_samples_from_posterior" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">botorch.utils.sampling.</code><code class="sig-name descname">construct_base_samples_from_posterior</code><span class="sig-paren">(</span><em class="sig-param">posterior</em>, <em class="sig-param">sample_shape</em>, <em class="sig-param">qmc=True</em>, <em class="sig-param">collapse_batch_dims=True</em>, <em class="sig-param">seed=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/utils/sampling.html#construct_base_samples_from_posterior"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.utils.sampling.construct_base_samples_from_posterior" title="Permalink to this definition">¶</a></dt>
 <dd><p>Construct a tensor of normally distributed base samples.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -235,7 +235,7 @@ introduce any sampling variance across t-batches.</p>
 </dd></dl>
 <dl class="function">
 <dt id="botorch.utils.sampling.draw_sobol_normal_samples">
-<code class="descclassname">botorch.utils.sampling.</code><code class="descname">draw_sobol_normal_samples</code><span class="sig-paren">(</span><em>d</em>, <em>n</em>, <em>device=None</em>, <em>dtype=None</em>, <em>seed=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/utils/sampling.html#draw_sobol_normal_samples"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.utils.sampling.draw_sobol_normal_samples" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">botorch.utils.sampling.</code><code class="sig-name descname">draw_sobol_normal_samples</code><span class="sig-paren">(</span><em class="sig-param">d</em>, <em class="sig-param">n</em>, <em class="sig-param">device=None</em>, <em class="sig-param">dtype=None</em>, <em class="sig-param">seed=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/utils/sampling.html#draw_sobol_normal_samples"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.utils.sampling.draw_sobol_normal_samples" title="Permalink to this definition">¶</a></dt>
 <dd><p>Draw qMC samples from a multi-variate standard normal N(0, I_d)</p>
 <p>A primary use-case for this functionality is to compute an QMC average
 of f(X) over X where each element of X is drawn N(0, 1).</p>
@@ -265,7 +265,7 @@ and dtype specified by the input.</p>
 </dd></dl>
 <dl class="function">
 <dt id="botorch.utils.sampling.draw_sobol_samples">
-<code class="descclassname">botorch.utils.sampling.</code><code class="descname">draw_sobol_samples</code><span class="sig-paren">(</span><em>bounds</em>, <em>n</em>, <em>q</em>, <em>seed=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/utils/sampling.html#draw_sobol_samples"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.utils.sampling.draw_sobol_samples" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">botorch.utils.sampling.</code><code class="sig-name descname">draw_sobol_samples</code><span class="sig-paren">(</span><em class="sig-param">bounds</em>, <em class="sig-param">n</em>, <em class="sig-param">q</em>, <em class="sig-param">seed=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/utils/sampling.html#draw_sobol_samples"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.utils.sampling.draw_sobol_samples" title="Permalink to this definition">¶</a></dt>
 <dd><p>Draw qMC samples from the box defined by bounds.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -294,7 +294,7 @@ use a random seed.</p></li>
 </dd></dl>
 <dl class="function">
 <dt id="botorch.utils.sampling.manual_seed">
-<code class="descclassname">botorch.utils.sampling.</code><code class="descname">manual_seed</code><span class="sig-paren">(</span><em>seed=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/utils/sampling.html#manual_seed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.utils.sampling.manual_seed" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">botorch.utils.sampling.</code><code class="sig-name descname">manual_seed</code><span class="sig-paren">(</span><em class="sig-param">seed=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/utils/sampling.html#manual_seed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.utils.sampling.manual_seed" title="Permalink to this definition">¶</a></dt>
 <dd><p>Contextmanager for manual setting the torch.random seed.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -319,12 +319,12 @@ use a random seed.</p></li>
 <p>Some basic data transformation helpers.</p>
 <dl class="function">
 <dt id="botorch.utils.transforms.convert_to_target_pre_hook">
-<code class="descclassname">botorch.utils.transforms.</code><code class="descname">convert_to_target_pre_hook</code><span class="sig-paren">(</span><em>module</em>, <em>*args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/utils/transforms.html#convert_to_target_pre_hook"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.utils.transforms.convert_to_target_pre_hook" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">botorch.utils.transforms.</code><code class="sig-name descname">convert_to_target_pre_hook</code><span class="sig-paren">(</span><em class="sig-param">module</em>, <em class="sig-param">*args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/utils/transforms.html#convert_to_target_pre_hook"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.utils.transforms.convert_to_target_pre_hook" title="Permalink to this definition">¶</a></dt>
 <dd><p>Pre-hook for automatically calling <cite>.to(X)</cite> on module prior to <cite>forward</cite></p>
 </dd></dl>
 <dl class="function">
 <dt id="botorch.utils.transforms.match_batch_shape">
-<code class="descclassname">botorch.utils.transforms.</code><code class="descname">match_batch_shape</code><span class="sig-paren">(</span><em>X</em>, <em>Y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/utils/transforms.html#match_batch_shape"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.utils.transforms.match_batch_shape" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">botorch.utils.transforms.</code><code class="sig-name descname">match_batch_shape</code><span class="sig-paren">(</span><em class="sig-param">X</em>, <em class="sig-param">Y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/utils/transforms.html#match_batch_shape"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.utils.transforms.match_batch_shape" title="Permalink to this definition">¶</a></dt>
 <dd><p>Matches the batch dimension of a tensor to that of another tensor.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -356,7 +356,7 @@ the batch dimensions of <cite>Y</cite> (if compatible). For instance, if <cite>X
 </dd></dl>
 <dl class="function">
 <dt id="botorch.utils.transforms.normalize">
-<code class="descclassname">botorch.utils.transforms.</code><code class="descname">normalize</code><span class="sig-paren">(</span><em>X</em>, <em>bounds</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/utils/transforms.html#normalize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.utils.transforms.normalize" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">botorch.utils.transforms.</code><code class="sig-name descname">normalize</code><span class="sig-paren">(</span><em class="sig-param">X</em>, <em class="sig-param">bounds</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/utils/transforms.html#normalize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.utils.transforms.normalize" title="Permalink to this definition">¶</a></dt>
 <dd><p>Min-max normalize X to [0, 1] using the provided bounds.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -382,7 +382,7 @@ columns.</p></li>
 </dd></dl>
 <dl class="function">
 <dt id="botorch.utils.transforms.squeeze_last_dim">
-<code class="descclassname">botorch.utils.transforms.</code><code class="descname">squeeze_last_dim</code><span class="sig-paren">(</span><em>Y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/utils/transforms.html#squeeze_last_dim"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.utils.transforms.squeeze_last_dim" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">botorch.utils.transforms.</code><code class="sig-name descname">squeeze_last_dim</code><span class="sig-paren">(</span><em class="sig-param">Y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/utils/transforms.html#squeeze_last_dim"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.utils.transforms.squeeze_last_dim" title="Permalink to this definition">¶</a></dt>
 <dd><p>Squeeze the last dimension of a Tensor.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -403,7 +403,7 @@ columns.</p></li>
 </dd></dl>
 <dl class="function">
 <dt id="botorch.utils.transforms.standardize">
-<code class="descclassname">botorch.utils.transforms.</code><code class="descname">standardize</code><span class="sig-paren">(</span><em>X</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/utils/transforms.html#standardize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.utils.transforms.standardize" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">botorch.utils.transforms.</code><code class="sig-name descname">standardize</code><span class="sig-paren">(</span><em class="sig-param">X</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/utils/transforms.html#standardize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.utils.transforms.standardize" title="Permalink to this definition">¶</a></dt>
 <dd><p>Standardize a tensor by dim=0.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -424,7 +424,7 @@ columns.</p></li>
 </dd></dl>
 <dl class="function">
 <dt id="botorch.utils.transforms.t_batch_mode_transform">
-<code class="descclassname">botorch.utils.transforms.</code><code class="descname">t_batch_mode_transform</code><span class="sig-paren">(</span><em>expected_q=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/utils/transforms.html#t_batch_mode_transform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.utils.transforms.t_batch_mode_transform" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">botorch.utils.transforms.</code><code class="sig-name descname">t_batch_mode_transform</code><span class="sig-paren">(</span><em class="sig-param">expected_q=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/utils/transforms.html#t_batch_mode_transform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.utils.transforms.t_batch_mode_transform" title="Permalink to this definition">¶</a></dt>
 <dd><p>Factory for decorators taking a t-batched <cite>X</cite> tensor.</p>
 <p>This method creates decorators for instance methods to transform an input tensor
 <cite>X</cite> to t-batch mode (i.e. with at least 3 dimensions). This assumes the tensor
@@ -456,7 +456,7 @@ AssertitionError if X’s q-batch size does not equal expected_q.</p>
 </dd></dl>
 <dl class="function">
 <dt id="botorch.utils.transforms.unnormalize">
-<code class="descclassname">botorch.utils.transforms.</code><code class="descname">unnormalize</code><span class="sig-paren">(</span><em>X</em>, <em>bounds</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/utils/transforms.html#unnormalize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.utils.transforms.unnormalize" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">botorch.utils.transforms.</code><code class="sig-name descname">unnormalize</code><span class="sig-paren">(</span><em class="sig-param">X</em>, <em class="sig-param">bounds</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/utils/transforms.html#unnormalize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.utils.transforms.unnormalize" title="Permalink to this definition">¶</a></dt>
 <dd><p>Unscale X from [0, 1] to the original scale.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -497,7 +497,7 @@ columns.</p></li>
 <li class="toctree-l1"><a class="reference internal" href="optim.html">botorch.optim</a></li>
 <li class="toctree-l1"><a class="reference internal" href="fit.html">botorch.fit</a></li>
 <li class="toctree-l1"><a class="reference internal" href="gen.html">botorch.gen</a></li>
-<li class="toctree-l1"><a class="reference internal" href="qmc.html">botorch.qmc</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sampling.html">botorch.sampling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="test_functions.html">botorch.test_functions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="exceptions.html">botorch.exceptions</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">botorch.utils</a></li>
@@ -511,10 +511,10 @@ columns.</p></li>
 </ul>
 </div>
 <div id="searchbox" role="search" style="display: none">
-<h3>Quick search</h3>
+<h3 id="searchlabel">Quick search</h3>
 <div class="searchformwrapper">
 <form action="search.html" class="search" method="get">
-<input name="q" type="text"/>
+<input aria-labelledby="searchlabel" name="q" type="text"/>
 <input type="submit" value="Go"/>
 </form>
 </div>

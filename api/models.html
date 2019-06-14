@@ -31,11 +31,11 @@
 <h3><span class="hidden-section">Model</span><a class="headerlink" href="#model" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
 <dt id="botorch.models.model.Model">
-<em class="property">class </em><code class="descclassname">botorch.models.model.</code><code class="descname">Model</code><a class="reference internal" href="_modules/botorch/models/model.html#Model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.models.model.Model" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">botorch.models.model.</code><code class="sig-name descname">Model</code><a class="reference internal" href="_modules/botorch/models/model.html#Model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.models.model.Model" title="Permalink to this definition">¶</a></dt>
 <dd><p>Abstract base class for BoTorch models.</p>
 <dl class="method">
 <dt id="botorch.models.model.Model.posterior">
-<code class="descname">posterior</code><span class="sig-paren">(</span><em>X</em>, <em>output_indices=None</em>, <em>observation_noise=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/models/model.html#Model.posterior"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.models.model.Model.posterior" title="Permalink to this definition">¶</a></dt>
+<em class="property">abstract </em><code class="sig-name descname">posterior</code><span class="sig-paren">(</span><em class="sig-param">X</em>, <em class="sig-param">output_indices=None</em>, <em class="sig-param">observation_noise=False</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/models/model.html#Model.posterior"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.models.model.Model.posterior" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the posterior over model outputs at the provided points.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -66,13 +66,13 @@ over <cite>q</cite> points and <cite>o</cite> outputs each.</p>
 <h3><span class="hidden-section">GPyTorchModel</span><a class="headerlink" href="#gpytorchmodel" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
 <dt id="botorch.models.gpytorch.GPyTorchModel">
-<em class="property">class </em><code class="descclassname">botorch.models.gpytorch.</code><code class="descname">GPyTorchModel</code><a class="reference internal" href="_modules/botorch/models/gpytorch.html#GPyTorchModel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.models.gpytorch.GPyTorchModel" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">botorch.models.gpytorch.</code><code class="sig-name descname">GPyTorchModel</code><a class="reference internal" href="_modules/botorch/models/gpytorch.html#GPyTorchModel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.models.gpytorch.GPyTorchModel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Abstract base class for models based on GPyTorch models.</p>
 <p>The easiest way to use this is to subclass a model from a GPyTorch model
 class (e.g. an <cite>ExactGP</cite>) and this <cite>GPyTorchModel</cite>. See e.g. <cite>SingleTaskGP</cite>.</p>
 <dl class="method">
 <dt id="botorch.models.gpytorch.GPyTorchModel.posterior">
-<code class="descname">posterior</code><span class="sig-paren">(</span><em>X</em>, <em>observation_noise=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/models/gpytorch.html#GPyTorchModel.posterior"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.models.gpytorch.GPyTorchModel.posterior" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">posterior</code><span class="sig-paren">(</span><em class="sig-param">X</em>, <em class="sig-param">observation_noise=False</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/models/gpytorch.html#GPyTorchModel.posterior"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.models.gpytorch.GPyTorchModel.posterior" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the posterior over model outputs at the provided points.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -102,13 +102,13 @@ distributions over <cite>q</cite> points. Includes observation noise if
 <h3><span class="hidden-section">BatchedMultiOutputGPyTorchModel</span><a class="headerlink" href="#batchedmultioutputgpytorchmodel" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
 <dt id="botorch.models.gpytorch.BatchedMultiOutputGPyTorchModel">
-<em class="property">class </em><code class="descclassname">botorch.models.gpytorch.</code><code class="descname">BatchedMultiOutputGPyTorchModel</code><a class="reference internal" href="_modules/botorch/models/gpytorch.html#BatchedMultiOutputGPyTorchModel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.models.gpytorch.BatchedMultiOutputGPyTorchModel" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">botorch.models.gpytorch.</code><code class="sig-name descname">BatchedMultiOutputGPyTorchModel</code><a class="reference internal" href="_modules/botorch/models/gpytorch.html#BatchedMultiOutputGPyTorchModel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.models.gpytorch.BatchedMultiOutputGPyTorchModel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Base class for batched multi-output GPyTorch models with independent outputs.</p>
 <p>This model should be used when the same training data is used for all outputs.
 Outputs are modeled independently by using a different batch for each output.</p>
 <dl class="method">
 <dt id="botorch.models.gpytorch.BatchedMultiOutputGPyTorchModel.get_fantasy_model">
-<code class="descname">get_fantasy_model</code><span class="sig-paren">(</span><em>inputs</em>, <em>targets</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/models/gpytorch.html#BatchedMultiOutputGPyTorchModel.get_fantasy_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.models.gpytorch.BatchedMultiOutputGPyTorchModel.get_fantasy_model" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_fantasy_model</code><span class="sig-paren">(</span><em class="sig-param">inputs</em>, <em class="sig-param">targets</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/models/gpytorch.html#BatchedMultiOutputGPyTorchModel.get_fantasy_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.models.gpytorch.BatchedMultiOutputGPyTorchModel.get_fantasy_model" title="Permalink to this definition">¶</a></dt>
 <dd><p>Wrapper method around <cite>gpytorch.models.exact_gp.ExactGP.get_fantasy_model</cite>.</p>
 <p>This method adapts <cite>get_fantasy_model</cite> to support batched multi-output GPs.</p>
 <dl class="field-list simple">
@@ -122,8 +122,9 @@ inputs should be <cite>batch_shape x m x d</cite> to avoid recomputing the
 repeated blocks of the covariance matrix. Additionally, if provided,
 the “noise” keyword argument should map to a <cite>batch_shape x m</cite>-dim
 Tensor of observed measurement noise for fastest performance.</p></li>
-<li><p><strong>targets</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>) – <cite>batch_shape x m</cite> or <cite>f_batch_shape x batch_shape x m</cite>-dim Tensor
-of fantasy observations.</p></li>
+<li><p><strong>targets</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>) – <cite>batch_shape x m x o</cite> or
+<cite>f_batch_shape x batch_shape x m x o</cite>-dim Tensor of fantasy
+observations.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
@@ -138,7 +139,7 @@ caches have been updated.</p>
 </dd></dl>
 <dl class="method">
 <dt id="botorch.models.gpytorch.BatchedMultiOutputGPyTorchModel.posterior">
-<code class="descname">posterior</code><span class="sig-paren">(</span><em>X</em>, <em>output_indices=None</em>, <em>observation_noise=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/models/gpytorch.html#BatchedMultiOutputGPyTorchModel.posterior"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.models.gpytorch.BatchedMultiOutputGPyTorchModel.posterior" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">posterior</code><span class="sig-paren">(</span><em class="sig-param">X</em>, <em class="sig-param">output_indices=None</em>, <em class="sig-param">observation_noise=False</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/models/gpytorch.html#BatchedMultiOutputGPyTorchModel.posterior"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.models.gpytorch.BatchedMultiOutputGPyTorchModel.posterior" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the posterior over model outputs at the provided points.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -174,13 +175,13 @@ distributions over <cite>q</cite> points and the outputs selected by
 <h3><span class="hidden-section">ModelListGPyTorchModel</span><a class="headerlink" href="#modellistgpytorchmodel" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
 <dt id="botorch.models.gpytorch.ModelListGPyTorchModel">
-<em class="property">class </em><code class="descclassname">botorch.models.gpytorch.</code><code class="descname">ModelListGPyTorchModel</code><a class="reference internal" href="_modules/botorch/models/gpytorch.html#ModelListGPyTorchModel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.models.gpytorch.ModelListGPyTorchModel" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">botorch.models.gpytorch.</code><code class="sig-name descname">ModelListGPyTorchModel</code><a class="reference internal" href="_modules/botorch/models/gpytorch.html#ModelListGPyTorchModel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.models.gpytorch.ModelListGPyTorchModel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Abstract base class for models based on multi-output GPyTorch models.</p>
 <p>This is meant to be used with a gpytorch ModelList wrapper for independent
 evaluation of submodels.</p>
-<dl class="attribute">
+<dl class="method">
 <dt id="botorch.models.gpytorch.ModelListGPyTorchModel.num_outputs">
-<code class="descname">num_outputs</code><a class="headerlink" href="#botorch.models.gpytorch.ModelListGPyTorchModel.num_outputs" title="Permalink to this definition">¶</a></dt>
+<em class="property">abstract property </em><code class="sig-name descname">num_outputs</code><a class="headerlink" href="#botorch.models.gpytorch.ModelListGPyTorchModel.num_outputs" title="Permalink to this definition">¶</a></dt>
 <dd><p>The number of outputs of the model.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
@@ -190,7 +191,7 @@ evaluation of submodels.</p>
 </dd></dl>
 <dl class="method">
 <dt id="botorch.models.gpytorch.ModelListGPyTorchModel.posterior">
-<code class="descname">posterior</code><span class="sig-paren">(</span><em>X</em>, <em>output_indices=None</em>, <em>observation_noise=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/models/gpytorch.html#ModelListGPyTorchModel.posterior"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.models.gpytorch.ModelListGPyTorchModel.posterior" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">posterior</code><span class="sig-paren">(</span><em class="sig-param">X</em>, <em class="sig-param">output_indices=None</em>, <em class="sig-param">observation_noise=False</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/models/gpytorch.html#ModelListGPyTorchModel.posterior"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.models.gpytorch.ModelListGPyTorchModel.posterior" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the posterior over model outputs at the provided points.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -227,13 +228,13 @@ distributions over <cite>q</cite> points and the outputs selected by
 <h3><span class="hidden-section">MultiTaskGPyTorchModel</span><a class="headerlink" href="#multitaskgpytorchmodel" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
 <dt id="botorch.models.gpytorch.MultiTaskGPyTorchModel">
-<em class="property">class </em><code class="descclassname">botorch.models.gpytorch.</code><code class="descname">MultiTaskGPyTorchModel</code><a class="reference internal" href="_modules/botorch/models/gpytorch.html#MultiTaskGPyTorchModel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.models.gpytorch.MultiTaskGPyTorchModel" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">botorch.models.gpytorch.</code><code class="sig-name descname">MultiTaskGPyTorchModel</code><a class="reference internal" href="_modules/botorch/models/gpytorch.html#MultiTaskGPyTorchModel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.models.gpytorch.MultiTaskGPyTorchModel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Abstract base class for multi-task models baed on GPyTorch models.</p>
 <p>This class provides the <cite>posterior</cite> method to models that implement a
 “long-format” multi-task GP in the style of <cite>MultiTaskGP</cite>.</p>
 <dl class="method">
 <dt id="botorch.models.gpytorch.MultiTaskGPyTorchModel.posterior">
-<code class="descname">posterior</code><span class="sig-paren">(</span><em>X</em>, <em>output_indices=None</em>, <em>observation_noise=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/models/gpytorch.html#MultiTaskGPyTorchModel.posterior"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.models.gpytorch.MultiTaskGPyTorchModel.posterior" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">posterior</code><span class="sig-paren">(</span><em class="sig-param">X</em>, <em class="sig-param">output_indices=None</em>, <em class="sig-param">observation_noise=False</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/models/gpytorch.html#MultiTaskGPyTorchModel.posterior"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.models.gpytorch.MultiTaskGPyTorchModel.posterior" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the posterior over model outputs at the provided points.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -273,7 +274,7 @@ distributions over <cite>q</cite> points and the outputs selected by
 <h3><span class="hidden-section">SingleTaskGP</span><a class="headerlink" href="#singletaskgp" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
 <dt id="botorch.models.gp_regression.SingleTaskGP">
-<em class="property">class </em><code class="descclassname">botorch.models.gp_regression.</code><code class="descname">SingleTaskGP</code><span class="sig-paren">(</span><em>train_X</em>, <em>train_Y</em>, <em>likelihood=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/models/gp_regression.html#SingleTaskGP"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.models.gp_regression.SingleTaskGP" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">botorch.models.gp_regression.</code><code class="sig-name descname">SingleTaskGP</code><span class="sig-paren">(</span><em class="sig-param">train_X</em>, <em class="sig-param">train_Y</em>, <em class="sig-param">likelihood=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/models/gp_regression.html#SingleTaskGP"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.models.gp_regression.SingleTaskGP" title="Permalink to this definition">¶</a></dt>
 <dd><p>A single-task exact GP model.</p>
 <p>A single-task exact GP using relatively strong priors on the Kernel
 hyperparameters, which work best when covariates are normalized to the unit
@@ -310,7 +311,7 @@ GaussianLikelihood with inferred noise level.</p></li>
 <h3><span class="hidden-section">FixedNoiseGP</span><a class="headerlink" href="#fixednoisegp" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
 <dt id="botorch.models.gp_regression.FixedNoiseGP">
-<em class="property">class </em><code class="descclassname">botorch.models.gp_regression.</code><code class="descname">FixedNoiseGP</code><span class="sig-paren">(</span><em>train_X</em>, <em>train_Y</em>, <em>train_Yvar</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/models/gp_regression.html#FixedNoiseGP"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.models.gp_regression.FixedNoiseGP" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">botorch.models.gp_regression.</code><code class="sig-name descname">FixedNoiseGP</code><span class="sig-paren">(</span><em class="sig-param">train_X</em>, <em class="sig-param">train_Y</em>, <em class="sig-param">train_Yvar</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/models/gp_regression.html#FixedNoiseGP"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.models.gp_regression.FixedNoiseGP" title="Permalink to this definition">¶</a></dt>
 <dd><p>A single-task exact GP model using fixed noise levels.</p>
 <p>A single-task exact GP that uses fixed observation noise levels. This model
 also uses relatively strong priors on the Kernel hyperparameters, which work
@@ -339,7 +340,7 @@ training observations.</p></li>
 </div>
 <dl class="method">
 <dt id="botorch.models.gp_regression.FixedNoiseGP.forward">
-<code class="descname">forward</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/models/gp_regression.html#FixedNoiseGP.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.models.gp_regression.FixedNoiseGP.forward" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/models/gp_regression.html#FixedNoiseGP.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.models.gp_regression.FixedNoiseGP.forward" title="Permalink to this definition">¶</a></dt>
 <dd><p>Defines the computation performed at every call.</p>
 <p>Should be overridden by all subclasses.</p>
 <div class="admonition note">
@@ -361,7 +362,7 @@ registered hooks while the latter silently ignores them.</p>
 <h3><span class="hidden-section">HeteroskedasticSingleTaskGP</span><a class="headerlink" href="#heteroskedasticsingletaskgp" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
 <dt id="botorch.models.gp_regression.HeteroskedasticSingleTaskGP">
-<em class="property">class </em><code class="descclassname">botorch.models.gp_regression.</code><code class="descname">HeteroskedasticSingleTaskGP</code><span class="sig-paren">(</span><em>train_X</em>, <em>train_Y</em>, <em>train_Yvar</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/models/gp_regression.html#HeteroskedasticSingleTaskGP"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.models.gp_regression.HeteroskedasticSingleTaskGP" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">botorch.models.gp_regression.</code><code class="sig-name descname">HeteroskedasticSingleTaskGP</code><span class="sig-paren">(</span><em class="sig-param">train_X</em>, <em class="sig-param">train_Y</em>, <em class="sig-param">train_Yvar</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/models/gp_regression.html#HeteroskedasticSingleTaskGP"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.models.gp_regression.HeteroskedasticSingleTaskGP" title="Permalink to this definition">¶</a></dt>
 <dd><p>A single-task exact GP model using a heteroskeastic noise model.</p>
 <p>This model internally wraps another GP (a SingleTaskGP) to model the observation
 noise. This allows the likelihood to make out-of-sample predictions for the
@@ -393,7 +394,7 @@ training observations.</p></li>
 <h3><span class="hidden-section">ModelListGP</span><a class="headerlink" href="#modellistgp" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
 <dt id="botorch.models.model_list_gp_regression.ModelListGP">
-<em class="property">class </em><code class="descclassname">botorch.models.model_list_gp_regression.</code><code class="descname">ModelListGP</code><span class="sig-paren">(</span><em>*gp_models</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/models/model_list_gp_regression.html#ModelListGP"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.models.model_list_gp_regression.ModelListGP" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">botorch.models.model_list_gp_regression.</code><code class="sig-name descname">ModelListGP</code><span class="sig-paren">(</span><em class="sig-param">*gp_models</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/models/model_list_gp_regression.html#ModelListGP"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.models.model_list_gp_regression.ModelListGP" title="Permalink to this definition">¶</a></dt>
 <dd><p>A multi-output GP model with independent GPs for the outputs.</p>
 <p>This model supports different-shaped training inputs for each of its
 sub-models. It can be used with any BoTorch models.</p>
@@ -415,13 +416,46 @@ structure, you should consider using a batched GP model instead).</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">ModelListGP</span><span class="p">(</span><span class="n">model1</span><span class="p">,</span> <span class="n">model2</span><span class="p">)</span>
 </pre></div>
 </div>
+<dl class="method">
+<dt id="botorch.models.model_list_gp_regression.ModelListGP.get_fantasy_model">
+<code class="sig-name descname">get_fantasy_model</code><span class="sig-paren">(</span><em class="sig-param">inputs</em>, <em class="sig-param">targets</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/models/model_list_gp_regression.html#ModelListGP.get_fantasy_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.models.model_list_gp_regression.ModelListGP.get_fantasy_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Construct a fantasy model.</p>
+<p>This method wraps gpytorch’s <cite>IndependentModelList.get_fantasy_model</cite>
+method to provide an API consistent with that of BoTorch’s batched
+multi-output GP models.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>inputs</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>) – A <cite>batch_shape x m x d</cite> or
+<cite>f_batch_shape x batch_shape x m x d</cite>-dim Tensor of inputs for the
+fantasy observations, where <cite>f_batch_shape</cite> are fantasy batch
+dimensions. Note: when using the same inputs for all fantasies,
+inputs should be <cite>batch_shape x m x d</cite> to avoid recomputing the
+repeated blocks of the covariance matrix. Additionally, if provided,
+the “noise” keyword argument should map to a <cite>batch_shape x m</cite>-dim
+Tensor of observed measurement noise for fastest performance.</p></li>
+<li><p><strong>targets</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>) – <cite>batch_shape x m x o</cite> or
+<cite>f_batch_shape x batch_shape x m x o</cite>-dim Tensor of fantasy
+observations.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="#botorch.models.model_list_gp_regression.ModelListGP" title="botorch.models.model_list_gp_regression.ModelListGP"><code class="xref py py-class docutils literal notranslate"><span class="pre">ModelListGP</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A <cite>ModelListGP</cite>, where the <cite>i</cite>-th model has <cite>n_i + m</cite> training examples,
+where the <cite>m</cite> fantasy examples have been added and all test-time caches
+have been updated.</p>
+</dd>
+</dl>
+</dd></dl>
 </dd></dl>
 </div>
 <div class="section" id="multitaskgp">
 <h3><span class="hidden-section">MultiTaskGP</span><a class="headerlink" href="#multitaskgp" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
 <dt id="botorch.models.multitask.MultiTaskGP">
-<em class="property">class </em><code class="descclassname">botorch.models.multitask.</code><code class="descname">MultiTaskGP</code><span class="sig-paren">(</span><em>train_X</em>, <em>train_Y</em>, <em>task_feature</em>, <em>output_tasks=None</em>, <em>rank=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/models/multitask.html#MultiTaskGP"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.models.multitask.MultiTaskGP" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">botorch.models.multitask.</code><code class="sig-name descname">MultiTaskGP</code><span class="sig-paren">(</span><em class="sig-param">train_X</em>, <em class="sig-param">train_Y</em>, <em class="sig-param">task_feature</em>, <em class="sig-param">output_tasks=None</em>, <em class="sig-param">rank=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/models/multitask.html#MultiTaskGP"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.models.multitask.MultiTaskGP" title="Permalink to this definition">¶</a></dt>
 <dd><p>Multi-Task GP model using an ICM kernel, inferring observation noise.</p>
 <p>Multi-task exact GP that uses a simple ICM kernel. Can be single-output or
 multi-output. This model uses relatively strong priors on the base Kernel
@@ -460,7 +494,7 @@ full rank (i.e. number of tasks) kernel.</p></li>
 </div>
 <dl class="method">
 <dt id="botorch.models.multitask.MultiTaskGP.forward">
-<code class="descname">forward</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/models/multitask.html#MultiTaskGP.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.models.multitask.MultiTaskGP.forward" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/models/multitask.html#MultiTaskGP.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.models.multitask.MultiTaskGP.forward" title="Permalink to this definition">¶</a></dt>
 <dd><p>Defines the computation performed at every call.</p>
 <p>Should be overridden by all subclasses.</p>
 <div class="admonition note">
@@ -482,7 +516,7 @@ registered hooks while the latter silently ignores them.</p>
 <h3><span class="hidden-section">FixedNoiseMultiTaskGP</span><a class="headerlink" href="#fixednoisemultitaskgp" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
 <dt id="botorch.models.multitask.FixedNoiseMultiTaskGP">
-<em class="property">class </em><code class="descclassname">botorch.models.multitask.</code><code class="descname">FixedNoiseMultiTaskGP</code><span class="sig-paren">(</span><em>train_X</em>, <em>train_Y</em>, <em>train_Yvar</em>, <em>task_feature</em>, <em>output_tasks=None</em>, <em>rank=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/models/multitask.html#FixedNoiseMultiTaskGP"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.models.multitask.FixedNoiseMultiTaskGP" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">botorch.models.multitask.</code><code class="sig-name descname">FixedNoiseMultiTaskGP</code><span class="sig-paren">(</span><em class="sig-param">train_X</em>, <em class="sig-param">train_Y</em>, <em class="sig-param">train_Yvar</em>, <em class="sig-param">task_feature</em>, <em class="sig-param">output_tasks=None</em>, <em class="sig-param">rank=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/models/multitask.html#FixedNoiseMultiTaskGP"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.models.multitask.FixedNoiseMultiTaskGP" title="Permalink to this definition">¶</a></dt>
 <dd><p>Multi-Task GP model using an ICM kernel, with known observation noise.</p>
 <p>Multi-task exact GP that uses a simple ICM kernel. Can be single-output or
 multi-output. This model uses relatively strong priors on the base Kernel
@@ -539,7 +573,7 @@ full rank (i.e. number of tasks) kernel.</p></li>
 <li class="toctree-l1"><a class="reference internal" href="optim.html">botorch.optim</a></li>
 <li class="toctree-l1"><a class="reference internal" href="fit.html">botorch.fit</a></li>
 <li class="toctree-l1"><a class="reference internal" href="gen.html">botorch.gen</a></li>
-<li class="toctree-l1"><a class="reference internal" href="qmc.html">botorch.qmc</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sampling.html">botorch.sampling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="test_functions.html">botorch.test_functions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="exceptions.html">botorch.exceptions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="utils.html">botorch.utils</a></li>
@@ -554,10 +588,10 @@ full rank (i.e. number of tasks) kernel.</p></li>
 </ul>
 </div>
 <div id="searchbox" role="search" style="display: none">
-<h3>Quick search</h3>
+<h3 id="searchlabel">Quick search</h3>
 <div class="searchformwrapper">
 <form action="search.html" class="search" method="get">
-<input name="q" type="text"/>
+<input aria-labelledby="searchlabel" name="q" type="text"/>
 <input type="submit" value="Go"/>
 </form>
 </div>

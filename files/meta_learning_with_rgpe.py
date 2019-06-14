@@ -362,7 +362,7 @@ class RGPE(GP, GPyTorchModel):
 
 
 from botorch.acquisition.monte_carlo import qExpectedImprovement
-from botorch.acquisition.sampler import SobolQMCNormalSampler
+from botorch.sampling.samplers import SobolQMCNormalSampler
 from botorch.optim.optimize import joint_optimize
 
 # suppress GPyTorch warnings about adding jitter

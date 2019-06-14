@@ -208,7 +208,7 @@ def optimize_acqf_and_get_observation(acq_func):
 
 from botorch import fit_gpytorch_model
 from botorch.acquisition.monte_carlo import qExpectedImprovement
-from botorch.acquisition.sampler import SobolQMCNormalSampler
+from botorch.sampling.samplers import SobolQMCNormalSampler
 
 seed=1
 torch.manual_seed(seed)

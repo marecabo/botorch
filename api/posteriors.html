@@ -32,11 +32,11 @@
 <h3><span class="hidden-section">Posterior</span><a class="headerlink" href="#posterior" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
 <dt id="botorch.posteriors.posterior.Posterior">
-<em class="property">class </em><code class="descclassname">botorch.posteriors.posterior.</code><code class="descname">Posterior</code><a class="reference internal" href="_modules/botorch/posteriors/posterior.html#Posterior"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.posteriors.posterior.Posterior" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">botorch.posteriors.posterior.</code><code class="sig-name descname">Posterior</code><a class="reference internal" href="_modules/botorch/posteriors/posterior.html#Posterior"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.posteriors.posterior.Posterior" title="Permalink to this definition">¶</a></dt>
 <dd><p>Abstract base class for botorch posteriors.</p>
-<dl class="attribute">
+<dl class="method">
 <dt id="botorch.posteriors.posterior.Posterior.device">
-<code class="descname">device</code><a class="headerlink" href="#botorch.posteriors.posterior.Posterior.device" title="Permalink to this definition">¶</a></dt>
+<em class="property">abstract property </em><code class="sig-name descname">device</code><a class="headerlink" href="#botorch.posteriors.posterior.Posterior.device" title="Permalink to this definition">¶</a></dt>
 <dd><p>The torch device of the posterior.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
@@ -44,9 +44,9 @@
 </dd>
 </dl>
 </dd></dl>
-<dl class="attribute">
+<dl class="method">
 <dt id="botorch.posteriors.posterior.Posterior.dtype">
-<code class="descname">dtype</code><a class="headerlink" href="#botorch.posteriors.posterior.Posterior.dtype" title="Permalink to this definition">¶</a></dt>
+<em class="property">abstract property </em><code class="sig-name descname">dtype</code><a class="headerlink" href="#botorch.posteriors.posterior.Posterior.dtype" title="Permalink to this definition">¶</a></dt>
 <dd><p>The torch dtype of the posterior.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
@@ -54,9 +54,9 @@
 </dd>
 </dl>
 </dd></dl>
-<dl class="attribute">
+<dl class="method">
 <dt id="botorch.posteriors.posterior.Posterior.event_shape">
-<code class="descname">event_shape</code><a class="headerlink" href="#botorch.posteriors.posterior.Posterior.event_shape" title="Permalink to this definition">¶</a></dt>
+<em class="property">abstract property </em><code class="sig-name descname">event_shape</code><a class="headerlink" href="#botorch.posteriors.posterior.Posterior.event_shape" title="Permalink to this definition">¶</a></dt>
 <dd><p>The event shape (i.e. the shape of a single sample).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
@@ -64,9 +64,9 @@
 </dd>
 </dl>
 </dd></dl>
-<dl class="attribute">
+<dl class="method">
 <dt id="botorch.posteriors.posterior.Posterior.mean">
-<code class="descname">mean</code><a class="headerlink" href="#botorch.posteriors.posterior.Posterior.mean" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">mean</code><a class="headerlink" href="#botorch.posteriors.posterior.Posterior.mean" title="Permalink to this definition">¶</a></dt>
 <dd><p>The mean of the posterior as a <cite>(b) x n x o</cite>-dim Tensor.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
@@ -76,7 +76,7 @@
 </dd></dl>
 <dl class="method">
 <dt id="botorch.posteriors.posterior.Posterior.rsample">
-<code class="descname">rsample</code><span class="sig-paren">(</span><em>sample_shape=None</em>, <em>base_samples=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/posteriors/posterior.html#Posterior.rsample"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.posteriors.posterior.Posterior.rsample" title="Permalink to this definition">¶</a></dt>
+<em class="property">abstract </em><code class="sig-name descname">rsample</code><span class="sig-paren">(</span><em class="sig-param">sample_shape=None</em>, <em class="sig-param">base_samples=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/posteriors/posterior.html#Posterior.rsample"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.posteriors.posterior.Posterior.rsample" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sample from the posterior (with gradients).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -99,7 +99,7 @@ This is used for deterministic optimization.</p></li>
 </dd></dl>
 <dl class="method">
 <dt id="botorch.posteriors.posterior.Posterior.sample">
-<code class="descname">sample</code><span class="sig-paren">(</span><em>sample_shape=None</em>, <em>base_samples=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/posteriors/posterior.html#Posterior.sample"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.posteriors.posterior.Posterior.sample" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">sample</code><span class="sig-paren">(</span><em class="sig-param">sample_shape=None</em>, <em class="sig-param">base_samples=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/posteriors/posterior.html#Posterior.sample"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.posteriors.posterior.Posterior.sample" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sample from the posterior (without gradients).</p>
 <p>This is a simple wrapper calling <cite>rsample</cite> using <cite>with torch.no_grad()</cite>.</p>
 <dl class="field-list simple">
@@ -121,9 +121,9 @@ This is used for deterministic optimization.</p></li>
 </dd>
 </dl>
 </dd></dl>
-<dl class="attribute">
+<dl class="method">
 <dt id="botorch.posteriors.posterior.Posterior.variance">
-<code class="descname">variance</code><a class="headerlink" href="#botorch.posteriors.posterior.Posterior.variance" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">variance</code><a class="headerlink" href="#botorch.posteriors.posterior.Posterior.variance" title="Permalink to this definition">¶</a></dt>
 <dd><p>The variance of the posterior as a <cite>(b) x n x o</cite>-dim Tensor.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
@@ -141,7 +141,7 @@ This is used for deterministic optimization.</p></li>
 <h3><span class="hidden-section">GPyTorchPosterior</span><a class="headerlink" href="#gpytorchposterior" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
 <dt id="botorch.posteriors.gpytorch.GPyTorchPosterior">
-<em class="property">class </em><code class="descclassname">botorch.posteriors.gpytorch.</code><code class="descname">GPyTorchPosterior</code><span class="sig-paren">(</span><em>mvn</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/posteriors/gpytorch.html#GPyTorchPosterior"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.posteriors.gpytorch.GPyTorchPosterior" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">botorch.posteriors.gpytorch.</code><code class="sig-name descname">GPyTorchPosterior</code><span class="sig-paren">(</span><em class="sig-param">mvn</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/posteriors/gpytorch.html#GPyTorchPosterior"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.posteriors.gpytorch.GPyTorchPosterior" title="Permalink to this definition">¶</a></dt>
 <dd><p>A posterior based on GPyTorch’s multi-variate Normal distributions.</p>
 <p>A posterior based on GPyTorch’s multi-variate Normal distributions.</p>
 <dl class="field-list simple">
@@ -150,9 +150,9 @@ This is used for deterministic optimization.</p></li>
 MultitaskMultivariateNormal (multi-output case).</p>
 </dd>
 </dl>
-<dl class="attribute">
+<dl class="method">
 <dt id="botorch.posteriors.gpytorch.GPyTorchPosterior.device">
-<code class="descname">device</code><a class="headerlink" href="#botorch.posteriors.gpytorch.GPyTorchPosterior.device" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">device</code><a class="headerlink" href="#botorch.posteriors.gpytorch.GPyTorchPosterior.device" title="Permalink to this definition">¶</a></dt>
 <dd><p>The torch device of the posterior.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
@@ -160,9 +160,9 @@ MultitaskMultivariateNormal (multi-output case).</p>
 </dd>
 </dl>
 </dd></dl>
-<dl class="attribute">
+<dl class="method">
 <dt id="botorch.posteriors.gpytorch.GPyTorchPosterior.dtype">
-<code class="descname">dtype</code><a class="headerlink" href="#botorch.posteriors.gpytorch.GPyTorchPosterior.dtype" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">dtype</code><a class="headerlink" href="#botorch.posteriors.gpytorch.GPyTorchPosterior.dtype" title="Permalink to this definition">¶</a></dt>
 <dd><p>The torch dtype of the posterior.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
@@ -170,9 +170,9 @@ MultitaskMultivariateNormal (multi-output case).</p>
 </dd>
 </dl>
 </dd></dl>
-<dl class="attribute">
+<dl class="method">
 <dt id="botorch.posteriors.gpytorch.GPyTorchPosterior.event_shape">
-<code class="descname">event_shape</code><a class="headerlink" href="#botorch.posteriors.gpytorch.GPyTorchPosterior.event_shape" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">event_shape</code><a class="headerlink" href="#botorch.posteriors.gpytorch.GPyTorchPosterior.event_shape" title="Permalink to this definition">¶</a></dt>
 <dd><p>The event shape (i.e. the shape of a single sample) of the posterior.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
@@ -180,9 +180,9 @@ MultitaskMultivariateNormal (multi-output case).</p>
 </dd>
 </dl>
 </dd></dl>
-<dl class="attribute">
+<dl class="method">
 <dt id="botorch.posteriors.gpytorch.GPyTorchPosterior.mean">
-<code class="descname">mean</code><a class="headerlink" href="#botorch.posteriors.gpytorch.GPyTorchPosterior.mean" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">mean</code><a class="headerlink" href="#botorch.posteriors.gpytorch.GPyTorchPosterior.mean" title="Permalink to this definition">¶</a></dt>
 <dd><p>The posterior mean.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
@@ -192,7 +192,7 @@ MultitaskMultivariateNormal (multi-output case).</p>
 </dd></dl>
 <dl class="method">
 <dt id="botorch.posteriors.gpytorch.GPyTorchPosterior.rsample">
-<code class="descname">rsample</code><span class="sig-paren">(</span><em>sample_shape=None</em>, <em>base_samples=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/posteriors/gpytorch.html#GPyTorchPosterior.rsample"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.posteriors.gpytorch.GPyTorchPosterior.rsample" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">rsample</code><span class="sig-paren">(</span><em class="sig-param">sample_shape=None</em>, <em class="sig-param">base_samples=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/posteriors/gpytorch.html#GPyTorchPosterior.rsample"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.posteriors.gpytorch.GPyTorchPosterior.rsample" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sample from the posterior (with gradients).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -213,9 +213,9 @@ This is used for deterministic optimization.</p></li>
 </dd>
 </dl>
 </dd></dl>
-<dl class="attribute">
+<dl class="method">
 <dt id="botorch.posteriors.gpytorch.GPyTorchPosterior.variance">
-<code class="descname">variance</code><a class="headerlink" href="#botorch.posteriors.gpytorch.GPyTorchPosterior.variance" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">variance</code><a class="headerlink" href="#botorch.posteriors.gpytorch.GPyTorchPosterior.variance" title="Permalink to this definition">¶</a></dt>
 <dd><p>The posterior variance.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
@@ -242,7 +242,7 @@ This is used for deterministic optimization.</p></li>
 <li class="toctree-l1"><a class="reference internal" href="optim.html">botorch.optim</a></li>
 <li class="toctree-l1"><a class="reference internal" href="fit.html">botorch.fit</a></li>
 <li class="toctree-l1"><a class="reference internal" href="gen.html">botorch.gen</a></li>
-<li class="toctree-l1"><a class="reference internal" href="qmc.html">botorch.qmc</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sampling.html">botorch.sampling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="test_functions.html">botorch.test_functions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="exceptions.html">botorch.exceptions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="utils.html">botorch.utils</a></li>
@@ -257,10 +257,10 @@ This is used for deterministic optimization.</p></li>
 </ul>
 </div>
 <div id="searchbox" role="search" style="display: none">
-<h3>Quick search</h3>
+<h3 id="searchlabel">Quick search</h3>
 <div class="searchformwrapper">
 <form action="search.html" class="search" method="get">
-<input name="q" type="text"/>
+<input aria-labelledby="searchlabel" name="q" type="text"/>
 <input type="submit" value="Go"/>
 </form>
 </div>

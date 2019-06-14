@@ -70,7 +70,8 @@ new_point_analytic
 # In[6]:
 
 
-from botorch.acquisition import qExpectedImprovement, SobolQMCNormalSampler
+from botorch.acquisition import qExpectedImprovement
+from botorch.sampling import SobolQMCNormalSampler
 
 
 sampler = SobolQMCNormalSampler(num_samples=500, seed=0, resample=False)        
