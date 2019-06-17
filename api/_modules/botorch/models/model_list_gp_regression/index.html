@@ -32,7 +32,7 @@
 <span class="sd">Model List GP Regression models.</span>
 <span class="sd">"""</span>
 
-<span class="kn">import</span> <span class="nn">typing</span>  <span class="c1"># noqa F401</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Any</span>
 
 <span class="kn">from</span> <span class="nn">gpytorch.models</span> <span class="k">import</span> <span class="n">IndependentModelList</span>
 <span class="kn">from</span> <span class="nn">torch</span> <span class="k">import</span> <span class="n">Tensor</span>
@@ -67,56 +67,51 @@
 <span class="sd">        """</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">gp_models</span><span class="p">)</span>
 
-<div class="viewcode-block" id="ModelListGP.get_fantasy_model"><a class="viewcode-back" href="../../../models.html#botorch.models.model_list_gp_regression.ModelListGP.get_fantasy_model">[docs]</a>    <span class="k">def</span> <span class="nf">get_fantasy_model</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">targets</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+<div class="viewcode-block" id="ModelListGP.condition_on_observations"><a class="viewcode-back" href="../../../models.html#botorch.models.model_list_gp_regression.ModelListGP.condition_on_observations">[docs]</a>    <span class="k">def</span> <span class="nf">condition_on_observations</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">Y</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"ModelListGP"</span><span class="p">:</span>
-        <span class="sa">r</span><span class="sd">"""Construct a fantasy model.</span>
-
-<span class="sd">        This method wraps gpytorch's `IndependentModelList.get_fantasy_model`</span>
-<span class="sd">        method to provide an API consistent with that of BoTorch's batched</span>
-<span class="sd">        multi-output GP models.</span>
+        <span class="sa">r</span><span class="sd">"""Condition the model on new observations.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            inputs: A `batch_shape x m x d` or</span>
-<span class="sd">                `f_batch_shape x batch_shape x m x d`-dim Tensor of inputs for the</span>
-<span class="sd">                fantasy observations, where `f_batch_shape` are fantasy batch</span>
-<span class="sd">                dimensions. Note: when using the same inputs for all fantasies,</span>
-<span class="sd">                inputs should be `batch_shape x m x d` to avoid recomputing the</span>
-<span class="sd">                repeated blocks of the covariance matrix. Additionally, if provided,</span>
-<span class="sd">                the "noise" keyword argument should map to a `batch_shape x m`-dim</span>
-<span class="sd">                Tensor of observed measurement noise for fastest performance.</span>
-<span class="sd">            targets: `batch_shape x m x o` or</span>
-<span class="sd">                `f_batch_shape x batch_shape x m x o`-dim Tensor of fantasy</span>
-<span class="sd">                observations.</span>
+<span class="sd">            X: A `batch_shape x m x d`-dim Tensor, where `d` is the dimension of</span>
+<span class="sd">                the feature space, `m` is the number of points per batch, and</span>
+<span class="sd">                `batch_shape` is the batch shape (must be compatible with the</span>
+<span class="sd">                batch shape of the model).</span>
+<span class="sd">            Y: A `batch_shape' x m x (o)`-dim Tensor, where `o` is the number of</span>
+<span class="sd">                model outputs, `m` is the number of points per batch, and</span>
+<span class="sd">                `batch_shape'` is the batch shape of the observations.</span>
+<span class="sd">                `batch_shape'` must be broadcastable to `batch_shape` using</span>
+<span class="sd">                standard broadcasting semantics. If `Y` has fewer batch dimensions</span>
+<span class="sd">                than `X`, its is assumed that the missing batch dimensions are</span>
+<span class="sd">                the same for all `Y`.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            A `ModelListGP`, where the `i`-th model has `n_i + m` training examples,</span>
-<span class="sd">            where the `m` fantasy examples have been added and all test-time caches</span>
-<span class="sd">            have been updated.</span>
+<span class="sd">            A `ModelListGPyTorchModel` representing the original model</span>
+<span class="sd">            conditioned on the new observations `(X, Y)` (and possibly noise</span>
+<span class="sd">            observations passed in via kwargs). Here the `i`-th model has</span>
+<span class="sd">            `n_i + m` training examples, where the `m` training examples have</span>
+<span class="sd">            been added and all test-time caches have been updated.</span>
 <span class="sd">        """</span>
-        <span class="n">inputs_</span> <span class="o">=</span> <span class="p">[</span><span class="n">inputs</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_outputs</span>
-        <span class="k">if</span> <span class="n">targets</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_outputs</span><span class="p">:</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="p">[</span><span class="n">X</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_outputs</span>
+        <span class="k">if</span> <span class="n">Y</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_outputs</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s2">"Incorrect number of outputs for fantasy observations. "</span>
-                <span class="n">f</span><span class="s2">"Received </span><span class="si">{targets.shape[-1]}</span><span class="s2"> observation outputs, but "</span>
-                <span class="n">f</span><span class="s2">"model has </span><span class="si">{self.num_outputs}</span><span class="s2"> outputs."</span>
+                <span class="s2">"Incorrect number of outputs for observations. Received "</span>
+                <span class="n">f</span><span class="s2">"</span><span class="si">{Y.shape[-1]}</span><span class="s2"> observation outputs, but model has "</span>
+                <span class="n">f</span><span class="s2">"</span><span class="si">{self.num_outputs}</span><span class="s2"> outputs."</span>
             <span class="p">)</span>
-        <span class="n">targets_</span> <span class="o">=</span> <span class="p">[</span><span class="n">targets</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">targets</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])]</span>
+        <span class="n">targets</span> <span class="o">=</span> <span class="p">[</span><span class="n">Y</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Y</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])]</span>
         <span class="k">if</span> <span class="s2">"noise"</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
             <span class="n">noise</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"noise"</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">noise</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_outputs</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                    <span class="s2">"Incorrect number of outputs for fantasy noise. "</span>
+                    <span class="s2">"Incorrect number of outputs for noise observations. "</span>
                     <span class="n">f</span><span class="s2">"Received </span><span class="si">{noise.shape[-1]}</span><span class="s2"> observation outputs, but "</span>
                     <span class="n">f</span><span class="s2">"model has </span><span class="si">{self.num_outputs}</span><span class="s2"> outputs."</span>
                 <span class="p">)</span>
-            <span class="n">kwargs_</span> <span class="o">=</span> <span class="p">{</span>
-                <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
-                <span class="s2">"noise"</span><span class="p">:</span> <span class="p">[</span><span class="n">noise</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">targets</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])],</span>
-            <span class="p">}</span>
+            <span class="n">kwargs_</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="n">kwargs</span><span class="p">,</span> <span class="s2">"noise"</span><span class="p">:</span> <span class="p">[</span><span class="n">noise</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Y</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])]}</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">kwargs_</span> <span class="o">=</span> <span class="n">kwargs</span>
-        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">get_fantasy_model</span><span class="p">(</span><span class="n">inputs_</span><span class="p">,</span> <span class="n">targets_</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs_</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">get_fantasy_model</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs_</span><span class="p">)</span></div></div>
 </pre></div>
 </div>
 </div>

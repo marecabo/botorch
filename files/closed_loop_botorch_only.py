@@ -79,7 +79,7 @@ def initialize_model(train_x, train_obj, train_con, state_dict=None):
     model_obj = FixedNoiseGP(train_x, train_obj, train_yvar.expand_as(train_obj)).to(train_x)
     model_con = FixedNoiseGP(train_x, train_con, train_yvar.expand_as(train_con)).to(train_x)
     # combine into a multi-output GP model
-    model = ModelListGP(gp_models=[model_obj, model_con])
+    model = ModelListGP(model_obj, model_con)
     mll = SumMarginalLogLikelihood(model.likelihood, model)
     # load state dict if it is passed
     if state_dict is not None:

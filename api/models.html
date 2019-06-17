@@ -34,6 +34,65 @@
 <em class="property">class </em><code class="sig-prename descclassname">botorch.models.model.</code><code class="sig-name descname">Model</code><a class="reference internal" href="_modules/botorch/models/model.html#Model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.models.model.Model" title="Permalink to this definition">¶</a></dt>
 <dd><p>Abstract base class for BoTorch models.</p>
 <dl class="method">
+<dt id="botorch.models.model.Model.condition_on_observations">
+<code class="sig-name descname">condition_on_observations</code><span class="sig-paren">(</span><em class="sig-param">X</em>, <em class="sig-param">Y</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/models/model.html#Model.condition_on_observations"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.models.model.Model.condition_on_observations" title="Permalink to this definition">¶</a></dt>
+<dd><p>Condition the model on new observations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>) – A <cite>batch_shape x m x d</cite>-dim Tensor, where <cite>d</cite> is the dimension of
+the feature space, <cite>m</cite> is the number of points per batch, and
+<cite>batch_shape</cite> is the batch shape (must be compatible with the
+batch shape of the model).</p></li>
+<li><p><strong>Y</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>) – A <cite>batch_shape’ x m x (o)</cite>-dim Tensor, where <cite>o</cite> is the number of
+model outputs, <cite>m</cite> is the number of points per batch, and
+<cite>batch_shape’</cite> is the batch shape of the observations.
+<cite>batch_shape’</cite> must be broadcastable to <cite>batch_shape</cite> using
+standard broadcasting semantics. If <cite>Y</cite> has fewer batch dimensions
+than <cite>X</cite>, it is assumed that the missing batch dimensions are
+the same for all <cite>Y</cite>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="#botorch.models.model.Model" title="botorch.models.model.Model"><code class="xref py py-class docutils literal notranslate"><span class="pre">Model</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A <cite>Model</cite> object of the same type, representing the original model
+conditioned on the new observations <cite>(X, Y)</cite> (and possibly noise
+observations passed in via kwargs).</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="method">
+<dt id="botorch.models.model.Model.fantasize">
+<code class="sig-name descname">fantasize</code><span class="sig-paren">(</span><em class="sig-param">X</em>, <em class="sig-param">sampler</em>, <em class="sig-param">observation_noise=True</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/models/model.html#Model.fantasize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.models.model.Model.fantasize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Construct a fantasy model.</p>
+<p>Constructs a fantasy model in the following fashion:
+(1) compute the model posterior at <cite>X</cite> (including observation noise if
+<cite>observation_noise=True</cite>).
+(2) sample from this posterior (using <cite>sampler</cite>) to generate “fake”
+observations.
+(3) condition the model on the new fake observations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>) – A <cite>batch_shape x m x d</cite>-dim Tensor, where <cite>d</cite> is the dimension of
+the feature space, <cite>m</cite> is the number of points per batch, and
+<cite>batch_shape</cite> is the batch shape (must be compatible with the
+batch shape of the model).</p></li>
+<li><p><strong>sampler</strong> (<a class="reference internal" href="sampling.html#botorch.sampling.samplers.MCSampler" title="botorch.sampling.samplers.MCSampler"><code class="xref py py-class docutils literal notranslate"><span class="pre">MCSampler</span></code></a>) – The sampler used for sampling from the posterior at <cite>X</cite>.</p></li>
+<li><p><strong>observation_noise</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If True, include observation noise.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="#botorch.models.model.Model" title="botorch.models.model.Model"><code class="xref py py-class docutils literal notranslate"><span class="pre">Model</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The constructed fantasy model.</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="method">
 <dt id="botorch.models.model.Model.posterior">
 <em class="property">abstract </em><code class="sig-name descname">posterior</code><span class="sig-paren">(</span><em class="sig-param">X</em>, <em class="sig-param">output_indices=None</em>, <em class="sig-param">observation_noise=False</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/models/model.html#Model.posterior"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.models.model.Model.posterior" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the posterior over model outputs at the provided points.</p>
@@ -71,6 +130,45 @@ over <cite>q</cite> points and <cite>o</cite> outputs each.</p>
 <p>The easiest way to use this is to subclass a model from a GPyTorch model
 class (e.g. an <cite>ExactGP</cite>) and this <cite>GPyTorchModel</cite>. See e.g. <cite>SingleTaskGP</cite>.</p>
 <dl class="method">
+<dt id="botorch.models.gpytorch.GPyTorchModel.condition_on_observations">
+<code class="sig-name descname">condition_on_observations</code><span class="sig-paren">(</span><em class="sig-param">X</em>, <em class="sig-param">Y</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/models/gpytorch.html#GPyTorchModel.condition_on_observations"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.models.gpytorch.GPyTorchModel.condition_on_observations" title="Permalink to this definition">¶</a></dt>
+<dd><p>Condition the model on new observations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>) – A <cite>batch_shape x n x d</cite>-dim Tensor, where <cite>d</cite> is the dimension of
+the feature space, <cite>n</cite> is the number of points per batch, and
+<cite>batch_shape</cite> is the batch shape (must be compatible with the
+batch shape of the model).</p></li>
+<li><p><strong>Y</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>) – A <cite>batch_shape’ x n x (o)</cite>-dim Tensor, where <cite>o</cite> is the number of
+model outputs, <cite>n</cite> is the number of points per batch, and
+<cite>batch_shape’</cite> is the batch shape of the observations.
+<cite>batch_shape’</cite> must be broadcastable to <cite>batch_shape</cite> using
+standard broadcasting semantics. If <cite>Y</cite> has fewer batch dimensions
+than <cite>X</cite>, its is assumed that the missing batch dimensions are
+the same for all <cite>Y</cite>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="#botorch.models.model.Model" title="botorch.models.model.Model"><code class="xref py py-class docutils literal notranslate"><span class="pre">Model</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A <cite>Model</cite> object of the same type, representing the original model
+conditioned on the new observations <cite>(X, Y)</cite> (and possibly noise
+observations passed in via kwargs).</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">train_X</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">train_Y</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">train_X</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="n">torch</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">train_X</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">SingleTaskGP</span><span class="p">(</span><span class="n">train_X</span><span class="p">,</span> <span class="n">train_Y</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">new_X</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">new_Y</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">new_X</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="n">torch</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">new_X</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">condition_on_observations</span><span class="p">(</span><span class="n">X</span><span class="o">=</span><span class="n">new_X</span><span class="p">,</span> <span class="n">Y</span><span class="o">=</span><span class="n">new_Y</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+<dl class="method">
 <dt id="botorch.models.gpytorch.GPyTorchModel.posterior">
 <code class="sig-name descname">posterior</code><span class="sig-paren">(</span><em class="sig-param">X</em>, <em class="sig-param">observation_noise=False</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/models/gpytorch.html#GPyTorchModel.posterior"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.models.gpytorch.GPyTorchModel.posterior" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the posterior over model outputs at the provided points.</p>
@@ -80,10 +178,10 @@ class (e.g. an <cite>ExactGP</cite>) and this <cite>GPyTorchModel</cite>. See e.
 <li><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>) – A <cite>(batch_shape) x q x d</cite>-dim Tensor, where <cite>d</cite> is the dimension of the
 feature space and <cite>q</cite> is the number of points considered jointly.</p></li>
 <li><p><strong>observation_noise</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If True, add observation noise to the posterior.</p></li>
-<li><p><strong>detach_test_caches</strong> – If True, detach GPyTorch test caches during
-computation of the posterior. Required for being able to compute
+<li><p><strong>propagate_grads</strong> – If True, do not detach GPyTorch’s test caches when
+computing the posterior. Required for being able to compute
 derivatives with respect to training inputs at test time (used
-e.g. by qNoisyExpectedImprovement). Defaults to <cite>True</cite>.</p></li>
+e.g. by qNoisyExpectedImprovement). Defaults to <cite>False</cite>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
@@ -107,35 +205,46 @@ distributions over <cite>q</cite> points. Includes observation noise if
 <p>This model should be used when the same training data is used for all outputs.
 Outputs are modeled independently by using a different batch for each output.</p>
 <dl class="method">
-<dt id="botorch.models.gpytorch.BatchedMultiOutputGPyTorchModel.get_fantasy_model">
-<code class="sig-name descname">get_fantasy_model</code><span class="sig-paren">(</span><em class="sig-param">inputs</em>, <em class="sig-param">targets</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/models/gpytorch.html#BatchedMultiOutputGPyTorchModel.get_fantasy_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.models.gpytorch.BatchedMultiOutputGPyTorchModel.get_fantasy_model" title="Permalink to this definition">¶</a></dt>
-<dd><p>Wrapper method around <cite>gpytorch.models.exact_gp.ExactGP.get_fantasy_model</cite>.</p>
-<p>This method adapts <cite>get_fantasy_model</cite> to support batched multi-output GPs.</p>
+<dt id="botorch.models.gpytorch.BatchedMultiOutputGPyTorchModel.condition_on_observations">
+<code class="sig-name descname">condition_on_observations</code><span class="sig-paren">(</span><em class="sig-param">X</em>, <em class="sig-param">Y</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/models/gpytorch.html#BatchedMultiOutputGPyTorchModel.condition_on_observations"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.models.gpytorch.BatchedMultiOutputGPyTorchModel.condition_on_observations" title="Permalink to this definition">¶</a></dt>
+<dd><p>Condition the model on new observations.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>inputs</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>) – A <cite>batch_shape x m x d</cite> or
-<cite>f_batch_shape x batch_shape x m x d</cite>-dim Tensor of inputs for the
-fantasy observations, where <cite>f_batch_shape</cite> are fantasy batch
-dimensions. Note: when using the same inputs for all fantasies,
-inputs should be <cite>batch_shape x m x d</cite> to avoid recomputing the
-repeated blocks of the covariance matrix. Additionally, if provided,
-the “noise” keyword argument should map to a <cite>batch_shape x m</cite>-dim
-Tensor of observed measurement noise for fastest performance.</p></li>
-<li><p><strong>targets</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>) – <cite>batch_shape x m x o</cite> or
-<cite>f_batch_shape x batch_shape x m x o</cite>-dim Tensor of fantasy
-observations.</p></li>
+<li><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>) – A <cite>batch_shape x m x d</cite>-dim Tensor, where <cite>d</cite> is the dimension of
+the feature space, <cite>m</cite> is the number of points per batch, and
+<cite>batch_shape</cite> is the batch shape (must be compatible with the
+batch shape of the model).</p></li>
+<li><p><strong>Y</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>) – A <cite>batch_shape’ x m x (o)</cite>-dim Tensor, where <cite>o</cite> is the number of
+model outputs, <cite>m</cite> is the number of points per batch, and
+<cite>batch_shape’</cite> is the batch shape of the observations.
+<cite>batch_shape’</cite> must be broadcastable to <cite>batch_shape</cite> using
+standard broadcasting semantics. If <cite>Y</cite> has fewer batch dimensions
+than <cite>X</cite>, its is assumed that the missing batch dimensions are
+the same for all <cite>Y</cite>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p><a class="reference internal" href="#botorch.models.gpytorch.BatchedMultiOutputGPyTorchModel" title="botorch.models.gpytorch.BatchedMultiOutputGPyTorchModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">BatchedMultiOutputGPyTorchModel</span></code></a></p>
 </dd>
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>A <cite>BatchedMultiOutputGPyTorchModel</cite> with <cite>n + m</cite> training examples,
-where the <cite>m</cite> fantasy examples have been added and all test-time
-caches have been updated.</p>
+<dd class="field-odd"><p>A <cite>BatchedMultiOutputGPyTorchModel</cite> object of the same type with
+<cite>n + m</cite> training examples, representing the original model
+conditioned on the new observations <cite>(X, Y)</cite> (and possibly noise
+observations passed in via kwargs).</p>
 </dd>
 </dl>
+<p class="rubric">Example</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">train_X</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">train_Y</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">train_X</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]),</span> <span class="n">torch</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">train_X</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">])],</span> <span class="o">-</span><span class="mi">1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">SingleTaskGP</span><span class="p">(</span><span class="n">train_X</span><span class="p">,</span> <span class="n">train_Y</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">new_X</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">new_Y</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">torch</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">new_X</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]),</span> <span class="n">torch</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">new_X</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">])],</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">condition_on_observations</span><span class="p">(</span><span class="n">X</span><span class="o">=</span><span class="n">new_X</span><span class="p">,</span> <span class="n">Y</span><span class="o">=</span><span class="n">new_Y</span><span class="p">)</span>
+</pre></div>
+</div>
 </dd></dl>
 <dl class="method">
 <dt id="botorch.models.gpytorch.BatchedMultiOutputGPyTorchModel.posterior">
@@ -152,10 +261,10 @@ Can be used to speed up computation if only a subset of the
 model’s outputs are required for optimization. If omitted,
 computes the posterior over all model outputs.</p></li>
 <li><p><strong>observation_noise</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If True, add observation noise to the posterior.</p></li>
-<li><p><strong>detach_test_caches</strong> – If True, detach GPyTorch test caches during
-computation of the posterior. Required for being able to compute
+<li><p><strong>propagate_grads</strong> – If True, do not detach GPyTorch’s test caches when
+computing of the posterior. Required for being able to compute
 derivatives with respect to training inputs at test time (used
-e.g. by qNoisyExpectedImprovement). Defaults to <cite>True</cite>.</p></li>
+e.g. by qNoisyExpectedImprovement). Defaults to <cite>False</cite>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
@@ -179,6 +288,45 @@ distributions over <cite>q</cite> points and the outputs selected by
 <dd><p>Abstract base class for models based on multi-output GPyTorch models.</p>
 <p>This is meant to be used with a gpytorch ModelList wrapper for independent
 evaluation of submodels.</p>
+<dl class="method">
+<dt id="botorch.models.gpytorch.ModelListGPyTorchModel.condition_on_observations">
+<code class="sig-name descname">condition_on_observations</code><span class="sig-paren">(</span><em class="sig-param">X</em>, <em class="sig-param">Y</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/models/gpytorch.html#ModelListGPyTorchModel.condition_on_observations"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.models.gpytorch.ModelListGPyTorchModel.condition_on_observations" title="Permalink to this definition">¶</a></dt>
+<dd><p>Condition the model on new observations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>) – A <cite>batch_shape x n x d</cite>-dim Tensor, where <cite>d</cite> is the dimension of
+the feature space, <cite>n</cite> is the number of points per batch, and
+<cite>batch_shape</cite> is the batch shape (must be compatible with the
+batch shape of the model).</p></li>
+<li><p><strong>Y</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>) – A <cite>batch_shape’ x n x (o)</cite>-dim Tensor, where <cite>o</cite> is the number of
+model outputs, <cite>n</cite> is the number of points per batch, and
+<cite>batch_shape’</cite> is the batch shape of the observations.
+<cite>batch_shape’</cite> must be broadcastable to <cite>batch_shape</cite> using
+standard broadcasting semantics. If <cite>Y</cite> has fewer batch dimensions
+than <cite>X</cite>, its is assumed that the missing batch dimensions are
+the same for all <cite>Y</cite>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="#botorch.models.gpytorch.ModelListGPyTorchModel" title="botorch.models.gpytorch.ModelListGPyTorchModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">ModelListGPyTorchModel</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A <cite>Model</cite> object of the same type, representing the original model
+conditioned on the new observations <cite>(X, Y)</cite> (and possibly noise
+observations passed in via kwargs).</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">train_X</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">train_Y</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">train_X</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="n">torch</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">train_X</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">SingleTaskGP</span><span class="p">(</span><span class="n">train_X</span><span class="p">,</span> <span class="n">train_Y</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">new_X</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">new_Y</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">new_X</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="n">torch</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">new_X</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">condition_on_observations</span><span class="p">(</span><span class="n">X</span><span class="o">=</span><span class="n">new_X</span><span class="p">,</span> <span class="n">Y</span><span class="o">=</span><span class="n">new_Y</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
 <dl class="method">
 <dt id="botorch.models.gpytorch.ModelListGPyTorchModel.num_outputs">
 <em class="property">abstract property </em><code class="sig-name descname">num_outputs</code><a class="headerlink" href="#botorch.models.gpytorch.ModelListGPyTorchModel.num_outputs" title="Permalink to this definition">¶</a></dt>
@@ -205,10 +353,10 @@ Can be used to speed up computation if only a subset of the
 model’s outputs are required for optimization. If omitted,
 computes the posterior over all model outputs.</p></li>
 <li><p><strong>observation_noise</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If True, add observation noise to the posterior.</p></li>
-<li><p><strong>detach_test_caches</strong> – If True, detach GPyTorch test caches during
-computation of the posterior. Required for being able to compute
+<li><p><strong>propagate_grads</strong> – If True, do not detach GPyTorch’s test caches when
+computing of the posterior. Required for being able to compute
 derivatives with respect to training inputs at test time (used
-e.g. by qNoisyExpectedImprovement).</p></li>
+e.g. by qNoisyExpectedImprovement). Defaults to <cite>False</cite>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
@@ -248,10 +396,10 @@ Can be used to speed up computation if only a subset of the
 model’s outputs are required for optimization. If omitted,
 computes the posterior over all model outputs.</p></li>
 <li><p><strong>observation_noise</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If True, add observation noise to the posterior.</p></li>
-<li><p><strong>detach_test_caches</strong> – If True, detach GPyTorch test caches during
-computation of the posterior. Required for being able to compute
+<li><p><strong>propagate_grads</strong> – If True, do not detach GPyTorch’s test caches when
+computing of the posterior. Required for being able to compute
 derivatives with respect to training inputs at test time (used
-e.g. by qNoisyExpectedImprovement).</p></li>
+e.g. by qNoisyExpectedImprovement). Defaults to <cite>False</cite>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
@@ -301,7 +449,7 @@ GaussianLikelihood with inferred noise level.</p></li>
 </dl>
 <p class="rubric">Example</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">train_X</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">train_Y</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">train_X</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]])</span> <span class="o">+</span> <span class="n">torch</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">train_X</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">train_Y</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">train_X</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="n">torch</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">train_X</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">SingleTaskGP</span><span class="p">(</span><span class="n">train_X</span><span class="p">,</span> <span class="n">train_Y</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -338,6 +486,38 @@ training observations.</p></li>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">FixedNoiseGP</span><span class="p">(</span><span class="n">train_X</span><span class="p">,</span> <span class="n">train_Y</span><span class="p">,</span> <span class="n">train_Yvar</span><span class="p">)</span>
 </pre></div>
 </div>
+<dl class="method">
+<dt id="botorch.models.gp_regression.FixedNoiseGP.fantasize">
+<code class="sig-name descname">fantasize</code><span class="sig-paren">(</span><em class="sig-param">X</em>, <em class="sig-param">sampler</em>, <em class="sig-param">observation_noise=True</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/models/gp_regression.html#FixedNoiseGP.fantasize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.models.gp_regression.FixedNoiseGP.fantasize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Construct a fantasy model.</p>
+<p>Constructs a fantasy model in the following fashion:
+(1) compute the model posterior at <cite>X</cite> (if <cite>observation_noise=True</cite>,
+this includes observation noise, which is taken as the mean across
+the observation noise in the training data).
+(2) sample from this posterior (using <cite>sampler</cite>) to generate “fake”
+observations.
+(3) condition the model on the new fake observations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>) – A <cite>batch_shape x m x d</cite>-dim Tensor, where <cite>d</cite> is the dimension of
+the feature space, <cite>m</cite> is the number of points per batch, and
+<cite>batch_shape</cite> is the batch shape (must be compatible with the
+batch shape of the model).</p></li>
+<li><p><strong>sampler</strong> (<a class="reference internal" href="sampling.html#botorch.sampling.samplers.MCSampler" title="botorch.sampling.samplers.MCSampler"><code class="xref py py-class docutils literal notranslate"><span class="pre">MCSampler</span></code></a>) – The sampler used for sampling from the posterior at <cite>X</cite>.</p></li>
+<li><p><strong>observation_noise</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If True, include the mean across the observation
+noise in the training data as observation noise in the posterior
+from which the samples are drawn.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="#botorch.models.gp_regression.FixedNoiseGP" title="botorch.models.gp_regression.FixedNoiseGP"><code class="xref py py-class docutils literal notranslate"><span class="pre">FixedNoiseGP</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The constructed fantasy model.</p>
+</dd>
+</dl>
+</dd></dl>
 <dl class="method">
 <dt id="botorch.models.gp_regression.FixedNoiseGP.forward">
 <code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/models/gp_regression.html#FixedNoiseGP.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.models.gp_regression.FixedNoiseGP.forward" title="Permalink to this definition">¶</a></dt>
@@ -388,6 +568,48 @@ training observations.</p></li>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">HeteroskedasticSingleTaskGP</span><span class="p">(</span><span class="n">train_X</span><span class="p">,</span> <span class="n">train_Y</span><span class="p">,</span> <span class="n">train_Yvar</span><span class="p">)</span>
 </pre></div>
 </div>
+<dl class="method">
+<dt id="botorch.models.gp_regression.HeteroskedasticSingleTaskGP.condition_on_observations">
+<code class="sig-name descname">condition_on_observations</code><span class="sig-paren">(</span><em class="sig-param">X</em>, <em class="sig-param">Y</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/models/gp_regression.html#HeteroskedasticSingleTaskGP.condition_on_observations"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.models.gp_regression.HeteroskedasticSingleTaskGP.condition_on_observations" title="Permalink to this definition">¶</a></dt>
+<dd><p>Condition the model on new observations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>) – A <cite>batch_shape x m x d</cite>-dim Tensor, where <cite>d</cite> is the dimension of
+the feature space, <cite>m</cite> is the number of points per batch, and
+<cite>batch_shape</cite> is the batch shape (must be compatible with the
+batch shape of the model).</p></li>
+<li><p><strong>Y</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>) – A <cite>batch_shape’ x m x (o)</cite>-dim Tensor, where <cite>o</cite> is the number of
+model outputs, <cite>m</cite> is the number of points per batch, and
+<cite>batch_shape’</cite> is the batch shape of the observations.
+<cite>batch_shape’</cite> must be broadcastable to <cite>batch_shape</cite> using
+standard broadcasting semantics. If <cite>Y</cite> has fewer batch dimensions
+than <cite>X</cite>, its is assumed that the missing batch dimensions are
+the same for all <cite>Y</cite>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="#botorch.models.gp_regression.HeteroskedasticSingleTaskGP" title="botorch.models.gp_regression.HeteroskedasticSingleTaskGP"><code class="xref py py-class docutils literal notranslate"><span class="pre">HeteroskedasticSingleTaskGP</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A <cite>BatchedMultiOutputGPyTorchModel</cite> object of the same type with
+<cite>n + m</cite> training examples, representing the original model
+conditioned on the new observations <cite>(X, Y)</cite> (and possibly noise
+observations passed in via kwargs).</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">train_X</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">train_Y</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">train_X</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]),</span> <span class="n">torch</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">train_X</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">])],</span> <span class="o">-</span><span class="mi">1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">SingleTaskGP</span><span class="p">(</span><span class="n">train_X</span><span class="p">,</span> <span class="n">train_Y</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">new_X</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">new_Y</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">torch</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">new_X</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]),</span> <span class="n">torch</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">new_X</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">])],</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">condition_on_observations</span><span class="p">(</span><span class="n">X</span><span class="o">=</span><span class="n">new_X</span><span class="p">,</span> <span class="n">Y</span><span class="o">=</span><span class="n">new_Y</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
 </dd></dl>
 </div>
 <div class="section" id="modellistgp">
@@ -417,35 +639,34 @@ structure, you should consider using a batched GP model instead).</p>
 </pre></div>
 </div>
 <dl class="method">
-<dt id="botorch.models.model_list_gp_regression.ModelListGP.get_fantasy_model">
-<code class="sig-name descname">get_fantasy_model</code><span class="sig-paren">(</span><em class="sig-param">inputs</em>, <em class="sig-param">targets</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/models/model_list_gp_regression.html#ModelListGP.get_fantasy_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.models.model_list_gp_regression.ModelListGP.get_fantasy_model" title="Permalink to this definition">¶</a></dt>
-<dd><p>Construct a fantasy model.</p>
-<p>This method wraps gpytorch’s <cite>IndependentModelList.get_fantasy_model</cite>
-method to provide an API consistent with that of BoTorch’s batched
-multi-output GP models.</p>
+<dt id="botorch.models.model_list_gp_regression.ModelListGP.condition_on_observations">
+<code class="sig-name descname">condition_on_observations</code><span class="sig-paren">(</span><em class="sig-param">X</em>, <em class="sig-param">Y</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/models/model_list_gp_regression.html#ModelListGP.condition_on_observations"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.models.model_list_gp_regression.ModelListGP.condition_on_observations" title="Permalink to this definition">¶</a></dt>
+<dd><p>Condition the model on new observations.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>inputs</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>) – A <cite>batch_shape x m x d</cite> or
-<cite>f_batch_shape x batch_shape x m x d</cite>-dim Tensor of inputs for the
-fantasy observations, where <cite>f_batch_shape</cite> are fantasy batch
-dimensions. Note: when using the same inputs for all fantasies,
-inputs should be <cite>batch_shape x m x d</cite> to avoid recomputing the
-repeated blocks of the covariance matrix. Additionally, if provided,
-the “noise” keyword argument should map to a <cite>batch_shape x m</cite>-dim
-Tensor of observed measurement noise for fastest performance.</p></li>
-<li><p><strong>targets</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>) – <cite>batch_shape x m x o</cite> or
-<cite>f_batch_shape x batch_shape x m x o</cite>-dim Tensor of fantasy
-observations.</p></li>
+<li><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>) – A <cite>batch_shape x m x d</cite>-dim Tensor, where <cite>d</cite> is the dimension of
+the feature space, <cite>m</cite> is the number of points per batch, and
+<cite>batch_shape</cite> is the batch shape (must be compatible with the
+batch shape of the model).</p></li>
+<li><p><strong>Y</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>) – A <cite>batch_shape’ x m x (o)</cite>-dim Tensor, where <cite>o</cite> is the number of
+model outputs, <cite>m</cite> is the number of points per batch, and
+<cite>batch_shape’</cite> is the batch shape of the observations.
+<cite>batch_shape’</cite> must be broadcastable to <cite>batch_shape</cite> using
+standard broadcasting semantics. If <cite>Y</cite> has fewer batch dimensions
+than <cite>X</cite>, its is assumed that the missing batch dimensions are
+the same for all <cite>Y</cite>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p><a class="reference internal" href="#botorch.models.model_list_gp_regression.ModelListGP" title="botorch.models.model_list_gp_regression.ModelListGP"><code class="xref py py-class docutils literal notranslate"><span class="pre">ModelListGP</span></code></a></p>
 </dd>
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>A <cite>ModelListGP</cite>, where the <cite>i</cite>-th model has <cite>n_i + m</cite> training examples,
-where the <cite>m</cite> fantasy examples have been added and all test-time caches
-have been updated.</p>
+<dd class="field-odd"><p>A <cite>ModelListGPyTorchModel</cite> representing the original model
+conditioned on the new observations <cite>(X, Y)</cite> (and possibly noise
+observations passed in via kwargs). Here the <cite>i</cite>-th model has
+<cite>n_i + m</cite> training examples, where the <cite>m</cite> training examples have
+been added and all test-time caches have been updated.</p>
 </dd>
 </dl>
 </dd></dl>

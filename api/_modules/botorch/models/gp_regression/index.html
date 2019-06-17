@@ -33,7 +33,7 @@
 <span class="sd">"""</span>
 
 <span class="kn">from</span> <span class="nn">copy</span> <span class="k">import</span> <span class="n">deepcopy</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Optional</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Optional</span>
 
 <span class="kn">import</span> <span class="nn">torch</span>
 <span class="kn">from</span> <span class="nn">gpytorch.constraints.constraints</span> <span class="k">import</span> <span class="n">GreaterThan</span>
@@ -53,6 +53,7 @@
 <span class="kn">from</span> <span class="nn">gpytorch.priors.torch_priors</span> <span class="k">import</span> <span class="n">GammaPrior</span>
 <span class="kn">from</span> <span class="nn">torch</span> <span class="k">import</span> <span class="n">Tensor</span>
 
+<span class="kn">from</span> <span class="nn">..sampling.samplers</span> <span class="k">import</span> <span class="n">MCSampler</span>
 <span class="kn">from</span> <span class="nn">.gpytorch</span> <span class="k">import</span> <span class="n">BatchedMultiOutputGPyTorchModel</span>
 <span class="kn">from</span> <span class="nn">.utils</span> <span class="k">import</span> <span class="n">multioutput_to_batch_mode_transform</span>
 
@@ -92,7 +93,7 @@
 
 <span class="sd">        Example:</span>
 <span class="sd">            &gt;&gt;&gt; train_X = torch.rand(20, 2)</span>
-<span class="sd">            &gt;&gt;&gt; train_Y = torch.sin(train_X[:, 0]]) + torch.cos(train_X[:, 1])</span>
+<span class="sd">            &gt;&gt;&gt; train_Y = torch.sin(train_X[:, 0]) + torch.cos(train_X[:, 1])</span>
 <span class="sd">            &gt;&gt;&gt; model = SingleTaskGP(train_X, train_Y)</span>
 <span class="sd">        """</span>
         <span class="n">ard_num_dims</span> <span class="o">=</span> <span class="n">train_X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
@@ -191,6 +192,48 @@
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">train_X</span><span class="p">)</span>
 
+<div class="viewcode-block" id="FixedNoiseGP.fantasize"><a class="viewcode-back" href="../../../models.html#botorch.models.gp_regression.FixedNoiseGP.fantasize">[docs]</a>    <span class="k">def</span> <span class="nf">fantasize</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">X</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span>
+        <span class="n">sampler</span><span class="p">:</span> <span class="n">MCSampler</span><span class="p">,</span>
+        <span class="n">observation_noise</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"FixedNoiseGP"</span><span class="p">:</span>
+        <span class="sa">r</span><span class="sd">"""Construct a fantasy model.</span>
+
+<span class="sd">        Constructs a fantasy model in the following fashion:</span>
+<span class="sd">        (1) compute the model posterior at `X` (if `observation_noise=True`,</span>
+<span class="sd">        this includes observation noise, which is taken as the mean across</span>
+<span class="sd">        the observation noise in the training data).</span>
+<span class="sd">        (2) sample from this posterior (using `sampler`) to generate "fake"</span>
+<span class="sd">        observations.</span>
+<span class="sd">        (3) condition the model on the new fake observations.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            X: A `batch_shape x m x d`-dim Tensor, where `d` is the dimension of</span>
+<span class="sd">                the feature space, `m` is the number of points per batch, and</span>
+<span class="sd">                `batch_shape` is the batch shape (must be compatible with the</span>
+<span class="sd">                batch shape of the model).</span>
+<span class="sd">            sampler: The sampler used for sampling from the posterior at `X`.</span>
+<span class="sd">            observation_noise: If True, include the mean across the observation</span>
+<span class="sd">                noise in the training data as observation noise in the posterior</span>
+<span class="sd">                from which the samples are drawn.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The constructed fantasy model.</span>
+<span class="sd">        """</span>
+        <span class="n">post_X</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">posterior</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">observation_noise</span><span class="o">=</span><span class="n">observation_noise</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">Y_fantasized</span> <span class="o">=</span> <span class="n">sampler</span><span class="p">(</span><span class="n">post_X</span><span class="p">)</span>  <span class="c1"># num_fantasies x batch_shape x m x o</span>
+        <span class="c1"># Use the mean of the previous noise values (TODO: be smarter here).</span>
+        <span class="c1"># noise should be batch_shape x q x o when X is batch_shape x q x d, and</span>
+        <span class="c1"># Y_fantasized is num_fantasies x batch_shape x q x o.</span>
+        <span class="n">noise_shape</span> <span class="o">=</span> <span class="n">Y_fantasized</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+        <span class="k">if</span> <span class="n">noise_shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="c1"># If single output, do not include an output dimension.</span>
+            <span class="n">noise_shape</span> <span class="o">=</span> <span class="n">noise_shape</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">noise</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">likelihood</span><span class="o">.</span><span class="n">noise</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="n">noise_shape</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">condition_on_observations</span><span class="p">(</span><span class="n">X</span><span class="o">=</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="o">=</span><span class="n">Y_fantasized</span><span class="p">,</span> <span class="n">noise</span><span class="o">=</span><span class="n">noise</span><span class="p">)</span></div>
+
 <div class="viewcode-block" id="FixedNoiseGP.forward"><a class="viewcode-back" href="../../../models.html#botorch.models.gp_regression.FixedNoiseGP.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MultivariateNormal</span><span class="p">:</span>
         <span class="n">mean_x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mean_module</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
         <span class="n">covar_x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">covar_module</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
@@ -246,7 +289,12 @@
 
         <span class="n">likelihood</span> <span class="o">=</span> <span class="n">_GaussianLikelihoodBase</span><span class="p">(</span><span class="n">HeteroskedasticNoise</span><span class="p">(</span><span class="n">noise_model</span><span class="p">))</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">train_X</span><span class="o">=</span><span class="n">train_X</span><span class="p">,</span> <span class="n">train_Y</span><span class="o">=</span><span class="n">train_Y</span><span class="p">,</span> <span class="n">likelihood</span><span class="o">=</span><span class="n">likelihood</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">train_X</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">train_X</span><span class="p">)</span>
+
+<div class="viewcode-block" id="HeteroskedasticSingleTaskGP.condition_on_observations"><a class="viewcode-back" href="../../../models.html#botorch.models.gp_regression.HeteroskedasticSingleTaskGP.condition_on_observations">[docs]</a>    <span class="k">def</span> <span class="nf">condition_on_observations</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">Y</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"HeteroskedasticSingleTaskGP"</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div></div>
 </pre></div>
 </div>
 </div>
