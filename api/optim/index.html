@@ -387,7 +387,7 @@ included to match _sequential_optimize.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>acq_function</strong> (<a class="reference internal" href="acquisition.html#botorch.acquisition.acquisition.AcquisitionFunction" title="botorch.acquisition.acquisition.AcquisitionFunction"><code class="xref py py-class docutils literal notranslate"><span class="pre">AcquisitionFunction</span></code></a>) – The qNoisyExpectedImprovement acquisition function.</p></li>
+<li><p><strong>acq_function</strong> (<a class="reference internal" href="acquisition.html#botorch.acquisition.acquisition.AcquisitionFunction" title="botorch.acquisition.acquisition.AcquisitionFunction"><code class="xref py py-class docutils literal notranslate"><span class="pre">AcquisitionFunction</span></code></a>) – An AcquisitionFunction</p></li>
 <li><p><strong>bounds</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>) – A <cite>2 x d</cite> tensor of lower and upper bounds for each column of <cite>X</cite>.</p></li>
 <li><p><strong>q</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – The number of candidates.</p></li>
 <li><p><strong>num_restarts</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Number of starting points for multistart acquisition
@@ -619,6 +619,19 @@ range <cite>[0, p - 1]</cite>.</p></li>
 </dd>
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>The tensor X with fixed features.</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="function">
+<dt id="botorch.optim.utils.sample_all_priors">
+<code class="sig-prename descclassname">botorch.optim.utils.</code><code class="sig-name descname">sample_all_priors</code><span class="sig-paren">(</span><em class="sig-param">model</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/optim/utils.html#sample_all_priors"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.optim.utils.sample_all_priors" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sample from hyperparameter priors (in-place).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>model</strong> (<a class="reference internal" href="models.html#botorch.models.gpytorch.GPyTorchModel" title="botorch.models.gpytorch.GPyTorchModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">GPyTorchModel</span></code></a>) – A GPyTorchModel.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">None</span></code></p>
 </dd>
 </dl>
 </dd></dl>

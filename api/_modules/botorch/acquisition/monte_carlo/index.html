@@ -64,6 +64,7 @@
         <span class="n">model</span><span class="p">:</span> <span class="n">Model</span><span class="p">,</span>
         <span class="n">sampler</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">MCSampler</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">objective</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">MCAcquisitionObjective</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">X_pending</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sa">r</span><span class="sd">"""Constructor for the MCAcquisitionFunction base class.</span>
 
@@ -71,8 +72,11 @@
 <span class="sd">            model: A fitted model.</span>
 <span class="sd">            sampler: The sampler used to draw base samples. Defaults to</span>
 <span class="sd">                `SobolQMCNormalSampler(num_samples=512, collapse_batch_dims=True)`.</span>
-<span class="sd">            objective: THe MCAcquisitionObjective under which the samples are</span>
+<span class="sd">            objective: The MCAcquisitionObjective under which the samples are</span>
 <span class="sd">                evaluated. Defaults to `IdentityMCObjective()`.</span>
+<span class="sd">            X_pending:  A `m x d`-dim Tensor of `m` design points that have</span>
+<span class="sd">                points that have been submitted for function evaluation</span>
+<span class="sd">                but have not yet been evaluated.</span>
 <span class="sd">        """</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">sampler</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -81,12 +85,15 @@
         <span class="k">if</span> <span class="n">objective</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">objective</span> <span class="o">=</span> <span class="n">IdentityMCObjective</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">add_module</span><span class="p">(</span><span class="s2">"objective"</span><span class="p">,</span> <span class="n">objective</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_X_pending</span><span class="p">(</span><span class="n">X_pending</span><span class="p">)</span>
 
 <div class="viewcode-block" id="MCAcquisitionFunction.forward"><a class="viewcode-back" href="../../../acquisition.html#botorch.acquisition.monte_carlo.MCAcquisitionFunction.forward">[docs]</a>    <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
-        <span class="sa">r</span><span class="sd">"""Takes in a `(b) x q x d` X Tensor of `b` t-batches with `q` `d`-dim</span>
-<span class="sd">        design points each, expands and concatenates `self.X_pending` and</span>
-<span class="sd">        returns a one-dimensional Tensor with `b` elements."""</span>
+        <span class="sa">r</span><span class="sd">"""Takes in a `(b) x q x d` X Tensor of `(b)` t-batches with `q` `d`-dim</span>
+<span class="sd">        design points each, and returns a one-dimensional Tensor with</span>
+<span class="sd">        `(b)` elements.  Should utilize the result of set_X_pending as needed</span>
+<span class="sd">        to account for pending function evaluations.</span>
+<span class="sd">        """</span>
         <span class="k">pass</span>  <span class="c1"># pragma: no cover</span></div></div>
 
 
@@ -115,6 +122,7 @@
         <span class="n">best_f</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">Tensor</span><span class="p">],</span>
         <span class="n">sampler</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">MCSampler</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">objective</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">MCAcquisitionObjective</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">X_pending</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sa">r</span><span class="sd">"""q-Expected Improvement.</span>
 
@@ -126,8 +134,14 @@
 <span class="sd">                `SobolQMCNormalSampler(num_samples=500, collapse_batch_dims=True)`</span>
 <span class="sd">            objective: The MCAcquisitionObjective under which the samples are</span>
 <span class="sd">                evaluated. Defaults to `IdentityMCObjective()`.</span>
+<span class="sd">            X_pending:  A `m x d`-dim Tensor of `m` design points that have</span>
+<span class="sd">                points that have been submitted for function evaluation</span>
+<span class="sd">                but have not yet been evaluated.  Concatenated into X upon</span>
+<span class="sd">                forward call.  Copied and set to have no gradient.</span>
 <span class="sd">        """</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="n">sampler</span><span class="o">=</span><span class="n">sampler</span><span class="p">,</span> <span class="n">objective</span><span class="o">=</span><span class="n">objective</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="n">sampler</span><span class="o">=</span><span class="n">sampler</span><span class="p">,</span> <span class="n">objective</span><span class="o">=</span><span class="n">objective</span><span class="p">,</span> <span class="n">X_pending</span><span class="o">=</span><span class="n">X_pending</span>
+        <span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">torch</span><span class="o">.</span><span class="n">is_tensor</span><span class="p">(</span><span class="n">best_f</span><span class="p">):</span>
             <span class="n">best_f</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">best_f</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">register_buffer</span><span class="p">(</span><span class="s2">"best_f"</span><span class="p">,</span> <span class="n">best_f</span><span class="p">)</span>
@@ -144,6 +158,8 @@
 <span class="sd">            A `(b)`-dim Tensor of Expected Improvement values at the given</span>
 <span class="sd">            design points `X`.</span>
 <span class="sd">        """</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">X_pending</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">X</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">X</span><span class="p">,</span> <span class="n">match_batch_shape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X_pending</span><span class="p">,</span> <span class="n">X</span><span class="p">)],</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">2</span><span class="p">)</span>
         <span class="n">posterior</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">posterior</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
         <span class="n">samples</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sampler</span><span class="p">(</span><span class="n">posterior</span><span class="p">)</span>
         <span class="n">obj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">objective</span><span class="p">(</span><span class="n">samples</span><span class="p">)</span>
@@ -176,20 +192,28 @@
         <span class="n">X_baseline</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span>
         <span class="n">sampler</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">MCSampler</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">objective</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">MCAcquisitionObjective</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">X_pending</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sa">r</span><span class="sd">"""q-Noisy Expected Improvement.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            model: A fitted model.</span>
-<span class="sd">            X_baseline: A `m x d`-dim Tensor of `m` design points that have</span>
-<span class="sd">                either already been observed or whose evaluation is pending.</span>
-<span class="sd">                These points are considered as the potential best design point.</span>
+<span class="sd">            X_baseline: A `r x d`-dim Tensor of `r` design points that have</span>
+<span class="sd">                already been observed. These points are considered as the</span>
+<span class="sd">                potential best design point.</span>
 <span class="sd">            sampler: The sampler used to draw base samples. Defaults to</span>
 <span class="sd">                `SobolQMCNormalSampler(num_samples=500, collapse_batch_dims=True)`.</span>
 <span class="sd">            objective: The MCAcquisitionObjective under which the samples are</span>
 <span class="sd">                evaluated. Defaults to `IdentityMCObjective()`.</span>
+<span class="sd">            X_pending:  A `m x d`-dim Tensor of `m` design points that have</span>
+<span class="sd">                points that have been submitted for function evaluation</span>
+<span class="sd">                but have not yet been evaluated.  Concatenated into X upon</span>
+<span class="sd">                forward call.  Copied and set to have no gradient.</span>
+
 <span class="sd">        """</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="n">sampler</span><span class="o">=</span><span class="n">sampler</span><span class="p">,</span> <span class="n">objective</span><span class="o">=</span><span class="n">objective</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="n">sampler</span><span class="o">=</span><span class="n">sampler</span><span class="p">,</span> <span class="n">objective</span><span class="o">=</span><span class="n">objective</span><span class="p">,</span> <span class="n">X_pending</span><span class="o">=</span><span class="n">X_pending</span>
+        <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">register_buffer</span><span class="p">(</span><span class="s2">"X_baseline"</span><span class="p">,</span> <span class="n">X_baseline</span><span class="p">)</span>
 
 <div class="viewcode-block" id="qNoisyExpectedImprovement.forward"><a class="viewcode-back" href="../../../acquisition.html#botorch.acquisition.monte_carlo.qNoisyExpectedImprovement.forward">[docs]</a>    <span class="nd">@t_batch_mode_transform</span><span class="p">()</span>
@@ -204,6 +228,8 @@
 <span class="sd">            A `(b)`-dim Tensor of Noisy Expected Improvement values at the given</span>
 <span class="sd">            design points `X`.</span>
 <span class="sd">        """</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">X_pending</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">X</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">X</span><span class="p">,</span> <span class="n">match_batch_shape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X_pending</span><span class="p">,</span> <span class="n">X</span><span class="p">)],</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">2</span><span class="p">)</span>
         <span class="n">q</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
         <span class="n">X_full</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">X</span><span class="p">,</span> <span class="n">match_batch_shape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X_baseline</span><span class="p">,</span> <span class="n">X</span><span class="p">)],</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">2</span><span class="p">)</span>
         <span class="c1"># TODO (T41248036): Implement more efficient way to compute posterior</span>
@@ -240,6 +266,7 @@
         <span class="n">best_f</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">Tensor</span><span class="p">],</span>
         <span class="n">sampler</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">MCSampler</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">objective</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">MCAcquisitionObjective</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">X_pending</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">tau</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-3</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sa">r</span><span class="sd">"""q-Probability of Improvement.</span>
@@ -252,12 +279,18 @@
 <span class="sd">                `SobolQMCNormalSampler(num_samples=500, collapse_batch_dims=True)`</span>
 <span class="sd">            objective: The MCAcquisitionObjective under which the samples are</span>
 <span class="sd">                evaluated. Defaults to `IdentityMCObjective()`.</span>
+<span class="sd">            X_pending:  A `m x d`-dim Tensor of `m` design points that have</span>
+<span class="sd">                points that have been submitted for function evaluation</span>
+<span class="sd">                but have not yet been evaluated.  Concatenated into X upon</span>
+<span class="sd">                forward call.  Copied and set to have no gradient.</span>
 <span class="sd">            tau: The temperature parameter used in the sigmoid approximation</span>
 <span class="sd">                of the step function. Smaller values yield more accurate</span>
 <span class="sd">                approximations of the function, but result in gradients</span>
 <span class="sd">                estimates with higher variance.</span>
 <span class="sd">        """</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="n">sampler</span><span class="o">=</span><span class="n">sampler</span><span class="p">,</span> <span class="n">objective</span><span class="o">=</span><span class="n">objective</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="n">sampler</span><span class="o">=</span><span class="n">sampler</span><span class="p">,</span> <span class="n">objective</span><span class="o">=</span><span class="n">objective</span><span class="p">,</span> <span class="n">X_pending</span><span class="o">=</span><span class="n">X_pending</span>
+        <span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">torch</span><span class="o">.</span><span class="n">is_tensor</span><span class="p">(</span><span class="n">best_f</span><span class="p">):</span>
             <span class="n">best_f</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">best_f</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">register_buffer</span><span class="p">(</span><span class="s2">"best_f"</span><span class="p">,</span> <span class="n">best_f</span><span class="p">)</span>
@@ -277,6 +310,8 @@
 <span class="sd">            A `(b)`-dim Tensor of Probability of Improvement values at the given</span>
 <span class="sd">            design points `X`.</span>
 <span class="sd">        """</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">X_pending</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">X</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">X</span><span class="p">,</span> <span class="n">match_batch_shape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X_pending</span><span class="p">,</span> <span class="n">X</span><span class="p">)],</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">2</span><span class="p">)</span>
         <span class="n">posterior</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">posterior</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
         <span class="n">samples</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sampler</span><span class="p">(</span><span class="n">posterior</span><span class="p">)</span>
         <span class="n">obj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">objective</span><span class="p">(</span><span class="n">samples</span><span class="p">)</span>
@@ -312,6 +347,8 @@
 <span class="sd">            A `(b)`-dim Tensor of Simple Regret values at the given design</span>
 <span class="sd">            points `X`.</span>
 <span class="sd">        """</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">X_pending</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">X</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">X</span><span class="p">,</span> <span class="n">match_batch_shape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X_pending</span><span class="p">,</span> <span class="n">X</span><span class="p">)],</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">2</span><span class="p">)</span>
         <span class="n">posterior</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">posterior</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
         <span class="n">samples</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sampler</span><span class="p">(</span><span class="n">posterior</span><span class="p">)</span>
         <span class="n">obj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">objective</span><span class="p">(</span><span class="n">samples</span><span class="p">)</span>
@@ -341,6 +378,7 @@
         <span class="n">beta</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
         <span class="n">sampler</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">MCSampler</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">objective</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">MCAcquisitionObjective</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">X_pending</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sa">r</span><span class="sd">"""q-Upper Confidence Bound.</span>
 
@@ -351,8 +389,14 @@
 <span class="sd">                `SobolQMCNormalSampler(num_samples=500, collapse_batch_dims=True)`</span>
 <span class="sd">            objective: The MCAcquisitionObjective under which the samples are</span>
 <span class="sd">                evaluated. Defaults to `IdentityMCObjective()`.</span>
+<span class="sd">            X_pending:  A `m x d`-dim Tensor of `m` design points that have</span>
+<span class="sd">                points that have been submitted for function evaluation</span>
+<span class="sd">                but have not yet been evaluated.  Concatenated into X upon</span>
+<span class="sd">                forward call.  Copied and set to have no gradient.</span>
 <span class="sd">        """</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="n">sampler</span><span class="o">=</span><span class="n">sampler</span><span class="p">,</span> <span class="n">objective</span><span class="o">=</span><span class="n">objective</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="n">sampler</span><span class="o">=</span><span class="n">sampler</span><span class="p">,</span> <span class="n">objective</span><span class="o">=</span><span class="n">objective</span><span class="p">,</span> <span class="n">X_pending</span><span class="o">=</span><span class="n">X_pending</span>
+        <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">register_buffer</span><span class="p">(</span><span class="s2">"beta"</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">beta</span><span class="p">)))</span>
 
 <div class="viewcode-block" id="qUpperConfidenceBound.forward"><a class="viewcode-back" href="../../../acquisition.html#botorch.acquisition.monte_carlo.qUpperConfidenceBound.forward">[docs]</a>    <span class="nd">@t_batch_mode_transform</span><span class="p">()</span>
@@ -367,6 +411,8 @@
 <span class="sd">            A `(b)`-dim Tensor of Upper Confidence Bound values at the given</span>
 <span class="sd">            design points `X`.</span>
 <span class="sd">        """</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">X_pending</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">X</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">X</span><span class="p">,</span> <span class="n">match_batch_shape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X_pending</span><span class="p">,</span> <span class="n">X</span><span class="p">)],</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">2</span><span class="p">)</span>
         <span class="n">posterior</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">posterior</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
         <span class="n">samples</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sampler</span><span class="p">(</span><span class="n">posterior</span><span class="p">)</span>
         <span class="n">obj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">objective</span><span class="p">(</span><span class="n">samples</span><span class="p">)</span>

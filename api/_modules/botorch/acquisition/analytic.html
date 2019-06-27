@@ -63,7 +63,12 @@
             <span class="k">raise</span> <span class="n">UnsupportedError</span><span class="p">(</span>
                 <span class="s2">"Multi-Output posteriors are not supported for acquisition "</span>
                 <span class="n">f</span><span class="s2">" function of type </span><span class="si">{self.__class__.__name__}</span><span class="s2">"</span>
-            <span class="p">)</span></div>
+            <span class="p">)</span>
+
+<div class="viewcode-block" id="AnalyticAcquisitionFunction.set_X_pending"><a class="viewcode-back" href="../../../acquisition.html#botorch.acquisition.analytic.AnalyticAcquisitionFunction.set_X_pending">[docs]</a>    <span class="k">def</span> <span class="nf">set_X_pending</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X_pending</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">UnsupportedError</span><span class="p">(</span>
+            <span class="n">f</span><span class="s2">"Analytic acquisition functions do not account for X_pending yet."</span>
+        <span class="p">)</span></div></div>
 
 
 <div class="viewcode-block" id="ExpectedImprovement"><a class="viewcode-back" href="../../../acquisition.html#botorch.acquisition.analytic.ExpectedImprovement">[docs]</a><span class="k">class</span> <span class="nc">ExpectedImprovement</span><span class="p">(</span><span class="n">AnalyticAcquisitionFunction</span><span class="p">):</span>

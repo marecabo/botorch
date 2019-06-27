@@ -32,6 +32,7 @@
 <span class="sd">Utilities for optimization.</span>
 <span class="sd">"""</span>
 
+<span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">from</span> <span class="nn">inspect</span> <span class="k">import</span> <span class="n">signature</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
 
@@ -41,6 +42,29 @@
 <span class="kn">from</span> <span class="nn">gpytorch.mlls.sum_marginal_log_likelihood</span> <span class="k">import</span> <span class="n">SumMarginalLogLikelihood</span>
 <span class="kn">from</span> <span class="nn">gpytorch.mlls.variational_elbo</span> <span class="k">import</span> <span class="n">VariationalELBO</span>
 <span class="kn">from</span> <span class="nn">torch</span> <span class="k">import</span> <span class="n">Tensor</span>
+
+<span class="kn">from</span> <span class="nn">..exceptions.warnings</span> <span class="k">import</span> <span class="n">BotorchWarning</span>
+<span class="kn">from</span> <span class="nn">..models.gpytorch</span> <span class="k">import</span> <span class="n">GPyTorchModel</span>
+
+
+<div class="viewcode-block" id="sample_all_priors"><a class="viewcode-back" href="../../../optim.html#botorch.optim.utils.sample_all_priors">[docs]</a><span class="k">def</span> <span class="nf">sample_all_priors</span><span class="p">(</span><span class="n">model</span><span class="p">:</span> <span class="n">GPyTorchModel</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sa">r</span><span class="sd">"""Sample from hyperparameter priors (in-place).</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        model: A GPyTorchModel.</span>
+<span class="sd">    """</span>
+    <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">prior</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">setting_closure</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">named_priors</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">setting_closure</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                <span class="s2">"Must provide inverse transform to be able to sample from prior."</span>
+            <span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">setting_closure</span><span class="p">(</span><span class="n">prior</span><span class="o">.</span><span class="n">sample</span><span class="p">())</span>
+        <span class="k">except</span> <span class="ne">NotImplementedError</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="n">f</span><span class="s2">"`rsample` not implemented for {type(prior)}. Skipping."</span><span class="p">,</span>
+                <span class="n">BotorchWarning</span><span class="p">,</span>
+            <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="check_convergence"><a class="viewcode-back" href="../../../optim.html#botorch.optim.utils.check_convergence">[docs]</a><span class="k">def</span> <span class="nf">check_convergence</span><span class="p">(</span>
@@ -155,7 +179,7 @@
 
 <span class="sd">    Returns:</span>
 <span class="sd">        A tensor of bounds expanded to be compatible with the size of `X` if</span>
-<span class="sd">        bounds is not None, and None if bounds is None</span>
+<span class="sd">        bounds is not None, and None if bounds is None.</span>
 <span class="sd">    """</span>
     <span class="k">if</span> <span class="n">bounds</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">torch</span><span class="o">.</span><span class="n">is_tensor</span><span class="p">(</span><span class="n">bounds</span><span class="p">):</span>

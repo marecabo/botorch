@@ -211,9 +211,11 @@
                     <span class="n">X</span><span class="o">=</span><span class="n">X</span><span class="p">,</span> <span class="n">original_batch_shape</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_input_batch_shape</span>
                 <span class="p">)</span>
             <span class="n">mvn</span> <span class="o">=</span> <span class="bp">self</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
-            <span class="n">mean_x</span> <span class="o">=</span> <span class="n">mvn</span><span class="o">.</span><span class="n">mean</span>
-            <span class="n">covar_x</span> <span class="o">=</span> <span class="n">mvn</span><span class="o">.</span><span class="n">covariance_matrix</span>
+            <span class="k">if</span> <span class="n">observation_noise</span><span class="p">:</span>
+                <span class="n">mvn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">likelihood</span><span class="p">(</span><span class="n">mvn</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_outputs</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">mean_x</span> <span class="o">=</span> <span class="n">mvn</span><span class="o">.</span><span class="n">mean</span>
+                <span class="n">covar_x</span> <span class="o">=</span> <span class="n">mvn</span><span class="o">.</span><span class="n">covariance_matrix</span>
                 <span class="n">output_indices</span> <span class="o">=</span> <span class="n">output_indices</span> <span class="ow">or</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_outputs</span><span class="p">)</span>
                 <span class="n">mvns</span> <span class="o">=</span> <span class="p">[</span>
                     <span class="n">MultivariateNormal</span><span class="p">(</span>

@@ -29,14 +29,19 @@
 <dl class="function">
 <dt id="botorch.fit.fit_gpytorch_model">
 <code class="sig-prename descclassname">botorch.fit.</code><code class="sig-name descname">fit_gpytorch_model</code><span class="sig-paren">(</span><em class="sig-param">mll</em>, <em class="sig-param">optimizer=&lt;function fit_gpytorch_scipy&gt;</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/fit.html#fit_gpytorch_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.fit.fit_gpytorch_model" title="Permalink to this definition">¶</a></dt>
-<dd><p>Fit hyperparameters of a gpytorch model.</p>
+<dd><p>Fit hyperparameters of a GPyTorch model.</p>
+<p>On optimizer failures, a new initial condition is sampled from the
+hyperparameter priors and optimization is retried. The maximum number of
+retries can be passed in as a <cite>max_retries</cite> kwarg (default is 5).</p>
 <p>Optimizer functions are in botorch.optim.fit.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>mll</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">MarginalLogLikelihood</span></code>) – MarginalLogLikelihood to be maximized.</p></li>
 <li><p><strong>optimizer</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>) – The optimizer function.</p></li>
-<li><p><strong>kwargs</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>) – Arguments passed along to the optimizer function.</p></li>
+<li><p><strong>kwargs</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>) – Arguments passed along to the optimizer function, including
+<cite>max_retries</cite> and <cite>sequential</cite> (controls the fitting of <cite>ModelListGP</cite>
+and <cite>BatchedMultiOutputGPyTorchModel</cite> models).</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>

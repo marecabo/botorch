@@ -41,7 +41,7 @@
 <span class="kn">from</span> <span class="nn">..acquisition</span> <span class="k">import</span> <span class="n">AcquisitionFunction</span>
 <span class="kn">from</span> <span class="nn">..acquisition.analytic</span> <span class="k">import</span> <span class="n">AnalyticAcquisitionFunction</span>
 <span class="kn">from</span> <span class="nn">..acquisition.utils</span> <span class="k">import</span> <span class="n">is_nonnegative</span>
-<span class="kn">from</span> <span class="nn">..exceptions</span> <span class="k">import</span> <span class="n">BadInitialCandidatesWarning</span><span class="p">,</span> <span class="n">UnsupportedError</span>
+<span class="kn">from</span> <span class="nn">..exceptions</span> <span class="k">import</span> <span class="n">BadInitialCandidatesWarning</span>
 <span class="kn">from</span> <span class="nn">..gen</span> <span class="k">import</span> <span class="n">gen_candidates_scipy</span><span class="p">,</span> <span class="n">get_best_candidates</span>
 <span class="kn">from</span> <span class="nn">..utils.sampling</span> <span class="k">import</span> <span class="n">draw_sobol_samples</span>
 <span class="kn">from</span> <span class="nn">.initializers</span> <span class="k">import</span> <span class="n">initialize_q_batch</span><span class="p">,</span> <span class="n">initialize_q_batch_nonneg</span>
@@ -62,7 +62,7 @@
     <span class="sa">r</span><span class="sd">"""Generate a set of candidates via sequential multi-start optimization.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        acq_function: The qNoisyExpectedImprovement acquisition function.</span>
+<span class="sd">        acq_function: An AcquisitionFunction</span>
 <span class="sd">        bounds: A `2 x d` tensor of lower and upper bounds for each column of `X`.</span>
 <span class="sd">        q: The number of candidates.</span>
 <span class="sd">        num_restarts:  Number of starting points for multistart acquisition</span>
@@ -91,14 +91,9 @@
 <span class="sd">        &gt;&gt;&gt; bounds = torch.tensor([[0.], [1.]])</span>
 <span class="sd">        &gt;&gt;&gt; candidates = sequential_optimize(qEI, bounds, 2, 20, 500)</span>
 <span class="sd">    """</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">acq_function</span><span class="p">,</span> <span class="s2">"X_baseline"</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="n">UnsupportedError</span><span class="p">(</span>  <span class="c1"># pyre-ignore: [16]</span>
-            <span class="s2">"Sequential Optimization is only supported for acquisition functions "</span>
-            <span class="s2">"with an `X_baseline` property."</span>
-        <span class="p">)</span>
     <span class="n">candidate_list</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">candidates</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([])</span>
-    <span class="n">base_X_baseline</span> <span class="o">=</span> <span class="n">acq_function</span><span class="o">.</span><span class="n">X_baseline</span>  <span class="c1"># pyre-ignore: [16]</span>
+    <span class="n">base_X_pending</span> <span class="o">=</span> <span class="n">acq_function</span><span class="o">.</span><span class="n">X_pending</span>  <span class="c1"># pyre-ignore: [16]</span>
     <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">q</span><span class="p">):</span>
         <span class="n">candidate</span> <span class="o">=</span> <span class="n">joint_optimize</span><span class="p">(</span>
             <span class="n">acq_function</span><span class="o">=</span><span class="n">acq_function</span><span class="p">,</span>
@@ -116,13 +111,13 @@
             <span class="n">candidate</span> <span class="o">=</span> <span class="n">post_processing_func</span><span class="p">(</span><span class="n">candidate</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">*</span><span class="n">candidate_shape</span><span class="p">)</span>
         <span class="n">candidate_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">candidate</span><span class="p">)</span>
         <span class="n">candidates</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span><span class="n">candidate_list</span><span class="p">,</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">2</span><span class="p">)</span>
-        <span class="n">acq_function</span><span class="o">.</span><span class="n">X_baseline</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">base_X_baseline</span><span class="p">,</span> <span class="n">candidates</span><span class="p">],</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">2</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">base_X_baseline</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+        <span class="n">acq_function</span><span class="o">.</span><span class="n">set_X_pending</span><span class="p">(</span>
+            <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">base_X_pending</span><span class="p">,</span> <span class="n">candidates</span><span class="p">],</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">2</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">base_X_pending</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
             <span class="k">else</span> <span class="n">candidates</span>
         <span class="p">)</span>
-    <span class="c1"># Reset acq_func to previous X_baseline state</span>
-    <span class="n">acq_function</span><span class="o">.</span><span class="n">X_baseline</span> <span class="o">=</span> <span class="n">base_X_baseline</span>
+    <span class="c1"># Reset acq_func to previous X_pending state</span>
+    <span class="n">acq_function</span><span class="o">.</span><span class="n">set_X_pending</span><span class="p">(</span><span class="n">base_X_pending</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">candidates</span></div>
 
 
@@ -289,7 +284,7 @@
             <span class="k">if</span> <span class="n">factor</span> <span class="o">&lt;</span> <span class="n">max_factor</span><span class="p">:</span>
                 <span class="n">factor</span> <span class="o">+=</span> <span class="mi">1</span>
     <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-        <span class="s2">"Unable to find non-zero acquistion function values - initial conditions "</span>
+        <span class="s2">"Unable to find non-zero acquisition function values - initial conditions "</span>
         <span class="s2">"are being selected randomly."</span><span class="p">,</span>
         <span class="n">BadInitialCandidatesWarning</span><span class="p">,</span>
     <span class="p">)</span>
