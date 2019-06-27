@@ -13,7 +13,7 @@
 # 
 # For the purpose of this tutorial, we'll use a basic `UpperConfidenceBound` acquisition function on a basic model fit on synthetic data. Please see the documentation for [Models](../docs/models) and [Acquisition Functions](../docs/acquisition) for more information.
 
-# In[9]:
+# In[1]:
 
 
 import math
@@ -32,7 +32,7 @@ mll = ExactMarginalLogLikelihood(gp.likelihood, gp)
 fit_gpytorch_model(mll);
 
 
-# In[10]:
+# In[2]:
 
 
 from botorch.acquisition import UpperConfidenceBound
@@ -50,7 +50,7 @@ UCB = UpperConfidenceBound(gp, beta=0.1)
 # 
 # With this, we can optimize this acquistition function as follows:
 
-# In[12]:
+# In[3]:
 
 
 import cma

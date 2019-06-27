@@ -104,12 +104,12 @@ axes.set_xlabel("Actual")
 axes.set_ylabel("Predicted")
 
 axes.errorbar(
-    x=cv_folds.test_Y.numpy(), 
-    y=mean.numpy(), 
+    x=cv_folds.test_Y.numpy().flatten(), 
+    y=mean.numpy().flatten(), 
     xerr=1.96*sigma,
-    yerr=((upper-lower)/2).numpy(),
+    yerr=((upper-lower)/2).numpy().flatten(),
     fmt='*'
-)    
+);
 
 
 # Finally, we can visualize the fitted models. To do this, we again take advantage of batch-mode evaluation to obtain predictions, including lower and upper confidence regions, from each of the 20 models.
@@ -162,5 +162,5 @@ axes.fill_between(
     lower[num - 1].numpy(), 
     upper[num - 1].numpy(), 
     alpha=0.5
-)
+);
 

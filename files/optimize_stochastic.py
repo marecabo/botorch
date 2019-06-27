@@ -75,7 +75,7 @@ q = 2
 # 
 # Fortunately, thanks to the high degree of parallelism in BoTorch, evaluating the acquisition function at a large number of randomly chosen points is quite cheap.
 
-# In[8]:
+# In[5]:
 
 
 from botorch.optim.initializers import initialize_q_batch_nonneg
@@ -103,7 +103,7 @@ X.requires_grad_(True);
 # 1. Evaluating the acquisition function on the `N x q x d`-dim inputs means evaluating `N` `q`-batches in `t`-batch mode. The result of this is an `N`-dim tensor of acquisition function values, evaluated independently. To compute the gradient of the full input `X` via back-propagation, we can for convenience just compute the gradient of the sum of the losses. 
 # 2. `torch.optim` does not have good built in support for constraints (general constrained stochastic optimization is hard and still an open research area). Here we do something simple and project the value obtained after taking the gradient step to the feasible set - that is, we perform "projected stochastic gradient descent". Since the feasible set here is a hyperrectangle, this can be done by simple clamping. Another approach would be to transform the feasible interval for each dimension to the real line, e.g. by using a sigmoid function, and then optimizing in the unbounded transformed space. 
 
-# In[9]:
+# In[6]:
 
 
 # set up the optimizer, make sure to only pass in the candidate set here
