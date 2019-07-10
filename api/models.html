@@ -422,7 +422,7 @@ distributions over <cite>q</cite> points and the outputs selected by
 <h3><span class="hidden-section">SingleTaskGP</span><a class="headerlink" href="#singletaskgp" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
 <dt id="botorch.models.gp_regression.SingleTaskGP">
-<em class="property">class </em><code class="sig-prename descclassname">botorch.models.gp_regression.</code><code class="sig-name descname">SingleTaskGP</code><span class="sig-paren">(</span><em class="sig-param">train_X</em>, <em class="sig-param">train_Y</em>, <em class="sig-param">likelihood=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/models/gp_regression.html#SingleTaskGP"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.models.gp_regression.SingleTaskGP" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">botorch.models.gp_regression.</code><code class="sig-name descname">SingleTaskGP</code><span class="sig-paren">(</span><em class="sig-param">train_X</em>, <em class="sig-param">train_Y</em>, <em class="sig-param">likelihood=None</em>, <em class="sig-param">covar_module=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/models/gp_regression.html#SingleTaskGP"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.models.gp_regression.SingleTaskGP" title="Permalink to this definition">¶</a></dt>
 <dd><p>A single-task exact GP model.</p>
 <p>A single-task exact GP using relatively strong priors on the Kernel
 hyperparameters, which work best when covariates are normalized to the unit
@@ -444,6 +444,8 @@ features.</p></li>
 training observations.</p></li>
 <li><p><strong>likelihood</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Likelihood</span></code>]) – A likelihood. If omitted, use a standard
 GaussianLikelihood with inferred noise level.</p></li>
+<li><p><strong>covar_module</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code>]) – The covariance (kernel) matrix. If omitted, use the
+MaternKernel.</p></li>
 </ul>
 </dd>
 </dl>

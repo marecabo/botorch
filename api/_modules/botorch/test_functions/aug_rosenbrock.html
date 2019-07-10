@@ -31,31 +31,41 @@
 <span class="kn">from</span> <span class="nn">torch</span> <span class="k">import</span> <span class="n">Tensor</span>
 
 
-<span class="c1"># This function has infinitely many global maximizers.</span>
+<span class="n">GLOBAL_MAXIMIZER</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">]</span>
 <span class="n">GLOBAL_MAXIMUM</span> <span class="o">=</span> <span class="mf">0.0</span>
 
 
 <div class="viewcode-block" id="neg_aug_rosenbrock"><a class="viewcode-back" href="../../../test_functions.html#botorch.test_functions.neg_aug_rosenbrock">[docs]</a><span class="k">def</span> <span class="nf">neg_aug_rosenbrock</span><span class="p">(</span><span class="n">X</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">"""Augmented Rosenbrock test function.</span>
+    <span class="sa">r</span><span class="sd">"""Augmented-Rosenbrock test function.</span>
 
-<span class="sd">    4-dimensional function, the last two dimensions are for fidelity parameters,</span>
-<span class="sd">    X is usually in [-5,10]^2 * [0,1]^2:</span>
+<span class="sd">    d-dimensional function (usually evaluated on `[-5, 10]^(d-2) * [0, 1]^2`),</span>
+<span class="sd">    the last two dimensions are the fidelity parameters:</span>
 
-<span class="sd">        f(x) = 100 (x_2 - x_1^2 + 0.1 * (1 - x_3))^2 + (x_1 - 1 + 0.1 * (1 - x_4)^2)^2</span>
+<span class="sd">        f(x) = sum_{i=1}^{d-1} (100 (x_{i+1} - x_i^2 + 0.1 * (1-x_{d-1}))^2 +</span>
+<span class="sd">            (x_i - 1 + 0.1 * (1 - x_d)^2)^2)</span>
 
-<span class="sd">    f has infinitely many minimizers, with `f_min = 0.0`</span>
+<span class="sd">    f has one minimizer for its global minimum at</span>
+
+<span class="sd">        `z_1 = (1, 1, ..., 1)`</span>
+
+<span class="sd">    with `f(z_i) = 0.0`</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        X: A Tensor of size `4` or `k x 4` (`k` batch evaluations).</span>
+<span class="sd">        X: A Tensor of size `d` or `k x d` (`k` batch evaluations).</span>
+
 <span class="sd">    Returns:</span>
-<span class="sd">        `-f(X)`, the negative value of the augmented Rosenbrock function.</span>
+<span class="sd">        `-f(X)`, the negative value of the Augmented-Rosenbrock function.</span>
 <span class="sd">    """</span>
     <span class="n">batch</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">ndimension</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">1</span>
     <span class="n">X</span> <span class="o">=</span> <span class="n">X</span> <span class="k">if</span> <span class="n">batch</span> <span class="k">else</span> <span class="n">X</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">X_curr</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="p">:</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span>
+    <span class="n">X_next</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
     <span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="o">-</span><span class="mi">100</span> <span class="o">*</span> <span class="p">(</span><span class="n">X</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">X</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="mf">0.1</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">X</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]))</span> <span class="o">**</span> <span class="mi">2</span>
-        <span class="o">+</span> <span class="p">(</span><span class="n">X</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">+</span> <span class="mf">0.1</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">X</span><span class="p">[:,</span> <span class="mi">3</span><span class="p">])</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
-    <span class="p">)</span>
+        <span class="o">-</span><span class="p">(</span>
+            <span class="mi">100</span> <span class="o">*</span> <span class="p">(</span><span class="n">X_next</span> <span class="o">-</span> <span class="n">X_curr</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="mf">0.1</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">X</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)))</span> <span class="o">**</span> <span class="mi">2</span>
+            <span class="o">+</span> <span class="p">(</span><span class="n">X_curr</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">+</span> <span class="mf">0.1</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">X</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
+        <span class="p">)</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">result</span> <span class="k">if</span> <span class="n">batch</span> <span class="k">else</span> <span class="n">result</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span></div>
 </pre></div>
 </div>

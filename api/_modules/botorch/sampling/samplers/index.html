@@ -113,9 +113,9 @@
 
 <span class="sd">         - `resample=True`</span>
 <span class="sd">         - the MCSampler has no `base_samples` attribute.</span>
-<span class="sd">         - `shape` is different than `self.base_samples.shape`.</span>
-<span class="sd">         - device and/or dtype of posterior are different than those of</span>
-<span class="sd">          `self.base_samples`.</span>
+<span class="sd">         - `shape` is different than `self.base_samples.shape` (if</span>
+<span class="sd">           `collapse_batch_dims=True`, then batch dimensions of will be</span>
+<span class="sd">           automatically broadcasted as necessary)</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            posterior: The Posterior for which to generate base samples.</span>
@@ -163,11 +163,12 @@
 
 <span class="sd">        This function will generate a new set of base samples and set the</span>
 <span class="sd">        `base_samples` buffer if one of the following is true:</span>
-<span class="sd">          - `resample=True`</span>
-<span class="sd">          - the MCSampler has no `base_samples` attribute.</span>
-<span class="sd">          - `shape` is different than `self.base_samples.shape`.</span>
-<span class="sd">          - device and/or dtype of posterior ar different than those of</span>
-<span class="sd">            `self.base_samples`.</span>
+
+<span class="sd">        - `resample=True`</span>
+<span class="sd">        - the MCSampler has no `base_samples` attribute.</span>
+<span class="sd">        - `shape` is different than `self.base_samples.shape` (if</span>
+<span class="sd">            `collapse_batch_dims=True`, then batch dimensions of will be</span>
+<span class="sd">            automatically broadcasted as necessary)</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            posterior: The Posterior for which to generate base samples.</span>
@@ -176,16 +177,21 @@
         <span class="k">if</span> <span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">resample</span>
             <span class="ow">or</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">"base_samples"</span><span class="p">)</span>
-            <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_samples</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="n">shape</span>
-            <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_samples</span><span class="o">.</span><span class="n">device</span> <span class="o">!=</span> <span class="n">posterior</span><span class="o">.</span><span class="n">device</span>
-            <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_samples</span><span class="o">.</span><span class="n">dtype</span> <span class="o">!=</span> <span class="n">posterior</span><span class="o">.</span><span class="n">dtype</span>
+            <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_samples</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:]</span> <span class="o">!=</span> <span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:]</span>
+            <span class="ow">or</span> <span class="p">(</span><span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">collapse_batch_dims</span> <span class="ow">and</span> <span class="n">shape</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_samples</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
         <span class="p">):</span>
             <span class="k">with</span> <span class="n">manual_seed</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">seed</span><span class="p">):</span>
                 <span class="n">base_samples</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span>
                     <span class="n">shape</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">posterior</span><span class="o">.</span><span class="n">device</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">posterior</span><span class="o">.</span><span class="n">dtype</span>
                 <span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">seed</span> <span class="o">+=</span> <span class="mi">1</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">register_buffer</span><span class="p">(</span><span class="s2">"base_samples"</span><span class="p">,</span> <span class="n">base_samples</span><span class="p">)</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">register_buffer</span><span class="p">(</span><span class="s2">"base_samples"</span><span class="p">,</span> <span class="n">base_samples</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">collapse_batch_dims</span> <span class="ow">and</span> <span class="n">shape</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_samples</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">base_samples</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_samples</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_samples</span><span class="o">.</span><span class="n">device</span> <span class="o">!=</span> <span class="n">posterior</span><span class="o">.</span><span class="n">device</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="o">=</span><span class="n">posterior</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>  <span class="c1"># pragma: nocover</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_samples</span><span class="o">.</span><span class="n">dtype</span> <span class="o">!=</span> <span class="n">posterior</span><span class="o">.</span><span class="n">dtype</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">posterior</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="SobolQMCNormalSampler"><a class="viewcode-back" href="../../../sampling.html#botorch.sampling.samplers.SobolQMCNormalSampler">[docs]</a><span class="k">class</span> <span class="nc">SobolQMCNormalSampler</span><span class="p">(</span><span class="n">MCSampler</span><span class="p">):</span>
@@ -227,11 +233,12 @@
 
 <span class="sd">        This function will generate a new set of base samples and set the</span>
 <span class="sd">        `base_samples` buffer if one of the following is true:</span>
-<span class="sd">          - `resample=True`</span>
-<span class="sd">          - the MCSampler has no `base_samples` attribute.</span>
-<span class="sd">          - `self.sample_shape` is different than `self.base_samples.shape`.</span>
-<span class="sd">          - device and/or dtype of posterior ar different than those of</span>
-<span class="sd">            `self.base_samples`.</span>
+
+<span class="sd">        - `resample=True`</span>
+<span class="sd">        - the MCSampler has no `base_samples` attribute.</span>
+<span class="sd">        - `shape` is different than `self.base_samples.shape` (if</span>
+<span class="sd">          `collapse_batch_dims=True`, then batch dimensions of will be</span>
+<span class="sd">          automatically broadcasted as necessary)</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            posterior: The Posterior for which to generate base samples.</span>
@@ -240,9 +247,8 @@
         <span class="k">if</span> <span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">resample</span>
             <span class="ow">or</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">"base_samples"</span><span class="p">)</span>
-            <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_samples</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="n">shape</span>
-            <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_samples</span><span class="o">.</span><span class="n">device</span> <span class="o">!=</span> <span class="n">posterior</span><span class="o">.</span><span class="n">device</span>
-            <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_samples</span><span class="o">.</span><span class="n">dtype</span> <span class="o">!=</span> <span class="n">posterior</span><span class="o">.</span><span class="n">dtype</span>
+            <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_samples</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:]</span> <span class="o">!=</span> <span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:]</span>
+            <span class="ow">or</span> <span class="p">(</span><span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">collapse_batch_dims</span> <span class="ow">and</span> <span class="n">shape</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_samples</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
         <span class="p">):</span>
             <span class="n">output_dim</span> <span class="o">=</span> <span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:]</span><span class="o">.</span><span class="n">numel</span><span class="p">()</span>
             <span class="k">if</span> <span class="n">output_dim</span> <span class="o">&gt;</span> <span class="n">SobolEngine</span><span class="o">.</span><span class="n">MAXDIM</span><span class="p">:</span>
@@ -259,7 +265,13 @@
             <span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">seed</span> <span class="o">+=</span> <span class="mi">1</span>
             <span class="n">base_samples</span> <span class="o">=</span> <span class="n">base_samples</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">register_buffer</span><span class="p">(</span><span class="s2">"base_samples"</span><span class="p">,</span> <span class="n">base_samples</span><span class="p">)</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">register_buffer</span><span class="p">(</span><span class="s2">"base_samples"</span><span class="p">,</span> <span class="n">base_samples</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">collapse_batch_dims</span> <span class="ow">and</span> <span class="n">shape</span> <span class="o">!=</span> <span class="n">posterior</span><span class="o">.</span><span class="n">event_shape</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">base_samples</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_samples</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_samples</span><span class="o">.</span><span class="n">device</span> <span class="o">!=</span> <span class="n">posterior</span><span class="o">.</span><span class="n">device</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="o">=</span><span class="n">posterior</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>  <span class="c1"># pragma: nocover</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_samples</span><span class="o">.</span><span class="n">dtype</span> <span class="o">!=</span> <span class="n">posterior</span><span class="o">.</span><span class="n">dtype</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">posterior</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span></div>
 </pre></div>
 </div>
 </div>
