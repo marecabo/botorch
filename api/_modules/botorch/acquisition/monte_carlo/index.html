@@ -49,6 +49,7 @@
 <span class="kn">import</span> <span class="nn">torch</span>
 <span class="kn">from</span> <span class="nn">torch</span> <span class="k">import</span> <span class="n">Tensor</span>
 
+<span class="kn">from</span> <span class="nn">..exceptions.errors</span> <span class="k">import</span> <span class="n">UnsupportedError</span>
 <span class="kn">from</span> <span class="nn">..models.model</span> <span class="k">import</span> <span class="n">Model</span>
 <span class="kn">from</span> <span class="nn">..sampling.samplers</span> <span class="k">import</span> <span class="n">MCSampler</span><span class="p">,</span> <span class="n">SobolQMCNormalSampler</span>
 <span class="kn">from</span> <span class="nn">..utils.transforms</span> <span class="k">import</span> <span class="n">match_batch_shape</span><span class="p">,</span> <span class="n">t_batch_mode_transform</span>
@@ -84,6 +85,11 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">add_module</span><span class="p">(</span><span class="s2">"sampler"</span><span class="p">,</span> <span class="n">sampler</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">objective</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">objective</span> <span class="o">=</span> <span class="n">IdentityMCObjective</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">objective</span><span class="p">,</span> <span class="n">MCAcquisitionObjective</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">UnsupportedError</span><span class="p">(</span>
+                <span class="s2">"Only objectives of type MCAcquisitionObjective are supported for "</span>
+                <span class="s2">"MC acquisition functions."</span>
+            <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">add_module</span><span class="p">(</span><span class="s2">"objective"</span><span class="p">,</span> <span class="n">objective</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_X_pending</span><span class="p">(</span><span class="n">X_pending</span><span class="p">)</span>
 

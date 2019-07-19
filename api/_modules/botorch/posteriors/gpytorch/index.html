@@ -39,6 +39,7 @@
 <span class="kn">from</span> <span class="nn">gpytorch.distributions</span> <span class="k">import</span> <span class="n">MultitaskMultivariateNormal</span><span class="p">,</span> <span class="n">MultivariateNormal</span>
 <span class="kn">from</span> <span class="nn">torch</span> <span class="k">import</span> <span class="n">Tensor</span>
 
+<span class="kn">from</span> <span class="nn">..exceptions.errors</span> <span class="k">import</span> <span class="n">UnsupportedError</span>
 <span class="kn">from</span> <span class="nn">.posterior</span> <span class="k">import</span> <span class="n">Posterior</span>
 
 
@@ -125,6 +126,45 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_mt</span><span class="p">:</span>
             <span class="n">variance</span> <span class="o">=</span> <span class="n">variance</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">variance</span></div>
+
+
+<span class="k">def</span> <span class="nf">scalarize_posterior</span><span class="p">(</span>
+    <span class="n">posterior</span><span class="p">:</span> <span class="n">GPyTorchPosterior</span><span class="p">,</span> <span class="n">weights</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">offset</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GPyTorchPosterior</span><span class="p">:</span>
+    <span class="sa">r</span><span class="sd">"""Affine transformation of a multi-output posterior.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        posterior: The posterior to be transformed. Must be single-point (`q=1`).</span>
+<span class="sd">            Supports `t`-batching.</span>
+<span class="sd">        weights: An single-dimensional tensor of weights. Number of elements</span>
+<span class="sd">            must be the numbe of outputs of the posterior.</span>
+<span class="sd">        offset: The offset of the affine transformation.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        The transformed (single-output) posterior. If the input posterior has</span>
+<span class="sd">            mean `mu` and covariance matrix `Sigma`, this posterior has mean</span>
+<span class="sd">            `weights^T * mu` and variance `weights^T Sigma w`.</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">        Example for a model with two outcomes:</span>
+
+<span class="sd">        &gt;&gt;&gt; X = torch.rand(1, 2)</span>
+<span class="sd">        &gt;&gt;&gt; posterior = model.posterior(X)</span>
+<span class="sd">        &gt;&gt;&gt; weights = torch.tensor([0.5, 0.25])</span>
+<span class="sd">        &gt;&gt;&gt; new_posterior = scalarize_posterior(posterior, weights=weights)</span>
+<span class="sd">    """</span>
+    <span class="n">mean</span> <span class="o">=</span> <span class="n">posterior</span><span class="o">.</span><span class="n">mean</span>
+    <span class="k">if</span> <span class="n">mean</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">weights</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">"Output shape not equal to that of weights"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">mean</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">UnsupportedError</span><span class="p">(</span><span class="s2">"scalarize_posterior currently not supported for q&gt;1"</span><span class="p">)</span>
+    <span class="c1"># no need to use lazy here since q=1</span>
+    <span class="n">cov</span> <span class="o">=</span> <span class="n">posterior</span><span class="o">.</span><span class="n">mvn</span><span class="o">.</span><span class="n">covariance_matrix</span>
+    <span class="n">batch_shape</span> <span class="o">=</span> <span class="n">cov</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">new_cov</span> <span class="o">=</span> <span class="p">((</span><span class="n">cov</span> <span class="o">@</span> <span class="n">weights</span><span class="p">)</span> <span class="o">@</span> <span class="n">weights</span><span class="p">)</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">*</span><span class="n">batch_shape</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">new_mean</span> <span class="o">=</span> <span class="n">offset</span> <span class="o">+</span> <span class="p">(</span><span class="n">mean</span> <span class="o">@</span> <span class="n">weights</span><span class="p">)</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">*</span><span class="n">batch_shape</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">new_mvn</span> <span class="o">=</span> <span class="n">MultivariateNormal</span><span class="p">(</span><span class="n">new_mean</span><span class="p">,</span> <span class="n">new_cov</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">GPyTorchPosterior</span><span class="p">(</span><span class="n">new_mvn</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>

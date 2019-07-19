@@ -41,12 +41,14 @@ using <cite>scipy.optimize.minimize</cite> via a numpy converter.</p>
 <li><p><strong>upper_bounds</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>, <code class="docutils literal notranslate"><span class="pre">None</span></code>]) – Maximum values for each column of initial_conditions.</p></li>
 <li><p><strong>constraints</strong> (<em>equality</em>) – A list of tuples (indices, coefficients, rhs),
 with each tuple encoding an inequality constraint of the form
-<cite>sum_i (X[indices[i]] * coefficients[i]) &gt;= rhs</cite></p></li>
+<cite>sum_i (X[indices[i]] * coefficients[i]) &gt;= rhs</cite>.</p></li>
 <li><p><strong>constraints</strong> – A list of tuples (indices, coefficients, rhs),
 with each tuple encoding an inequality constraint of the form
-<cite>sum_i (X[indices[i]] * coefficients[i]) = rhs</cite></p></li>
-<li><p><strong>options</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]]) – options used to control the optimization including “method”
-and “maxiter”</p></li>
+<cite>sum_i (X[indices[i]] * coefficients[i]) = rhs</cite>.</p></li>
+<li><p><strong>options</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]]) – Options used to control the optimization including “method”
+and “maxiter”. Select method for <cite>scipy.minimize</cite> using the
+method” key. By default uses L-BFGS-B for box-constrained problems
+and SLSQP if inequality or equality constraints are present.</p></li>
 <li><p><strong>fixed_features</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]]]) – This is a dictionary of feature indices to values, where
 all generated candidates will have features fixed to these values.
 If the dictionary value is None, then that feature will just be

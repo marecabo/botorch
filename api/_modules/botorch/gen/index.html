@@ -70,12 +70,14 @@
 <span class="sd">        upper_bounds: Maximum values for each column of initial_conditions.</span>
 <span class="sd">        inequality constraints: A list of tuples (indices, coefficients, rhs),</span>
 <span class="sd">            with each tuple encoding an inequality constraint of the form</span>
-<span class="sd">            `\sum_i (X[indices[i]] * coefficients[i]) &gt;= rhs`</span>
+<span class="sd">            `\sum_i (X[indices[i]] * coefficients[i]) &gt;= rhs`.</span>
 <span class="sd">        equality constraints: A list of tuples (indices, coefficients, rhs),</span>
 <span class="sd">            with each tuple encoding an inequality constraint of the form</span>
-<span class="sd">            `\sum_i (X[indices[i]] * coefficients[i]) = rhs`</span>
-<span class="sd">        options: options used to control the optimization including "method"</span>
-<span class="sd">            and "maxiter"</span>
+<span class="sd">            `\sum_i (X[indices[i]] * coefficients[i]) = rhs`.</span>
+<span class="sd">        options: Options used to control the optimization including "method"</span>
+<span class="sd">            and "maxiter". Select method for `scipy.minimize` using the</span>
+<span class="sd">            method" key. By default uses L-BFGS-B for box-constrained problems</span>
+<span class="sd">            and SLSQP if inequality or equality constraints are present.</span>
 <span class="sd">        fixed_features: This is a dictionary of feature indices to values, where</span>
 <span class="sd">            all generated candidates will have features fixed to these values.</span>
 <span class="sd">            If the dictionary value is None, then that feature will just be</span>
@@ -135,7 +137,7 @@
     <span class="n">res</span> <span class="o">=</span> <span class="n">minimize</span><span class="p">(</span>
         <span class="n">f</span><span class="p">,</span>
         <span class="n">x0</span><span class="p">,</span>
-        <span class="n">method</span><span class="o">=</span><span class="n">options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"method"</span><span class="p">,</span> <span class="s2">"SLSQP"</span><span class="p">),</span>
+        <span class="n">method</span><span class="o">=</span><span class="n">options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"method"</span><span class="p">,</span> <span class="s2">"SLSQP"</span> <span class="k">if</span> <span class="n">constraints</span> <span class="k">else</span> <span class="s2">"L-BFGS-B"</span><span class="p">),</span>
         <span class="n">jac</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">bounds</span><span class="o">=</span><span class="n">bounds</span><span class="p">,</span>
         <span class="n">constraints</span><span class="o">=</span><span class="n">constraints</span><span class="p">,</span>

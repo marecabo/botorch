@@ -40,6 +40,52 @@
 <span class="kn">from</span> <span class="nn">torch</span> <span class="k">import</span> <span class="n">Tensor</span>
 <span class="kn">from</span> <span class="nn">torch.nn</span> <span class="k">import</span> <span class="n">Module</span>
 
+<span class="kn">from</span> <span class="nn">..posteriors.gpytorch</span> <span class="k">import</span> <span class="n">GPyTorchPosterior</span><span class="p">,</span> <span class="n">scalarize_posterior</span>
+
+
+<div class="viewcode-block" id="ScalarizedObjective"><a class="viewcode-back" href="../../../acquisition.html#botorch.acquisition.objective.ScalarizedObjective">[docs]</a><span class="k">class</span> <span class="nc">ScalarizedObjective</span><span class="p">(</span><span class="n">Module</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">"""Affine objective to be used with analytic acquisition functions.</span>
+
+<span class="sd">    For a Gaussian posterior at a single point (`q=1`) with mean `mu` and</span>
+<span class="sd">    covariance matrix `Sigma`, this yields a single-output posterior with mean</span>
+<span class="sd">    `weights^T * mu` and variance `weights^T Sigma w`.</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">        Example for a model with two outcomes:</span>
+
+<span class="sd">        &gt;&gt;&gt; weights = torch.tensor([0.5, 0.25])</span>
+<span class="sd">        &gt;&gt;&gt; objective = ScalarizedObjective(weights)</span>
+<span class="sd">        &gt;&gt;&gt; EI = ExpectedImprovement(model, best_f=0.1, objective=objective)</span>
+<span class="sd">    """</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">weights</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">offset</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sa">r</span><span class="sd">"""Affine objective.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            weights: A one-dimensional tensor with `o` elements representing the</span>
+<span class="sd">                linear weights on the outputs.</span>
+<span class="sd">            offset: An offset to be added to posterior mean.</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="n">weights</span><span class="o">.</span><span class="n">dim</span><span class="p">()</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"weights must be a one-dimensional tensor."</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">register_buffer</span><span class="p">(</span><span class="s2">"weights"</span><span class="p">,</span> <span class="n">weights</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">offset</span> <span class="o">=</span> <span class="n">offset</span>
+
+<div class="viewcode-block" id="ScalarizedObjective.forward"><a class="viewcode-back" href="../../../acquisition.html#botorch.acquisition.objective.ScalarizedObjective.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">posterior</span><span class="p">:</span> <span class="n">GPyTorchPosterior</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GPyTorchPosterior</span><span class="p">:</span>
+        <span class="sa">r</span><span class="sd">"""Compute the posterior of the affine transformation.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            posterior: A posterior with the same number of outputs as the</span>
+<span class="sd">                elements in `self.weights`.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A single-output posterior.</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="n">scalarize_posterior</span><span class="p">(</span>
+            <span class="n">posterior</span><span class="o">=</span><span class="n">posterior</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">offset</span>
+        <span class="p">)</span></div></div>
+
 
 <div class="viewcode-block" id="MCAcquisitionObjective"><a class="viewcode-back" href="../../../acquisition.html#botorch.acquisition.objective.MCAcquisitionObjective">[docs]</a><span class="k">class</span> <span class="nc">MCAcquisitionObjective</span><span class="p">(</span><span class="n">Module</span><span class="p">,</span> <span class="n">ABC</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">"""Abstract base class for MC-based objectives."""</span>

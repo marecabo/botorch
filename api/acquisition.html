@@ -84,14 +84,8 @@ Monte-Carlo sampling.</p>
 <h3><span class="hidden-section">AnalyticAcquisitionFunction</span><a class="headerlink" href="#analyticacquisitionfunction" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
 <dt id="botorch.acquisition.analytic.AnalyticAcquisitionFunction">
-<em class="property">class </em><code class="sig-prename descclassname">botorch.acquisition.analytic.</code><code class="sig-name descname">AnalyticAcquisitionFunction</code><span class="sig-paren">(</span><em class="sig-param">model</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/acquisition/analytic.html#AnalyticAcquisitionFunction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.acquisition.analytic.AnalyticAcquisitionFunction" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">botorch.acquisition.analytic.</code><code class="sig-name descname">AnalyticAcquisitionFunction</code><span class="sig-paren">(</span><em class="sig-param">model</em>, <em class="sig-param">objective=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/acquisition/analytic.html#AnalyticAcquisitionFunction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.acquisition.analytic.AnalyticAcquisitionFunction" title="Permalink to this definition">¶</a></dt>
 <dd><p>Base class for analytic acquisition functions.</p>
-<p>Constructor for the AcquisitionFunction base class.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>model</strong> (<a class="reference internal" href="models.html#botorch.models.model.Model" title="botorch.models.model.Model"><code class="xref py py-class docutils literal notranslate"><span class="pre">Model</span></code></a>) – A fitted model.</p>
-</dd>
-</dl>
 <dl class="method">
 <dt id="botorch.acquisition.analytic.AnalyticAcquisitionFunction.set_X_pending">
 <code class="sig-name descname">set_X_pending</code><span class="sig-paren">(</span><em class="sig-param">X_pending=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/acquisition/analytic.html#AnalyticAcquisitionFunction.set_X_pending"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.acquisition.analytic.AnalyticAcquisitionFunction.set_X_pending" title="Permalink to this definition">¶</a></dt>
@@ -112,7 +106,7 @@ been submitted for evaluation but have not yet been evaluated.</p>
 <h3><span class="hidden-section">ExpectedImprovement</span><a class="headerlink" href="#expectedimprovement" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
 <dt id="botorch.acquisition.analytic.ExpectedImprovement">
-<em class="property">class </em><code class="sig-prename descclassname">botorch.acquisition.analytic.</code><code class="sig-name descname">ExpectedImprovement</code><span class="sig-paren">(</span><em class="sig-param">model</em>, <em class="sig-param">best_f</em>, <em class="sig-param">maximize=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/acquisition/analytic.html#ExpectedImprovement"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.acquisition.analytic.ExpectedImprovement" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">botorch.acquisition.analytic.</code><code class="sig-name descname">ExpectedImprovement</code><span class="sig-paren">(</span><em class="sig-param">model</em>, <em class="sig-param">best_f</em>, <em class="sig-param">objective=None</em>, <em class="sig-param">maximize=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/acquisition/analytic.html#ExpectedImprovement"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.acquisition.analytic.ExpectedImprovement" title="Permalink to this definition">¶</a></dt>
 <dd><p>Single-outcome Expected Improvement (analytic).</p>
 <p>Computes classic Expected Improvement over the current best observed value,
 using the analytic formula for a Normal posterior distribution. Unlike the
@@ -135,6 +129,7 @@ single-outcome.</p>
 <li><p><strong>best_f</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>]) – Either a scalar or a <cite>b</cite>-dim Tensor (batch mode) representing
 the best function value observed so far (assumed noiseless).</p></li>
 <li><p><strong>maximize</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If True, consider the problem a maximization problem.</p></li>
+<li><p><strong>objective</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="#botorch.acquisition.objective.ScalarizedObjective" title="botorch.acquisition.objective.ScalarizedObjective"><code class="xref py py-class docutils literal notranslate"><span class="pre">ScalarizedObjective</span></code></a>]) – An ScalarizedObjective (optional).</p></li>
 </ul>
 </dd>
 </dl>
@@ -164,7 +159,7 @@ given design points <cite>X</cite>.</p>
 <h3><span class="hidden-section">PosteriorMean</span><a class="headerlink" href="#posteriormean" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
 <dt id="botorch.acquisition.analytic.PosteriorMean">
-<em class="property">class </em><code class="sig-prename descclassname">botorch.acquisition.analytic.</code><code class="sig-name descname">PosteriorMean</code><span class="sig-paren">(</span><em class="sig-param">model</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/acquisition/analytic.html#PosteriorMean"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.acquisition.analytic.PosteriorMean" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">botorch.acquisition.analytic.</code><code class="sig-name descname">PosteriorMean</code><span class="sig-paren">(</span><em class="sig-param">model</em>, <em class="sig-param">objective=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/acquisition/analytic.html#PosteriorMean"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.acquisition.analytic.PosteriorMean" title="Permalink to this definition">¶</a></dt>
 <dd><p>Single-outcome Posterior Mean.</p>
 <p>Only supports the case of q=1. Requires the model’s posterior to have a
 <cite>mean</cite> property. The model must be single-outcome.</p>
@@ -174,12 +169,6 @@ given design points <cite>X</cite>.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">pm</span> <span class="o">=</span> <span class="n">PM</span><span class="p">(</span><span class="n">test_X</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Constructor for the AcquisitionFunction base class.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>model</strong> (<a class="reference internal" href="models.html#botorch.models.model.Model" title="botorch.models.model.Model"><code class="xref py py-class docutils literal notranslate"><span class="pre">Model</span></code></a>) – A fitted model.</p>
-</dd>
-</dl>
 <dl class="method">
 <dt id="botorch.acquisition.analytic.PosteriorMean.forward">
 <code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param">X</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/acquisition/analytic.html#PosteriorMean.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.acquisition.analytic.PosteriorMean.forward" title="Permalink to this definition">¶</a></dt>
@@ -204,7 +193,7 @@ points <cite>X</cite>.</p>
 <h3><span class="hidden-section">ProbabilityOfImprovement</span><a class="headerlink" href="#probabilityofimprovement" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
 <dt id="botorch.acquisition.analytic.ProbabilityOfImprovement">
-<em class="property">class </em><code class="sig-prename descclassname">botorch.acquisition.analytic.</code><code class="sig-name descname">ProbabilityOfImprovement</code><span class="sig-paren">(</span><em class="sig-param">model</em>, <em class="sig-param">best_f</em>, <em class="sig-param">maximize=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/acquisition/analytic.html#ProbabilityOfImprovement"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.acquisition.analytic.ProbabilityOfImprovement" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">botorch.acquisition.analytic.</code><code class="sig-name descname">ProbabilityOfImprovement</code><span class="sig-paren">(</span><em class="sig-param">model</em>, <em class="sig-param">best_f</em>, <em class="sig-param">objective=None</em>, <em class="sig-param">maximize=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/acquisition/analytic.html#ProbabilityOfImprovement"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.acquisition.analytic.ProbabilityOfImprovement" title="Permalink to this definition">¶</a></dt>
 <dd><p>Single-outcome Probability of Improvement.</p>
 <p>Probability of improvment over the current best observed value, computed
 using the analytic formula under a Normal posterior distribution. Only
@@ -252,7 +241,7 @@ design points <cite>X</cite>.</p>
 <h3><span class="hidden-section">UpperConfidenceBound</span><a class="headerlink" href="#upperconfidencebound" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
 <dt id="botorch.acquisition.analytic.UpperConfidenceBound">
-<em class="property">class </em><code class="sig-prename descclassname">botorch.acquisition.analytic.</code><code class="sig-name descname">UpperConfidenceBound</code><span class="sig-paren">(</span><em class="sig-param">model</em>, <em class="sig-param">beta</em>, <em class="sig-param">maximize=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/acquisition/analytic.html#UpperConfidenceBound"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.acquisition.analytic.UpperConfidenceBound" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">botorch.acquisition.analytic.</code><code class="sig-name descname">UpperConfidenceBound</code><span class="sig-paren">(</span><em class="sig-param">model</em>, <em class="sig-param">beta</em>, <em class="sig-param">objective=None</em>, <em class="sig-param">maximize=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/acquisition/analytic.html#UpperConfidenceBound"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.acquisition.analytic.UpperConfidenceBound" title="Permalink to this definition">¶</a></dt>
 <dd><p>Single-outcome Upper Confidence Bound (UCB).</p>
 <p>Analytic upper confidence bound that comprises of the posterior mean plus an
 additional term: the posterior standard deviation weighted by a trade-off
@@ -749,6 +738,51 @@ design points <cite>X</cite>.</p>
 <div class="section" id="module-botorch.acquisition.objective">
 <span id="botorch-acquisition-objective"></span><h2>botorch.acquisition.objective<a class="headerlink" href="#module-botorch.acquisition.objective" title="Permalink to this headline">¶</a></h2>
 <p>Objective Modules to be used with acquisition functions.</p>
+<div class="section" id="scalarizedobjective">
+<h3><span class="hidden-section">ScalarizedObjective</span><a class="headerlink" href="#scalarizedobjective" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="botorch.acquisition.objective.ScalarizedObjective">
+<em class="property">class </em><code class="sig-prename descclassname">botorch.acquisition.objective.</code><code class="sig-name descname">ScalarizedObjective</code><span class="sig-paren">(</span><em class="sig-param">weights</em>, <em class="sig-param">offset=0.0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/acquisition/objective.html#ScalarizedObjective"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.acquisition.objective.ScalarizedObjective" title="Permalink to this definition">¶</a></dt>
+<dd><p>Affine objective to be used with analytic acquisition functions.</p>
+<p>For a Gaussian posterior at a single point (<cite>q=1</cite>) with mean <cite>mu</cite> and
+covariance matrix <cite>Sigma</cite>, this yields a single-output posterior with mean
+<cite>weights^T * mu</cite> and variance <cite>weights^T Sigma w</cite>.</p>
+<p class="rubric">Example</p>
+<p>Example for a model with two outcomes:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">weights</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.25</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">objective</span> <span class="o">=</span> <span class="n">ScalarizedObjective</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">EI</span> <span class="o">=</span> <span class="n">ExpectedImprovement</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">best_f</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">objective</span><span class="o">=</span><span class="n">objective</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Affine objective.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>weights</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>) – A one-dimensional tensor with <cite>o</cite> elements representing the
+linear weights on the outputs.</p></li>
+<li><p><strong>offset</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – An offset to be added to posterior mean.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="method">
+<dt id="botorch.acquisition.objective.ScalarizedObjective.forward">
+<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param">posterior</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/acquisition/objective.html#ScalarizedObjective.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.acquisition.objective.ScalarizedObjective.forward" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the posterior of the affine transformation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>posterior</strong> (<a class="reference internal" href="posteriors.html#botorch.posteriors.gpytorch.GPyTorchPosterior" title="botorch.posteriors.gpytorch.GPyTorchPosterior"><code class="xref py py-class docutils literal notranslate"><span class="pre">GPyTorchPosterior</span></code></a>) – A posterior with the same number of outputs as the
+elements in <cite>self.weights</cite>.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="posteriors.html#botorch.posteriors.gpytorch.GPyTorchPosterior" title="botorch.posteriors.gpytorch.GPyTorchPosterior"><code class="xref py py-class docutils literal notranslate"><span class="pre">GPyTorchPosterior</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A single-output posterior.</p>
+</dd>
+</dl>
+</dd></dl>
+</dd></dl>
+</div>
 <div class="section" id="mcacquisitionobjective">
 <h3><span class="hidden-section">MCAcquisitionObjective</span><a class="headerlink" href="#mcacquisitionobjective" title="Permalink to this headline">¶</a></h3>
 <dl class="class">

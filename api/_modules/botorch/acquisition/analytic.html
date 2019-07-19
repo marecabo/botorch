@@ -49,21 +49,48 @@
 <span class="kn">from</span> <span class="nn">..sampling.samplers</span> <span class="k">import</span> <span class="n">SobolQMCNormalSampler</span>
 <span class="kn">from</span> <span class="nn">..utils.transforms</span> <span class="k">import</span> <span class="n">convert_to_target_pre_hook</span><span class="p">,</span> <span class="n">t_batch_mode_transform</span>
 <span class="kn">from</span> <span class="nn">.acquisition</span> <span class="k">import</span> <span class="n">AcquisitionFunction</span>
+<span class="kn">from</span> <span class="nn">.objective</span> <span class="k">import</span> <span class="n">ScalarizedObjective</span>
 
 
 <div class="viewcode-block" id="AnalyticAcquisitionFunction"><a class="viewcode-back" href="../../../acquisition.html#botorch.acquisition.analytic.AnalyticAcquisitionFunction">[docs]</a><span class="k">class</span> <span class="nc">AnalyticAcquisitionFunction</span><span class="p">(</span><span class="n">AcquisitionFunction</span><span class="p">,</span> <span class="n">ABC</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">"""Base class for analytic acquisition functions."""</span>
 
-    <span class="k">def</span> <span class="nf">_validate_single_output_posterior</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">posterior</span><span class="p">:</span> <span class="n">Posterior</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sa">r</span><span class="sd">"""Validates that the computed posterior is single-output.</span>
-
-<span class="sd">        Raises an UnsupportedError if not.</span>
-<span class="sd">        """</span>
-        <span class="k">if</span> <span class="n">posterior</span><span class="o">.</span><span class="n">event_shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span> <span class="n">Model</span><span class="p">,</span> <span class="n">objective</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ScalarizedObjective</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">objective</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">objective</span><span class="p">,</span> <span class="n">ScalarizedObjective</span><span class="p">):</span>
             <span class="k">raise</span> <span class="n">UnsupportedError</span><span class="p">(</span>
-                <span class="s2">"Multi-Output posteriors are not supported for acquisition "</span>
-                <span class="n">f</span><span class="s2">" function of type </span><span class="si">{self.__class__.__name__}</span><span class="s2">"</span>
+                <span class="s2">"Only objectives of type ScalarizedObjective are supported for "</span>
+                <span class="s2">"analytic acquisition functions."</span>
             <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">objective</span> <span class="o">=</span> <span class="n">objective</span>
+
+    <span class="k">def</span> <span class="nf">_get_posterior</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">check_single_output</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Posterior</span><span class="p">:</span>
+        <span class="sa">r</span><span class="sd">"""Compute the posterior at the input candidate set X.</span>
+
+<span class="sd">        Applies the objective if provided.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            X: The input candidate set</span>
+<span class="sd">            check_single_output: If True, Raise an error if the posterior is not</span>
+<span class="sd">                single-output.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The posterior at X.</span>
+<span class="sd">        """</span>
+        <span class="n">posterior</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">posterior</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">objective</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># Unlike MCAcquisitionObjectives (which transform samples), this</span>
+            <span class="c1"># transforms the posterior</span>
+            <span class="n">posterior</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">objective</span><span class="p">(</span><span class="n">posterior</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">check_single_output</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">posterior</span><span class="o">.</span><span class="n">event_shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">UnsupportedError</span><span class="p">(</span>
+                    <span class="s2">"Multi-Output posteriors are not supported for acquisition "</span>
+                    <span class="n">f</span><span class="s2">"functions of type </span><span class="si">{self.__class__.__name__}</span><span class="s2">"</span>
+                <span class="p">)</span>
+        <span class="k">return</span> <span class="n">posterior</span>
 
 <div class="viewcode-block" id="AnalyticAcquisitionFunction.set_X_pending"><a class="viewcode-back" href="../../../acquisition.html#botorch.acquisition.analytic.AnalyticAcquisitionFunction.set_X_pending">[docs]</a>    <span class="k">def</span> <span class="nf">set_X_pending</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X_pending</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">UnsupportedError</span><span class="p">(</span>
@@ -90,7 +117,11 @@
 <span class="sd">    """</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span> <span class="n">Model</span><span class="p">,</span> <span class="n">best_f</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">Tensor</span><span class="p">],</span> <span class="n">maximize</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">model</span><span class="p">:</span> <span class="n">Model</span><span class="p">,</span>
+        <span class="n">best_f</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">Tensor</span><span class="p">],</span>
+        <span class="n">objective</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ScalarizedObjective</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">maximize</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sa">r</span><span class="sd">"""Single-outcome Expected Improvement (analytic).</span>
 
@@ -99,8 +130,9 @@
 <span class="sd">            best_f: Either a scalar or a `b`-dim Tensor (batch mode) representing</span>
 <span class="sd">                the best function value observed so far (assumed noiseless).</span>
 <span class="sd">            maximize: If True, consider the problem a maximization problem.</span>
+<span class="sd">            objective: An ScalarizedObjective (optional).</span>
 <span class="sd">        """</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="n">objective</span><span class="o">=</span><span class="n">objective</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">maximize</span> <span class="o">=</span> <span class="n">maximize</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">torch</span><span class="o">.</span><span class="n">is_tensor</span><span class="p">(</span><span class="n">best_f</span><span class="p">):</span>
             <span class="n">best_f</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">best_f</span><span class="p">)</span>
@@ -121,8 +153,7 @@
 <span class="sd">            given design points `X`.</span>
 <span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">best_f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">best_f</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
-        <span class="n">posterior</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">posterior</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_validate_single_output_posterior</span><span class="p">(</span><span class="n">posterior</span><span class="p">)</span>
+        <span class="n">posterior</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_posterior</span><span class="p">(</span><span class="n">X</span><span class="o">=</span><span class="n">X</span><span class="p">)</span>
         <span class="n">mean</span> <span class="o">=</span> <span class="n">posterior</span><span class="o">.</span><span class="n">mean</span>
         <span class="c1"># deal with batch evaluation and broadcasting</span>
         <span class="n">view_shape</span> <span class="o">=</span> <span class="n">mean</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span> <span class="k">if</span> <span class="n">mean</span><span class="o">.</span><span class="n">dim</span><span class="p">()</span> <span class="o">&gt;=</span> <span class="n">X</span><span class="o">.</span><span class="n">dim</span><span class="p">()</span> <span class="k">else</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
@@ -162,8 +193,7 @@
 <span class="sd">            A `(b)`-dim Tensor of Posterior Mean values at the given design</span>
 <span class="sd">            points `X`.</span>
 <span class="sd">        """</span>
-        <span class="n">posterior</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">posterior</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_validate_single_output_posterior</span><span class="p">(</span><span class="n">posterior</span><span class="p">)</span>
+        <span class="n">posterior</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_posterior</span><span class="p">(</span><span class="n">X</span><span class="o">=</span><span class="n">X</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">posterior</span><span class="o">.</span><span class="n">mean</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span></div></div>
 
 
@@ -184,7 +214,11 @@
 <span class="sd">    """</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span> <span class="n">Model</span><span class="p">,</span> <span class="n">best_f</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">Tensor</span><span class="p">],</span> <span class="n">maximize</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">model</span><span class="p">:</span> <span class="n">Model</span><span class="p">,</span>
+        <span class="n">best_f</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">Tensor</span><span class="p">],</span>
+        <span class="n">objective</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ScalarizedObjective</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">maximize</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sa">r</span><span class="sd">"""Single-outcome analytic Probability of Improvement.</span>
 
@@ -194,7 +228,7 @@
 <span class="sd">                the best function value observed so far (assumed noiseless).</span>
 <span class="sd">            maximize: If True, consider the problem a maximization problem.</span>
 <span class="sd">        """</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="n">objective</span><span class="o">=</span><span class="n">objective</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">maximize</span> <span class="o">=</span> <span class="n">maximize</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">torch</span><span class="o">.</span><span class="n">is_tensor</span><span class="p">(</span><span class="n">best_f</span><span class="p">):</span>
             <span class="n">best_f</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">best_f</span><span class="p">)</span>
@@ -213,10 +247,9 @@
 <span class="sd">            design points `X`.</span>
 <span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">best_f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">best_f</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
-        <span class="n">batch_shape</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
-        <span class="n">posterior</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">posterior</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_validate_single_output_posterior</span><span class="p">(</span><span class="n">posterior</span><span class="p">)</span>
+        <span class="n">posterior</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_posterior</span><span class="p">(</span><span class="n">X</span><span class="o">=</span><span class="n">X</span><span class="p">)</span>
         <span class="n">mean</span><span class="p">,</span> <span class="n">sigma</span> <span class="o">=</span> <span class="n">posterior</span><span class="o">.</span><span class="n">mean</span><span class="p">,</span> <span class="n">posterior</span><span class="o">.</span><span class="n">variance</span><span class="o">.</span><span class="n">sqrt</span><span class="p">()</span>
+        <span class="n">batch_shape</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
         <span class="n">mean</span> <span class="o">=</span> <span class="n">posterior</span><span class="o">.</span><span class="n">mean</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">batch_shape</span><span class="p">)</span>
         <span class="n">sigma</span> <span class="o">=</span> <span class="n">posterior</span><span class="o">.</span><span class="n">variance</span><span class="o">.</span><span class="n">sqrt</span><span class="p">()</span><span class="o">.</span><span class="n">clamp_min</span><span class="p">(</span><span class="mf">1e-9</span><span class="p">)</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">batch_shape</span><span class="p">)</span>
         <span class="n">u</span> <span class="o">=</span> <span class="p">(</span><span class="n">mean</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">best_f</span><span class="o">.</span><span class="n">expand_as</span><span class="p">(</span><span class="n">mean</span><span class="p">))</span> <span class="o">/</span> <span class="n">sigma</span>
@@ -244,7 +277,11 @@
 <span class="sd">    """</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span> <span class="n">Model</span><span class="p">,</span> <span class="n">beta</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">Tensor</span><span class="p">],</span> <span class="n">maximize</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">model</span><span class="p">:</span> <span class="n">Model</span><span class="p">,</span>
+        <span class="n">beta</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">Tensor</span><span class="p">],</span>
+        <span class="n">objective</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ScalarizedObjective</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">maximize</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sa">r</span><span class="sd">"""Single-outcome Upper Confidence Bound.</span>
 
@@ -255,7 +292,7 @@
 <span class="sd">                representing the trade-off parameter between mean and covariance</span>
 <span class="sd">            maximize: If True, consider the problem a maximization problem.</span>
 <span class="sd">        """</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="n">objective</span><span class="o">=</span><span class="n">objective</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">maximize</span> <span class="o">=</span> <span class="n">maximize</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">torch</span><span class="o">.</span><span class="n">is_tensor</span><span class="p">(</span><span class="n">beta</span><span class="p">):</span>
             <span class="n">beta</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">beta</span><span class="p">)</span>
@@ -274,9 +311,8 @@
 <span class="sd">            design points `X`.</span>
 <span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">beta</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">beta</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+        <span class="n">posterior</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_posterior</span><span class="p">(</span><span class="n">X</span><span class="o">=</span><span class="n">X</span><span class="p">)</span>
         <span class="n">batch_shape</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
-        <span class="n">posterior</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">posterior</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_validate_single_output_posterior</span><span class="p">(</span><span class="n">posterior</span><span class="p">)</span>
         <span class="n">mean</span> <span class="o">=</span> <span class="n">posterior</span><span class="o">.</span><span class="n">mean</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">batch_shape</span><span class="p">)</span>
         <span class="n">variance</span> <span class="o">=</span> <span class="n">posterior</span><span class="o">.</span><span class="n">variance</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">batch_shape</span><span class="p">)</span>
         <span class="n">delta</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">beta</span><span class="o">.</span><span class="n">expand_as</span><span class="p">(</span><span class="n">mean</span><span class="p">)</span> <span class="o">*</span> <span class="n">variance</span><span class="p">)</span><span class="o">.</span><span class="n">sqrt</span><span class="p">()</span>
@@ -349,7 +385,7 @@
 <span class="sd">            A `(b)`-dim Tensor of Expected Improvement values at the given</span>
 <span class="sd">            design points `X`.</span>
 <span class="sd">        """</span>
-        <span class="n">posterior</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">posterior</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+        <span class="n">posterior</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_posterior</span><span class="p">(</span><span class="n">X</span><span class="o">=</span><span class="n">X</span><span class="p">,</span> <span class="n">check_single_output</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="n">means</span> <span class="o">=</span> <span class="n">posterior</span><span class="o">.</span><span class="n">mean</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">dim</span><span class="o">=-</span><span class="mi">2</span><span class="p">)</span>  <span class="c1"># (b) x t</span>
         <span class="n">sigmas</span> <span class="o">=</span> <span class="n">posterior</span><span class="o">.</span><span class="n">variance</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">dim</span><span class="o">=-</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">sqrt</span><span class="p">()</span><span class="o">.</span><span class="n">clamp_min</span><span class="p">(</span><span class="mf">1e-9</span><span class="p">)</span>  <span class="c1"># (b) x t</span>
 
@@ -493,8 +529,7 @@
             <span class="p">)</span>
         <span class="c1"># sample fantasies</span>
         <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
-            <span class="n">posterior</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">posterior</span><span class="p">(</span><span class="n">X_observed</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_validate_single_output_posterior</span><span class="p">(</span><span class="n">posterior</span><span class="o">=</span><span class="n">posterior</span><span class="p">)</span>
+            <span class="n">posterior</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">posterior</span><span class="p">(</span><span class="n">X</span><span class="o">=</span><span class="n">X_observed</span><span class="p">)</span>
             <span class="n">sampler</span> <span class="o">=</span> <span class="n">SobolQMCNormalSampler</span><span class="p">(</span><span class="n">num_fantasies</span><span class="p">)</span>
             <span class="n">Y_fantasized</span> <span class="o">=</span> <span class="n">sampler</span><span class="p">(</span><span class="n">posterior</span><span class="p">)</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
         <span class="n">batch_X_observed</span> <span class="o">=</span> <span class="n">X_observed</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="n">num_fantasies</span><span class="p">,</span> <span class="o">*</span><span class="n">X_observed</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>

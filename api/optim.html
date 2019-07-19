@@ -338,7 +338,7 @@ functions).</p></li>
 </dd></dl>
 <dl class="function">
 <dt id="botorch.optim.optimize.joint_optimize">
-<code class="sig-prename descclassname">botorch.optim.optimize.</code><code class="sig-name descname">joint_optimize</code><span class="sig-paren">(</span><em class="sig-param">acq_function</em>, <em class="sig-param">bounds</em>, <em class="sig-param">q</em>, <em class="sig-param">num_restarts</em>, <em class="sig-param">raw_samples</em>, <em class="sig-param">options=None</em>, <em class="sig-param">inequality_constraints=None</em>, <em class="sig-param">equality_constraints=None</em>, <em class="sig-param">fixed_features=None</em>, <em class="sig-param">post_processing_func=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/optim/optimize.html#joint_optimize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.optim.optimize.joint_optimize" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">botorch.optim.optimize.</code><code class="sig-name descname">joint_optimize</code><span class="sig-paren">(</span><em class="sig-param">acq_function</em>, <em class="sig-param">bounds</em>, <em class="sig-param">q</em>, <em class="sig-param">num_restarts</em>, <em class="sig-param">raw_samples</em>, <em class="sig-param">options=None</em>, <em class="sig-param">inequality_constraints=None</em>, <em class="sig-param">equality_constraints=None</em>, <em class="sig-param">fixed_features=None</em>, <em class="sig-param">post_processing_func=None</em>, <em class="sig-param">batch_initial_conditions=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/optim/optimize.html#joint_optimize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.optim.optimize.joint_optimize" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate a set of candidates via joint multi-start optimization.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -362,6 +362,8 @@ fixed to a particular value during generation.</p></li>
 appropriately (i.e., according to <cite>round-trip</cite> transformations).
 Note: post_processing_func is not used by _joint_optimize and is only
 included to match _sequential_optimize.</p></li>
+<li><p><strong>batch_initial_conditions</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>]) – A tensor to specify the initial conditions. Set
+this if you do not want to use default initialization strategy.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
