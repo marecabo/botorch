@@ -133,6 +133,7 @@
     <span class="n">fixed_features</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">post_processing_func</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[</span><span class="n">Tensor</span><span class="p">],</span> <span class="n">Tensor</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">batch_initial_conditions</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">return_best_only</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
     <span class="sa">r</span><span class="sd">"""Generate a set of candidates via joint multi-start optimization.</span>
 
@@ -158,6 +159,8 @@
 <span class="sd">            included to match _sequential_optimize.</span>
 <span class="sd">        batch_initial_conditions: A tensor to specify the initial conditions. Set</span>
 <span class="sd">            this if you do not want to use default initialization strategy.</span>
+<span class="sd">        return_best_only: Set this to False if you want to output the solutions</span>
+<span class="sd">            corresponding to all initializations.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">         A `q x d` tensor of generated candidates.</span>
@@ -182,9 +185,9 @@
             <span class="n">options</span><span class="o">=</span><span class="n">options</span><span class="p">,</span>
         <span class="p">)</span>
 
-    <span class="n">batch_limit</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"batch_limit"</span><span class="p">,</span> <span class="n">num_restarts</span><span class="p">)</span>
-    <span class="n">batch_candidates_list</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">batch_acq_values_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">batch_limit</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"batch_limit"</span><span class="p">,</span> <span class="n">num_restarts</span><span class="p">)</span>
+    <span class="n">batch_candidates_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">batch_acq_values_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">start_idx</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="k">while</span> <span class="n">start_idx</span> <span class="o">&lt;</span> <span class="n">num_restarts</span><span class="p">:</span>
         <span class="n">end_idx</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">start_idx</span> <span class="o">+</span> <span class="n">batch_limit</span><span class="p">,</span> <span class="n">num_restarts</span><span class="p">)</span>
@@ -208,9 +211,13 @@
         <span class="n">start_idx</span> <span class="o">+=</span> <span class="n">batch_limit</span>
     <span class="n">batch_candidates</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span><span class="n">batch_candidates_list</span><span class="p">)</span>
     <span class="n">batch_acq_values</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span><span class="n">batch_acq_values_list</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">get_best_candidates</span><span class="p">(</span>
-        <span class="n">batch_candidates</span><span class="o">=</span><span class="n">batch_candidates</span><span class="p">,</span> <span class="n">batch_values</span><span class="o">=</span><span class="n">batch_acq_values</span>
-    <span class="p">)</span></div>
+
+    <span class="k">if</span> <span class="n">return_best_only</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">get_best_candidates</span><span class="p">(</span>
+            <span class="n">batch_candidates</span><span class="o">=</span><span class="n">batch_candidates</span><span class="p">,</span> <span class="n">batch_values</span><span class="o">=</span><span class="n">batch_acq_values</span>
+        <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">batch_candidates</span></div>
 
 
 <div class="viewcode-block" id="gen_batch_initial_conditions"><a class="viewcode-back" href="../../../optim.html#botorch.optim.optimize.gen_batch_initial_conditions">[docs]</a><span class="k">def</span> <span class="nf">gen_batch_initial_conditions</span><span class="p">(</span>

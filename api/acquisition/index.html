@@ -86,6 +86,15 @@ Monte-Carlo sampling.</p>
 <dt id="botorch.acquisition.analytic.AnalyticAcquisitionFunction">
 <em class="property">class </em><code class="sig-prename descclassname">botorch.acquisition.analytic.</code><code class="sig-name descname">AnalyticAcquisitionFunction</code><span class="sig-paren">(</span><em class="sig-param">model</em>, <em class="sig-param">objective=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/acquisition/analytic.html#AnalyticAcquisitionFunction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.acquisition.analytic.AnalyticAcquisitionFunction" title="Permalink to this definition">¶</a></dt>
 <dd><p>Base class for analytic acquisition functions.</p>
+<p>Base constructor for analytic acquisition functions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model</strong> (<a class="reference internal" href="models.html#botorch.models.model.Model" title="botorch.models.model.Model"><code class="xref py py-class docutils literal notranslate"><span class="pre">Model</span></code></a>) – A fitted single-outcome model.</p></li>
+<li><p><strong>objective</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="#botorch.acquisition.objective.ScalarizedObjective" title="botorch.acquisition.objective.ScalarizedObjective"><code class="xref py py-class docutils literal notranslate"><span class="pre">ScalarizedObjective</span></code></a>]) – A ScalarizedObjective (optional).</p></li>
+</ul>
+</dd>
+</dl>
 <dl class="method">
 <dt id="botorch.acquisition.analytic.AnalyticAcquisitionFunction.set_X_pending">
 <code class="sig-name descname">set_X_pending</code><span class="sig-paren">(</span><em class="sig-param">X_pending=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/acquisition/analytic.html#AnalyticAcquisitionFunction.set_X_pending"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.acquisition.analytic.AnalyticAcquisitionFunction.set_X_pending" title="Permalink to this definition">¶</a></dt>
@@ -128,8 +137,8 @@ single-outcome.</p>
 <li><p><strong>model</strong> (<a class="reference internal" href="models.html#botorch.models.model.Model" title="botorch.models.model.Model"><code class="xref py py-class docutils literal notranslate"><span class="pre">Model</span></code></a>) – A fitted single-outcome model.</p></li>
 <li><p><strong>best_f</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>]) – Either a scalar or a <cite>b</cite>-dim Tensor (batch mode) representing
 the best function value observed so far (assumed noiseless).</p></li>
+<li><p><strong>objective</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="#botorch.acquisition.objective.ScalarizedObjective" title="botorch.acquisition.objective.ScalarizedObjective"><code class="xref py py-class docutils literal notranslate"><span class="pre">ScalarizedObjective</span></code></a>]) – A ScalarizedObjective (optional).</p></li>
 <li><p><strong>maximize</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If True, consider the problem a maximization problem.</p></li>
-<li><p><strong>objective</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="#botorch.acquisition.objective.ScalarizedObjective" title="botorch.acquisition.objective.ScalarizedObjective"><code class="xref py py-class docutils literal notranslate"><span class="pre">ScalarizedObjective</span></code></a>]) – An ScalarizedObjective (optional).</p></li>
 </ul>
 </dd>
 </dl>
@@ -169,6 +178,15 @@ given design points <cite>X</cite>.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">pm</span> <span class="o">=</span> <span class="n">PM</span><span class="p">(</span><span class="n">test_X</span><span class="p">)</span>
 </pre></div>
 </div>
+<p>Base constructor for analytic acquisition functions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model</strong> (<a class="reference internal" href="models.html#botorch.models.model.Model" title="botorch.models.model.Model"><code class="xref py py-class docutils literal notranslate"><span class="pre">Model</span></code></a>) – A fitted single-outcome model.</p></li>
+<li><p><strong>objective</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="#botorch.acquisition.objective.ScalarizedObjective" title="botorch.acquisition.objective.ScalarizedObjective"><code class="xref py py-class docutils literal notranslate"><span class="pre">ScalarizedObjective</span></code></a>]) – A ScalarizedObjective (optional).</p></li>
+</ul>
+</dd>
+</dl>
 <dl class="method">
 <dt id="botorch.acquisition.analytic.PosteriorMean.forward">
 <code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param">X</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/acquisition/analytic.html#PosteriorMean.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.acquisition.analytic.PosteriorMean.forward" title="Permalink to this definition">¶</a></dt>
@@ -213,6 +231,7 @@ must be single-outcome.</p>
 <li><p><strong>model</strong> (<a class="reference internal" href="models.html#botorch.models.model.Model" title="botorch.models.model.Model"><code class="xref py py-class docutils literal notranslate"><span class="pre">Model</span></code></a>) – A fitted single-outcome model.</p></li>
 <li><p><strong>best_f</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>]) – Either a scalar or a <cite>b</cite>-dim Tensor (batch mode) representing
 the best function value observed so far (assumed noiseless).</p></li>
+<li><p><strong>objective</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="#botorch.acquisition.objective.ScalarizedObjective" title="botorch.acquisition.objective.ScalarizedObjective"><code class="xref py py-class docutils literal notranslate"><span class="pre">ScalarizedObjective</span></code></a>]) – A ScalarizedObjective (optional).</p></li>
 <li><p><strong>maximize</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If True, consider the problem a maximization problem.</p></li>
 </ul>
 </dd>
@@ -263,6 +282,7 @@ posterior mean and standard deviation, respectively.</p>
 candidate sets X will be)</p></li>
 <li><p><strong>beta</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>]) – Either a scalar or a one-dim tensor with <cite>b</cite> elements (batch mode)
 representing the trade-off parameter between mean and covariance</p></li>
+<li><p><strong>objective</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="#botorch.acquisition.objective.ScalarizedObjective" title="botorch.acquisition.objective.ScalarizedObjective"><code class="xref py py-class docutils literal notranslate"><span class="pre">ScalarizedObjective</span></code></a>]) – A ScalarizedObjective (optional).</p></li>
 <li><p><strong>maximize</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If True, consider the problem a maximization problem.</p></li>
 </ul>
 </dd>
@@ -394,6 +414,62 @@ complexity and performance).</p></li>
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>A <cite>b1 x … bk</cite>-dim tensor of Noisy Expected Improvement values at
 the given design points <cite>X</cite>.</p>
+</dd>
+</dl>
+</dd></dl>
+</dd></dl>
+</div>
+</div>
+<div class="section" id="botorch-acquisition-fixed-feature">
+<h2>botorch.acquisition.fixed_feature<a class="headerlink" href="#botorch-acquisition-fixed-feature" title="Permalink to this headline">¶</a></h2>
+<p>Derived Acquisition Function for fixing features during optimization.</p>
+<span class="target" id="module-botorch.acquisition.fixed_feature"></span><p>A wrapper around AquisitionFunctions to fix certain features for optimization.
+This is useful e.g. for performing contextual optimization.</p>
+<div class="section" id="fixedfeatureacquisitionfunction">
+<h3><span class="hidden-section">FixedFeatureAcquisitionFunction</span><a class="headerlink" href="#fixedfeatureacquisitionfunction" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="botorch.acquisition.fixed_feature.FixedFeatureAcquisitionFunction">
+<em class="property">class </em><code class="sig-prename descclassname">botorch.acquisition.fixed_feature.</code><code class="sig-name descname">FixedFeatureAcquisitionFunction</code><span class="sig-paren">(</span><em class="sig-param">acq_function</em>, <em class="sig-param">d</em>, <em class="sig-param">columns</em>, <em class="sig-param">values</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/acquisition/fixed_feature.html#FixedFeatureAcquisitionFunction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.acquisition.fixed_feature.FixedFeatureAcquisitionFunction" title="Permalink to this definition">¶</a></dt>
+<dd><p>A wrapper around AquisitionFunctions to fix a subset of features.</p>
+<p class="rubric">Example</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">SingleTaskGP</span><span class="p">(</span><span class="n">train_X</span><span class="p">,</span> <span class="n">train_Y</span><span class="p">)</span>  <span class="c1"># d = 5</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">qEI</span> <span class="o">=</span> <span class="n">qExpectedImprovement</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">best_f</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">values</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">columns</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">qEI_FF</span> <span class="o">=</span> <span class="n">FixedFeatureAcquisitionFunction</span><span class="p">(</span><span class="n">qEI</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">columns</span><span class="p">,</span> <span class="n">values</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">qei</span> <span class="o">=</span> <span class="n">qEI_FF</span><span class="p">(</span><span class="n">test_X</span><span class="p">)</span>  <span class="c1"># d' = 3</span>
+</pre></div>
+</div>
+<p>Derived Acquisition Function by fixing a subset of input features.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>acq_function</strong> (<a class="reference internal" href="#botorch.acquisition.acquisition.AcquisitionFunction" title="botorch.acquisition.acquisition.AcquisitionFunction"><code class="xref py py-class docutils literal notranslate"><span class="pre">AcquisitionFunction</span></code></a>) – The base acquisition function, operating on input
+tensors <cite>X_full</cite> of feature dimension <cite>d</cite>.</p></li>
+<li><p><strong>d</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – The feature dimension expected by <cite>acq_function</cite>.</p></li>
+<li><p><strong>columns</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – <cite>d_f &lt; d</cite> indices of columns in <cite>X_full</cite> that are to be
+fixed to the provided values.</p></li>
+<li><p><strong>values</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]]) – The values to which to fix the columns in <cite>columns</cite>. Either
+a full <cite>batch_shape x q x d_f</cite> tensor of values (if values are
+different for each of the <cite>q</cite> input points), or an array-like of
+values that is broadcastable to the input across <cite>t</cite>-batch and
+<cite>q</cite>-batch dimensions, e.g. a list of length <cite>d_f</cite> if values
+are the same across all <cite>t</cite> and <cite>q</cite>-batch dimensions.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="method">
+<dt id="botorch.acquisition.fixed_feature.FixedFeatureAcquisitionFunction.forward">
+<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param">X</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/botorch/acquisition/fixed_feature.html#FixedFeatureAcquisitionFunction.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#botorch.acquisition.fixed_feature.FixedFeatureAcquisitionFunction.forward" title="Permalink to this definition">¶</a></dt>
+<dd><p>Evaluate base acquisition function under the fixed features.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>) – Input tensor of feature dimension <cite>d’ &lt; d</cite> such that <cite>d’ + d_f = d</cite>.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Base acquisition function evaluated on tensor <cite>X_full</cite> constructed
+by adding <cite>values</cite> in the appropriate places (see
+<cite>_construct_X_full</cite>).</p>
 </dd>
 </dl>
 </dd></dl>
