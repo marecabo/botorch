@@ -40,11 +40,12 @@
 <span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
 
 <span class="kn">import</span> <span class="nn">torch</span>
-<span class="kn">from</span> <span class="nn">gpytorch</span> <span class="k">import</span> <span class="n">settings</span>
+<span class="kn">from</span> <span class="nn">gpytorch</span> <span class="k">import</span> <span class="n">settings</span> <span class="k">as</span> <span class="n">gpt_settings</span>
 <span class="kn">from</span> <span class="nn">gpytorch.distributions</span> <span class="k">import</span> <span class="n">MultitaskMultivariateNormal</span><span class="p">,</span> <span class="n">MultivariateNormal</span>
 <span class="kn">from</span> <span class="nn">gpytorch.lazy</span> <span class="k">import</span> <span class="n">lazify</span>
 <span class="kn">from</span> <span class="nn">torch</span> <span class="k">import</span> <span class="n">Tensor</span>
 
+<span class="kn">from</span> <span class="nn">..</span> <span class="k">import</span> <span class="n">settings</span>
 <span class="kn">from</span> <span class="nn">..posteriors.gpytorch</span> <span class="k">import</span> <span class="n">GPyTorchPosterior</span>
 <span class="kn">from</span> <span class="nn">.model</span> <span class="k">import</span> <span class="n">Model</span>
 <span class="kn">from</span> <span class="nn">.utils</span> <span class="k">import</span> <span class="n">_make_X_full</span><span class="p">,</span> <span class="n">add_output_dim</span><span class="p">,</span> <span class="n">multioutput_to_batch_mode_transform</span>
@@ -66,10 +67,6 @@
 <span class="sd">            X: A `(batch_shape) x q x d`-dim Tensor, where `d` is the dimension of the</span>
 <span class="sd">                feature space and `q` is the number of points considered jointly.</span>
 <span class="sd">            observation_noise: If True, add observation noise to the posterior.</span>
-<span class="sd">            propagate_grads: If True, do not detach GPyTorch's test caches when</span>
-<span class="sd">                computing the posterior. Required for being able to compute</span>
-<span class="sd">                derivatives with respect to training inputs at test time (used</span>
-<span class="sd">                e.g. by qNoisyExpectedImprovement). Defaults to `False`.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            A `GPyTorchPosterior` object, representing a batch of `b` joint</span>
@@ -77,11 +74,12 @@
 <span class="sd">            `observation_noise=True`.</span>
 <span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>  <span class="c1"># make sure model is in eval mode</span>
-        <span class="n">detach_test_caches</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"propagate_grads"</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
         <span class="k">with</span> <span class="n">ExitStack</span><span class="p">()</span> <span class="k">as</span> <span class="n">es</span><span class="p">:</span>
-            <span class="n">es</span><span class="o">.</span><span class="n">enter_context</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="kc">False</span><span class="p">))</span>
-            <span class="n">es</span><span class="o">.</span><span class="n">enter_context</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">fast_pred_var</span><span class="p">())</span>
-            <span class="n">es</span><span class="o">.</span><span class="n">enter_context</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">detach_test_caches</span><span class="p">(</span><span class="n">detach_test_caches</span><span class="p">))</span>
+            <span class="n">es</span><span class="o">.</span><span class="n">enter_context</span><span class="p">(</span><span class="n">gpt_settings</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="kc">False</span><span class="p">))</span>
+            <span class="n">es</span><span class="o">.</span><span class="n">enter_context</span><span class="p">(</span><span class="n">gpt_settings</span><span class="o">.</span><span class="n">fast_pred_var</span><span class="p">())</span>
+            <span class="n">es</span><span class="o">.</span><span class="n">enter_context</span><span class="p">(</span>
+                <span class="n">gpt_settings</span><span class="o">.</span><span class="n">detach_test_caches</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">propagate_grads</span><span class="o">.</span><span class="n">off</span><span class="p">())</span>
+            <span class="p">)</span>
             <span class="n">mvn</span> <span class="o">=</span> <span class="bp">self</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">observation_noise</span><span class="p">:</span>
                 <span class="c1"># TODO: Allow passing in observation noise via kwarg</span>
@@ -188,10 +186,6 @@
 <span class="sd">                model's outputs are required for optimization. If omitted,</span>
 <span class="sd">                computes the posterior over all model outputs.</span>
 <span class="sd">            observation_noise: If True, add observation noise to the posterior.</span>
-<span class="sd">            propagate_grads: If True, do not detach GPyTorch's test caches when</span>
-<span class="sd">                computing of the posterior. Required for being able to compute</span>
-<span class="sd">                derivatives with respect to training inputs at test time (used</span>
-<span class="sd">                e.g. by qNoisyExpectedImprovement). Defaults to `False`.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            A `GPyTorchPosterior` object, representing `batch_shape` joint</span>
@@ -200,11 +194,12 @@
 <span class="sd">            `observation_noise=True`.</span>
 <span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>  <span class="c1"># make sure model is in eval mode</span>
-        <span class="n">detach_test_caches</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"propagate_grads"</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
         <span class="k">with</span> <span class="n">ExitStack</span><span class="p">()</span> <span class="k">as</span> <span class="n">es</span><span class="p">:</span>
-            <span class="n">es</span><span class="o">.</span><span class="n">enter_context</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="kc">False</span><span class="p">))</span>
-            <span class="n">es</span><span class="o">.</span><span class="n">enter_context</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">fast_pred_var</span><span class="p">())</span>
-            <span class="n">es</span><span class="o">.</span><span class="n">enter_context</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">detach_test_caches</span><span class="p">(</span><span class="n">detach_test_caches</span><span class="p">))</span>
+            <span class="n">es</span><span class="o">.</span><span class="n">enter_context</span><span class="p">(</span><span class="n">gpt_settings</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="kc">False</span><span class="p">))</span>
+            <span class="n">es</span><span class="o">.</span><span class="n">enter_context</span><span class="p">(</span><span class="n">gpt_settings</span><span class="o">.</span><span class="n">fast_pred_var</span><span class="p">())</span>
+            <span class="n">es</span><span class="o">.</span><span class="n">enter_context</span><span class="p">(</span>
+                <span class="n">gpt_settings</span><span class="o">.</span><span class="n">detach_test_caches</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">propagate_grads</span><span class="o">.</span><span class="n">off</span><span class="p">())</span>
+            <span class="p">)</span>
             <span class="c1"># insert a dimension for the output dimension</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_outputs</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
                 <span class="n">X</span><span class="p">,</span> <span class="n">output_dim_idx</span> <span class="o">=</span> <span class="n">add_output_dim</span><span class="p">(</span>
@@ -268,12 +263,9 @@
             <span class="n">num_outputs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_outputs</span><span class="p">,</span>
             <span class="n">train_Yvar</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"noise"</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
         <span class="p">)</span>
-        <span class="n">fant_kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">k</span> <span class="o">!=</span> <span class="s2">"propagate_grads"</span><span class="p">}</span>
         <span class="k">if</span> <span class="n">noise</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">fant_kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">"noise"</span><span class="p">:</span> <span class="n">noise</span><span class="p">})</span>
-        <span class="n">fantasy_model</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">condition_on_observations</span><span class="p">(</span>
-            <span class="n">X</span><span class="o">=</span><span class="n">inputs</span><span class="p">,</span> <span class="n">Y</span><span class="o">=</span><span class="n">targets</span><span class="p">,</span> <span class="o">**</span><span class="n">fant_kwargs</span>
-        <span class="p">)</span>
+            <span class="n">kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">"noise"</span><span class="p">:</span> <span class="n">noise</span><span class="p">})</span>
+        <span class="n">fantasy_model</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">condition_on_observations</span><span class="p">(</span><span class="n">X</span><span class="o">=</span><span class="n">inputs</span><span class="p">,</span> <span class="n">Y</span><span class="o">=</span><span class="n">targets</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="n">fantasy_model</span><span class="o">.</span><span class="n">_input_batch_shape</span> <span class="o">=</span> <span class="n">fantasy_model</span><span class="o">.</span><span class="n">train_targets</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span>
             <span class="p">:</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_outputs</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="o">-</span><span class="mi">2</span><span class="p">)</span>
         <span class="p">]</span>
@@ -312,10 +304,6 @@
 <span class="sd">                model's outputs are required for optimization. If omitted,</span>
 <span class="sd">                computes the posterior over all model outputs.</span>
 <span class="sd">            observation_noise: If True, add observation noise to the posterior.</span>
-<span class="sd">            propagate_grads: If True, do not detach GPyTorch's test caches when</span>
-<span class="sd">                computing of the posterior. Required for being able to compute</span>
-<span class="sd">                derivatives with respect to training inputs at test time (used</span>
-<span class="sd">                e.g. by qNoisyExpectedImprovement). Defaults to `False`.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            A `GPyTorchPosterior` object, representing `batch_shape` joint</span>
@@ -323,12 +311,13 @@
 <span class="sd">            `output_indices` each. Includes measurement noise if</span>
 <span class="sd">            `observation_noise=True`.</span>
 <span class="sd">        """</span>
-        <span class="n">detach_test_caches</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"propagate_grads"</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>  <span class="c1"># make sure model is in eval mode</span>
         <span class="k">with</span> <span class="n">ExitStack</span><span class="p">()</span> <span class="k">as</span> <span class="n">es</span><span class="p">:</span>
-            <span class="n">es</span><span class="o">.</span><span class="n">enter_context</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="kc">False</span><span class="p">))</span>
-            <span class="n">es</span><span class="o">.</span><span class="n">enter_context</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">fast_pred_var</span><span class="p">())</span>
-            <span class="n">es</span><span class="o">.</span><span class="n">enter_context</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">detach_test_caches</span><span class="p">(</span><span class="n">detach_test_caches</span><span class="p">))</span>
+            <span class="n">es</span><span class="o">.</span><span class="n">enter_context</span><span class="p">(</span><span class="n">gpt_settings</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="kc">False</span><span class="p">))</span>
+            <span class="n">es</span><span class="o">.</span><span class="n">enter_context</span><span class="p">(</span><span class="n">gpt_settings</span><span class="o">.</span><span class="n">fast_pred_var</span><span class="p">())</span>
+            <span class="n">es</span><span class="o">.</span><span class="n">enter_context</span><span class="p">(</span>
+                <span class="n">gpt_settings</span><span class="o">.</span><span class="n">detach_test_caches</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">propagate_grads</span><span class="o">.</span><span class="n">off</span><span class="p">())</span>
+            <span class="p">)</span>
             <span class="k">if</span> <span class="n">output_indices</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">mvns</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">forward_i</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">output_indices</span><span class="p">]</span>
                 <span class="k">if</span> <span class="n">observation_noise</span><span class="p">:</span>
@@ -383,10 +372,6 @@
 <span class="sd">                model's outputs are required for optimization. If omitted,</span>
 <span class="sd">                computes the posterior over all model outputs.</span>
 <span class="sd">            observation_noise: If True, add observation noise to the posterior.</span>
-<span class="sd">            propagate_grads: If True, do not detach GPyTorch's test caches when</span>
-<span class="sd">                computing of the posterior. Required for being able to compute</span>
-<span class="sd">                derivatives with respect to training inputs at test time (used</span>
-<span class="sd">                e.g. by qNoisyExpectedImprovement). Defaults to `False`.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            A `GPyTorchPosterior` object, representing `batch_shape` joint</span>
@@ -403,11 +388,12 @@
         <span class="n">X_full</span> <span class="o">=</span> <span class="n">_make_X_full</span><span class="p">(</span><span class="n">X</span><span class="o">=</span><span class="n">X</span><span class="p">,</span> <span class="n">output_indices</span><span class="o">=</span><span class="n">output_indices</span><span class="p">,</span> <span class="n">tf</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_task_feature</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>  <span class="c1"># make sure model is in eval mode</span>
-        <span class="n">detach_test_caches</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"propagate_grads"</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
         <span class="k">with</span> <span class="n">ExitStack</span><span class="p">()</span> <span class="k">as</span> <span class="n">es</span><span class="p">:</span>
-            <span class="n">es</span><span class="o">.</span><span class="n">enter_context</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="kc">False</span><span class="p">))</span>
-            <span class="n">es</span><span class="o">.</span><span class="n">enter_context</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">fast_pred_var</span><span class="p">())</span>
-            <span class="n">es</span><span class="o">.</span><span class="n">enter_context</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">detach_test_caches</span><span class="p">(</span><span class="n">detach_test_caches</span><span class="p">))</span>
+            <span class="n">es</span><span class="o">.</span><span class="n">enter_context</span><span class="p">(</span><span class="n">gpt_settings</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="kc">False</span><span class="p">))</span>
+            <span class="n">es</span><span class="o">.</span><span class="n">enter_context</span><span class="p">(</span><span class="n">gpt_settings</span><span class="o">.</span><span class="n">fast_pred_var</span><span class="p">())</span>
+            <span class="n">es</span><span class="o">.</span><span class="n">enter_context</span><span class="p">(</span>
+                <span class="n">gpt_settings</span><span class="o">.</span><span class="n">detach_test_caches</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">propagate_grads</span><span class="o">.</span><span class="n">off</span><span class="p">())</span>
+            <span class="p">)</span>
             <span class="n">mvn</span> <span class="o">=</span> <span class="bp">self</span><span class="p">(</span><span class="n">X_full</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">observation_noise</span><span class="p">:</span>
                 <span class="c1"># TODO: Allow passing in observation noise via kwarg</span>
@@ -439,6 +425,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../fit.html">botorch.fit</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../gen.html">botorch.gen</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../sampling.html">botorch.sampling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../settings.html">botorch.settings</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../test_functions.html">botorch.test_functions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../exceptions.html">botorch.exceptions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../utils.html">botorch.utils</a></li>

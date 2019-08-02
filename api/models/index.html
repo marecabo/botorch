@@ -178,10 +178,6 @@ observations passed in via kwargs).</p>
 <li><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>) – A <cite>(batch_shape) x q x d</cite>-dim Tensor, where <cite>d</cite> is the dimension of the
 feature space and <cite>q</cite> is the number of points considered jointly.</p></li>
 <li><p><strong>observation_noise</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If True, add observation noise to the posterior.</p></li>
-<li><p><strong>propagate_grads</strong> – If True, do not detach GPyTorch’s test caches when
-computing the posterior. Required for being able to compute
-derivatives with respect to training inputs at test time (used
-e.g. by qNoisyExpectedImprovement). Defaults to <cite>False</cite>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
@@ -261,10 +257,6 @@ Can be used to speed up computation if only a subset of the
 model’s outputs are required for optimization. If omitted,
 computes the posterior over all model outputs.</p></li>
 <li><p><strong>observation_noise</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If True, add observation noise to the posterior.</p></li>
-<li><p><strong>propagate_grads</strong> – If True, do not detach GPyTorch’s test caches when
-computing of the posterior. Required for being able to compute
-derivatives with respect to training inputs at test time (used
-e.g. by qNoisyExpectedImprovement). Defaults to <cite>False</cite>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
@@ -353,10 +345,6 @@ Can be used to speed up computation if only a subset of the
 model’s outputs are required for optimization. If omitted,
 computes the posterior over all model outputs.</p></li>
 <li><p><strong>observation_noise</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If True, add observation noise to the posterior.</p></li>
-<li><p><strong>propagate_grads</strong> – If True, do not detach GPyTorch’s test caches when
-computing of the posterior. Required for being able to compute
-derivatives with respect to training inputs at test time (used
-e.g. by qNoisyExpectedImprovement). Defaults to <cite>False</cite>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
@@ -396,10 +384,6 @@ Can be used to speed up computation if only a subset of the
 model’s outputs are required for optimization. If omitted,
 computes the posterior over all model outputs.</p></li>
 <li><p><strong>observation_noise</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If True, add observation noise to the posterior.</p></li>
-<li><p><strong>propagate_grads</strong> – If True, do not detach GPyTorch’s test caches when
-computing of the posterior. Required for being able to compute
-derivatives with respect to training inputs at test time (used
-e.g. by qNoisyExpectedImprovement). Defaults to <cite>False</cite>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
@@ -797,6 +781,7 @@ full rank (i.e. number of tasks) kernel.</p></li>
 <li class="toctree-l1"><a class="reference internal" href="fit.html">botorch.fit</a></li>
 <li class="toctree-l1"><a class="reference internal" href="gen.html">botorch.gen</a></li>
 <li class="toctree-l1"><a class="reference internal" href="sampling.html">botorch.sampling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="settings.html">botorch.settings</a></li>
 <li class="toctree-l1"><a class="reference internal" href="test_functions.html">botorch.test_functions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="exceptions.html">botorch.exceptions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="utils.html">botorch.utils</a></li>
